@@ -1,0 +1,9 @@
+testscanner::
+
+NEWLINE := [\r\n]+ ;
+WHITESPACE := \s+ ;
+INT     := [0-9]+ ;
+PLUS 	:= \+ ;
+ASTERISK := \ *;
+MINUS   := \- ;
+DIV 	:= \\ ;
