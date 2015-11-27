@@ -8,15 +8,19 @@ generateScanner := procedure(sc_dict, file) {
 
 sc_dict_generate := procedure(file) {
 	file := join(readFile(file), "\n");
-	state := "normal";
+	state := "declaration_part";
 	last_identifier := "";
 	sc_dict :=  {};
 	scan(file) using map{
-		regex '[a-zA-Z]+::.*\n':
+		regex '[^%%%]+%%%.*\n' | state == "declaration_part":
+				state := "scanner_part";
 				// skip intro
-		regex '[ \t]*\n' | state == "normal":
+		regex '[\n]*%%%.*' | state == "scanner_part":
+				// skip outro
+				state := "parser_part";
+		regex '[ \t]*\n' | state == "scanner_part":
 			//skip new lines
-		regex '[a-zA-Z]+' as [ identifier ]:
+		regex '[a-zA-Z]+' as [ identifier ] | state == "scanner_part":
 		 // save identifier
 			sc_dict[identifier] := "om";
 			last_identifier := identifier;
@@ -24,16 +28,33 @@ sc_dict_generate := procedure(file) {
 		regex '[\s]*:=[\s]*' | state == "ident_read":
 		// skip white spaces
 			state :=  "scan_section";
-		regex '[^;]*' as [ scan_section ] | state == "scan_section":
+		regex '.*' as [ scan_section ] | state == "scan_section":
 		// parse scanner_statement
-			print(scan_section);
-			scan_section := replace(scan_section," ", "");
-			print(scan_section);
+			//print(scan_section);
+			scan_section := trim(scan_section);
+			scan_section := replaceFirst(scan_section, "[\\s]*;\$", "");
+			// scan_section_splitted := split(scan_section, ";");
+			// scan_section_splitted_length := #scan_section_splitted;
+			// if (scan_section_splitted_length > 2)
+			// {
+				// print("scan_section_splitted : $scan_section_splitted$");
+			// }
+			// scan_section := "";
+			// i := 1;
+			// for(i in [1..scan_section_splitted_length-1])
+			// {
+				// scan_section := scan_section + scan_section_splitted[i];
+			// } 
+			//print(scan_section);
 			sc_dict[last_identifier] := scan_section;
-		regex ';[\s*\n]*' | state == "scan_section":
-			state := "normal";
+			state := "scanner_part";
+		 // regex ';[\s*\n]*' | state == "end_of_scanner_line":
+			// state := "scanner_part";
+		regex '[^$]*' | state == "parser_part":
+			// skip parser part
 		regex '.|\n' as [ c ]:
 			print("unrecognized character: $c$");
+			print("current_state: $state$");
 			print("line: ", map["line"]);
 			print("column: ", map["column"]);
 	}
@@ -41,41 +62,34 @@ sc_dict_generate := procedure(file) {
 	return sc_dict;
 };
 
-test_scanner_generator := procedure (scanner_file, test_file){
-	sc_dict :=	sc_dict_generate(scanner_file);
-	test_file := split(join(readFile(test_file), "\n"), '\n');
-	print(sc_dict);
-	for( lines in test_file)
-	{
-		print("line :" + lines + " \n");
-		for ( i in domain(sc_dict))
-	 	{
-	 		print("testing... :" + i + "  |  " + sc_dict[i] + "\n");
-	 		match(lines)
-	 		{
-	 			regex sc_dict[i]:
-	 				print(i);
-	 			//default:
-	 				//print("lines: $lines$ is not sc_dict[$i$]: $sc_dict[i]$");
-	 		}
-	 	}
- 	}
+// test_scanner_generator := procedure (scanner_file, test_file){
+// 	sc_dict :=	sc_dict_generate(scanner_file);
+// 	test_file := split(join(readFile(test_file), "\n"), '\n');
+// 	print(sc_dict);
+// 	for( lines in test_file)
+// 	{
+// 		print("line :" + lines + " \n");
+// 		for ( i in domain(sc_dict))
+// 	 	{
+// 	 		print("testing... :" + i + "  |  " + sc_dict[i] + "\n");
+// 	 		match(lines)
+// 	 		{
+// 	 			regex sc_dict[i]:
+// 	 				print(i);
+// 	 			//default:
+// 	 				//print("lines: $lines$ is not sc_dict[$i$]: $sc_dict[i]$");
+// 	 		}
+// 	 	}
+//  	}
 
-};
-test_scanner_generator_scan := procedure (scanner_file, test_file){
-	sc_dict :=	sc_dict_generate(scanner_file);
-	test_file := split(join(readFile(test_file), "\n"), '\n');
-	print(sc_dict);
-	scan_output := [];
-	for( lines in test_file)
-	{
-		print("line :" + lines + " \n");
-		scan_string := "scan(lines) { \n";
+// };
+generate_scan_string := procedure(sc_dict) {
+	scan_string := "scan(lines) { \n";
 
 		for ( i in domain(sc_dict))
 	 	{
 	 		//scan_string := scan_string + "regex '$sc_dict[i]$' as[c]: \n scan_output := scan_output + [[c, \"$i$\"]]; print(\"c: \" + c + \"$i$\"); \n";
-	 		scan_string := scan_string + "regex '$sc_dict[i]$' as[c]: \n scan_output := scan_output + [[c, \"$i$\"]];\n";
+	 		scan_string := scan_string + "regex '$sc_dict[i]$' as [c]: \n scan_output := scan_output + [[c, \"$i$\"]];\n";
 	 		//print("testing... :" + i + "  |  " + sc_dict[i] + "\n");
 	 		//scan(lines)
 	 		//{
@@ -86,10 +100,26 @@ test_scanner_generator_scan := procedure (scanner_file, test_file){
 	 		//}
 	 	}
 	 	//scan_string := scan_string + "regex '\\*' as [c]: \n scan_output := scan_output + [[c, \"ASTERISK\"]];\n";
-	 	scan_string := scan_string + "regex '.|\\n' as [ c ]: print(\"unrecognized character: \" + c);";
+	 	scan_string := scan_string + "regex '.' as [ c ]: print(\"unrecognized character: \" + c);";
 	 	scan_string := scan_string + "}";
-	 	print("scan_string: \n $scan_string$");
+	 	print("scan_string: \n $scan_string$ \n");
+	 	// print("trimmed : \n $trim(scan_string)$ \n");
+	 	return scan_string;
+	 };
+test_scanner_generator_scan := procedure (scanner_file, test_file){
+	sc_dict :=	sc_dict_generate(scanner_file);
+	test_file := split(join(readFile(test_file), "\n"), '\n');
+	print(sc_dict);
+	scan_output := [];
+	scan_string := generate_scan_string(sc_dict);
+	for( lines in test_file)
+	{
+		print("line :" + lines + " \n");
+
 	 	execute(trim(scan_string));
+		// LINEWISE OUTPUT
+	 	// print(scan_output);
+	 	// scan_output := [];
  	}
  	print(scan_output);
  	return scan_output;
@@ -97,5 +127,8 @@ test_scanner_generator_scan := procedure (scanner_file, test_file){
 
 test_params := procedure(){
 //test_scanner_generator("test_scanner.txt", "test_expression_multi_line.txt");
+//return sc_dict_generate("c")
 return test_scanner_generator_scan("test_scanner.txt", "test_expression_single_line.txt");
 };
+// test_params();
+test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");
