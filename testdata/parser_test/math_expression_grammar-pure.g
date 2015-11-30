@@ -29,7 +29,9 @@ LPAREN := \( ;
 RPAREN := \) ;
 
 %%%
-
+grammar ::= expr_list
+          ;
+          
 expr_list ::= expr_list expr_part 
            |  expr_part
            ;

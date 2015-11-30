@@ -10,13 +10,14 @@ sc_dict_generate := procedure(file) {
 	file := join(readFile(file), "\n");
 	state := "declaration_part";
 	last_identifier := "";
+	parser_part_string := "";
 	sc_dict :=  {};
 	scan(file) using map{
 		regex '[^%%%]+%%%.*\n' | state == "declaration_part":
 				state := "scanner_part";
 				// skip intro
 		regex '[\n]*%%%.*' | state == "scanner_part":
-				// skip outro
+				// skip outro				
 				state := "parser_part";
 		regex '[ \t]*\n' | state == "scanner_part":
 			//skip new lines
@@ -50,8 +51,9 @@ sc_dict_generate := procedure(file) {
 			state := "scanner_part";
 		 // regex ';[\s*\n]*' | state == "end_of_scanner_line":
 			// state := "scanner_part";
-		regex '[^$]*' | state == "parser_part":
+		regex '.|\n' as [parser_part] | state == "parser_part":
 			// skip parser part
+			parser_part_string := parser_part_string + parser_part;
 		regex '.|\n' as [ c ]:
 			print("unrecognized character: $c$");
 			print("current_state: $state$");
@@ -59,7 +61,7 @@ sc_dict_generate := procedure(file) {
 			print("column: ", map["column"]);
 	}
 	//print(sc_dict);
-	return sc_dict;
+	return [sc_dict, parser_part_string];
 };
 
 // test_scanner_generator := procedure (scanner_file, test_file){
@@ -107,7 +109,7 @@ generate_scan_string := procedure(sc_dict) {
 	 	return scan_string;
 	 };
 test_scanner_generator_scan := procedure (scanner_file, test_file){
-	sc_dict :=	sc_dict_generate(scanner_file);
+	[sc_dict, parser_part_string] := sc_dict_generate(scanner_file);
 	test_file := split(join(readFile(test_file), "\n"), '\n');
 	print(sc_dict);
 	scan_output := [];
@@ -122,13 +124,38 @@ test_scanner_generator_scan := procedure (scanner_file, test_file){
 	 	// scan_output := [];
  	}
  	print(scan_output);
- 	return scan_output;
+ 	return [scan_output, parser_part_string];
 };
 
+test_parser_gen := procedure()
+{
+	load("..\\parser_test\\grammar_parser_v2.stlx");
+	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	parser_part_string := trim(parser_part_string);
+	print(parser_part_string);	
+	// load("..\\parser_test\\lr-parser-generator.stlx");
+	testFromString(parser_part_string);
+	// tl := tokenizeString(parser_part_string);
+	// print(tl);
+	// print("fct(tl[1]) := $fct(tl[1])$");
+	// print("fct(tl[1]) == \"VAR\" == $fct(tl[1]) == \"Var\"$");
+	// parseGrammar(tl);
+	
+
+};
+
+get_tokenized_parser := procedure()
+{
+	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	print(parser_part_string);
+	load("..\\parser_test\\grammar_parser_v2.stlx");
+	return tokenizeString(parser_part_string);
+};
 test_params := procedure(){
 //test_scanner_generator("test_scanner.txt", "test_expression_multi_line.txt");
 //return sc_dict_generate("c")
 return test_scanner_generator_scan("test_scanner.txt", "test_expression_single_line.txt");
 };
 // test_params();
-test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");
+
+test_parser_gen();
