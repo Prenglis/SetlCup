@@ -9,9 +9,10 @@ class srParser(actionTable, gotoTable, stateTable) {
         states  := ["s0"]; // stack of states, 0 is start state
         while (true) {            
             q := states[-1];
-            t := tl[index];
+            t := tl[index][2];
+            t_rest := [ y : [x,y] in tl[index..]];
             print("states:  [ $join(states, \", \")$ ]");
-            print("symbols: $join(symbols, \" \")$ | $join(tl[index ..], \" \")$");
+            print("symbols: $join(symbols, \" \")$ | $join(t_rest, \" \")$");
             print("state:   { $join(mStateTable[q], \", \")$ }");
             p := mActionTable[q,t];
             match (p) {
@@ -42,13 +43,15 @@ class srParser(actionTable, gotoTable, stateTable) {
     };
 }
 
-load("parse-table.stlx");
+load("lr_parse_table.stlx");
+// load("parse-table.stlx");
 
 myParse := closure(s) {
     parser := srParser(actionTable, gotoTable, stateTable);
     tl := tokenizeString(s);
+    tl := scan_output;
     print("tokenlist: $tl$\n");
-    if (parser.parseSR(tl + ["EOF"])) {
+    if (parser.parseSR(tl + ["1", "EOF"])) {
         print("Parse successful!");
     } else {
         print("Parse failed!");
@@ -68,4 +71,4 @@ tokenizeString := procedure(s) {
     return tokenList;
 };
 
-myParse("1+2*3");
+myParse(" 1 + 2 * 3");

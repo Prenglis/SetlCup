@@ -150,14 +150,15 @@ test_parser_gen := procedure()
 	silent_mode := 1 == 1;
 	load("..\\parser_test\\grammar_parser_v2.stlx");
 	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
-	print(scan_output);
+	print("scan_output := $scan_output$;");
 	parser_part_string := trim(parser_part_string);
 	if(!silent_mode)
 		{
 			print(parser_part_string);	
 		}
-	// load("..\\parser_test\\lr-parser-generator.stlx");
 	testFromString(parser_part_string);
+	// load("..\\parser_test\\lr-parser-generator.stlx");
+
 	// tl := tokenizeString(parser_part_string);
 	// print(tl);
 	// print("fct(tl[1]) := $fct(tl[1])$");

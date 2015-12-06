@@ -26,7 +26,7 @@ readGrammarFromString := procedure(grammar_string){
     // gs := join(grammar_string, "\n");
     // print(grammar_string);
     tl := tokenizeString(grammar_string);
-    print(tl);
+    // print(tl);
     return parseGrammar(tl);
 };
 // This procedure takes a token list tl and tries to interpret this list
