@@ -1,0 +1,286 @@
+[["1", "INTEGER"], [" ", "WHITESPACE"], ["+", "PLUS"], [" ", "WHITESPACE"], ["2", "INTEGER"], [" ", "WHITESPACE"], ["*", "TIMES"], [" ", "WHITESPACE"], ["3", "INTEGER"], [" ", "WHITESPACE"], ["-", "MINUS"], [" ", "WHITESPACE"], ["4", "INTEGER"], [";", "SEMICOLON"], ["1", "INTEGER"], [" ", "WHITESPACE"], ["+", "PLUS"], [" ", "WHITESPACE"], ["2", "INTEGER"], [" ", "WHITESPACE"], ["+", "PLUS"], [" ", "WHITESPACE"], ["3", "INTEGER"], [" ", "WHITESPACE"], ["+", "PLUS"], [" ", "WHITESPACE"], ["4", "INTEGER"], [";", "SEMICOLON"], ["1", "INTEGER"], [" ", "WHITESPACE"], ["+", "PLUS"], [" ", "WHITESPACE"], ["(", "LPAREN"], [" ", "WHITESPACE"], ["2", "INTEGER"], [" ", "WHITESPACE"], ["-", "MINUS"], [" ", "WHITESPACE"], ["3", "INTEGER"], [" ", "WHITESPACE"], [")", "RPAREN"], [" ", "WHITESPACE"], ["*", "TIMES"], [" ", "WHITESPACE"], ["5", "INTEGER"], [" ", "WHITESPACE"], ["%", "MOD"], [" ", "WHITESPACE"], ["6", "INTEGER"], [";", "SEMICOLON"]]
+[Var("grammar"), "::=", Var("expr_list"), ";", Var("expr_list"), "::=", Var("expr_list"), Var("expr_part"), "|", Var("expr_part"), ";", Var("expr_part"), "::=", Var("expr"), Token("SEMI"), ";", Var("expr"), "::=", Var("expr"), Token("PLUS"), Var("prod"), "|", Var("expr"), Token("MINUS"), Var("prod"), "|", Var("prod"), ";", Var("prod"), "::=", Var("prod"), Token("TIMES"), Var("fact"), "|", Var("prod"), Token("DIVIDE"), Var("fact"), "|", Var("prod"), Token("MOD"), Var("fact"), "|", Var("fact"), ";", Var("fact"), "::=", Token("LPAREN"), Var("expr"), Token("RPAREN"), "|", Token("NUMBER"), ";"]
+r0 := Rule("grammar", ["expr_list"]);
+r1 := Rule("expr_list", ["expr_list", "expr_part"]);
+r2 := Rule("expr_list", ["expr_part"]);
+r3 := Rule("expr_part", ["expr", "SEMI"]);
+r4 := Rule("expr", ["expr", "PLUS", "prod"]);
+r5 := Rule("expr", ["expr", "MINUS", "prod"]);
+r6 := Rule("expr", ["prod"]);
+r7 := Rule("prod", ["prod", "TIMES", "fact"]);
+r8 := Rule("prod", ["prod", "DIVIDE", "fact"]);
+r9 := Rule("prod", ["prod", "MOD", "fact"]);
+r10 := Rule("prod", ["fact"]);
+r11 := Rule("fact", ["LPAREN", "expr", "RPAREN"]);
+r12 := Rule("fact", ["NUMBER"]);
+r13 := Rule("S", ["grammar"]);
+
+
+stateTable := {};
+stateTable["s0"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> (*) expr MINUS prod: {MINUS, PLUS, RPAREN, }, expr -> (*) expr PLUS prod: {MINUS, PLUS, RPAREN, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> (*) prod: {MINUS, PLUS, RPAREN, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> LPAREN (*) expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s1"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> (*) expr MINUS prod: {MINUS, PLUS, RPAREN, }, expr -> (*) expr PLUS prod: {MINUS, PLUS, RPAREN, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> (*) prod: {MINUS, PLUS, RPAREN, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> LPAREN (*) expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s2"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> expr MINUS (*) prod: {MINUS, PLUS, RPAREN, },  }";
+stateTable["s3"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> expr PLUS (*) prod: {MINUS, PLUS, RPAREN, },  }";
+stateTable["s4"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod DIVIDE (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s5"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod MOD (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s6"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod TIMES (*) fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s7"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> (*) expr MINUS prod: {MINUS, PLUS, SEMI, }, expr -> (*) expr PLUS prod: {MINUS, PLUS, SEMI, }, expr_part -> (*) expr SEMI: {\$, LPAREN, NUMBER, }, grammar -> (*) expr_list: {\$}, expr_list -> (*) expr_list expr_part: {\$, LPAREN, NUMBER, }, expr_list -> (*) expr_part: {\$, LPAREN, NUMBER, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, S -> (*) grammar: {\$}, expr -> (*) prod: {MINUS, PLUS, SEMI, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s8"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> (*) expr MINUS prod: {MINUS, PLUS, SEMI, }, expr -> (*) expr PLUS prod: {MINUS, PLUS, SEMI, }, expr_part -> (*) expr SEMI: {\$, LPAREN, NUMBER, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> (*) prod: {MINUS, PLUS, SEMI, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, grammar -> expr_list (*): {\$}, expr_list -> expr_list (*) expr_part: {\$, LPAREN, NUMBER, },  }";
+stateTable["s9"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> expr MINUS (*) prod: {MINUS, PLUS, SEMI, },  }";
+stateTable["s10"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> (*) prod TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> expr PLUS (*) prod: {MINUS, PLUS, SEMI, },  }";
+stateTable["s11"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod DIVIDE (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s12"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod MOD (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s13"] := "{ fact -> (*) LPAREN expr RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, fact -> (*) NUMBER: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod TIMES (*) fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s14"] := "{ fact -> LPAREN expr (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, expr -> expr (*) MINUS prod: {MINUS, PLUS, RPAREN, }, expr -> expr (*) PLUS prod: {MINUS, PLUS, RPAREN, },  }";
+stateTable["s15"] := "{ fact -> LPAREN expr (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, expr -> expr (*) MINUS prod: {MINUS, PLUS, RPAREN, }, expr -> expr (*) PLUS prod: {MINUS, PLUS, RPAREN, },  }";
+stateTable["s16"] := "{ fact -> LPAREN expr RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s17"] := "{ fact -> LPAREN expr RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+stateTable["s18"] := "{ fact -> NUMBER (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s19"] := "{ fact -> NUMBER (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+stateTable["s20"] := "{ expr -> expr (*) MINUS prod: {MINUS, PLUS, SEMI, }, expr -> expr (*) PLUS prod: {MINUS, PLUS, SEMI, }, expr_part -> expr (*) SEMI: {\$, LPAREN, NUMBER, },  }";
+stateTable["s21"] := "{ expr -> expr MINUS prod (*): {MINUS, PLUS, RPAREN, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s22"] := "{ expr -> expr MINUS prod (*): {MINUS, PLUS, SEMI, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s23"] := "{ expr -> expr PLUS prod (*): {MINUS, PLUS, RPAREN, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s24"] := "{ expr -> expr PLUS prod (*): {MINUS, PLUS, SEMI, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s25"] := "{ expr_part -> expr SEMI (*): {\$, LPAREN, NUMBER, } }";
+stateTable["s26"] := "{ expr_list -> expr_list expr_part (*): {\$, LPAREN, NUMBER, } }";
+stateTable["s27"] := "{ expr_list -> expr_part (*): {\$, LPAREN, NUMBER, } }";
+stateTable["s28"] := "{ prod -> fact (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s29"] := "{ prod -> fact (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+stateTable["s30"] := "{ S -> grammar (*): {\$} }";
+stateTable["s31"] := "{ expr -> prod (*): {MINUS, PLUS, RPAREN, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }";
+stateTable["s32"] := "{ expr -> prod (*): {MINUS, PLUS, SEMI, }, prod -> prod (*) DIVIDE fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) MOD fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, prod -> prod (*) TIMES fact: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }";
+stateTable["s33"] := "{ prod -> prod DIVIDE fact (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s34"] := "{ prod -> prod DIVIDE fact (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+stateTable["s35"] := "{ prod -> prod MOD fact (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s36"] := "{ prod -> prod MOD fact (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+stateTable["s37"] := "{ prod -> prod TIMES fact (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }";
+stateTable["s38"] := "{ prod -> prod TIMES fact (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }";
+
+actionTable := {};
+actionTable["s0", "LPAREN"] := Shift("s0");
+actionTable["s0", "NUMBER"] := Shift("s18");
+
+actionTable["s1", "LPAREN"] := Shift("s0");
+actionTable["s1", "NUMBER"] := Shift("s18");
+
+actionTable["s2", "LPAREN"] := Shift("s0");
+actionTable["s2", "NUMBER"] := Shift("s18");
+
+actionTable["s3", "LPAREN"] := Shift("s0");
+actionTable["s3", "NUMBER"] := Shift("s18");
+
+actionTable["s4", "LPAREN"] := Shift("s0");
+actionTable["s4", "NUMBER"] := Shift("s18");
+
+actionTable["s5", "LPAREN"] := Shift("s0");
+actionTable["s5", "NUMBER"] := Shift("s18");
+
+actionTable["s6", "LPAREN"] := Shift("s0");
+actionTable["s6", "NUMBER"] := Shift("s18");
+
+actionTable["s7", "LPAREN"] := Shift("s1");
+actionTable["s7", "NUMBER"] := Shift("s19");
+
+actionTable["s8", "LPAREN"] := Shift("s1");
+actionTable["s8", "NUMBER"] := Shift("s19");
+actionTable["s8", '$'] := Reduce("grammar -> expr_list");
+
+actionTable["s9", "LPAREN"] := Shift("s1");
+actionTable["s9", "NUMBER"] := Shift("s19");
+
+actionTable["s10", "LPAREN"] := Shift("s1");
+actionTable["s10", "NUMBER"] := Shift("s19");
+
+actionTable["s11", "LPAREN"] := Shift("s1");
+actionTable["s11", "NUMBER"] := Shift("s19");
+
+actionTable["s12", "LPAREN"] := Shift("s1");
+actionTable["s12", "NUMBER"] := Shift("s19");
+
+actionTable["s13", "LPAREN"] := Shift("s1");
+actionTable["s13", "NUMBER"] := Shift("s19");
+
+actionTable["s14", "MINUS"] := Shift("s2");
+actionTable["s14", "PLUS"] := Shift("s3");
+actionTable["s14", "RPAREN"] := Shift("s16");
+
+actionTable["s15", "MINUS"] := Shift("s2");
+actionTable["s15", "PLUS"] := Shift("s3");
+actionTable["s15", "RPAREN"] := Shift("s17");
+
+actionTable["s16", "DIVIDE"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s16", "MINUS"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s16", "MOD"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s16", "PLUS"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s16", "RPAREN"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s16", "TIMES"] := Reduce("fact -> LPAREN expr RPAREN");
+
+actionTable["s17", "DIVIDE"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s17", "MINUS"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s17", "MOD"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s17", "PLUS"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s17", "SEMI"] := Reduce("fact -> LPAREN expr RPAREN");
+actionTable["s17", "TIMES"] := Reduce("fact -> LPAREN expr RPAREN");
+
+actionTable["s18", "DIVIDE"] := Reduce("fact -> NUMBER");
+actionTable["s18", "MINUS"] := Reduce("fact -> NUMBER");
+actionTable["s18", "MOD"] := Reduce("fact -> NUMBER");
+actionTable["s18", "PLUS"] := Reduce("fact -> NUMBER");
+actionTable["s18", "RPAREN"] := Reduce("fact -> NUMBER");
+actionTable["s18", "TIMES"] := Reduce("fact -> NUMBER");
+
+actionTable["s19", "DIVIDE"] := Reduce("fact -> NUMBER");
+actionTable["s19", "MINUS"] := Reduce("fact -> NUMBER");
+actionTable["s19", "MOD"] := Reduce("fact -> NUMBER");
+actionTable["s19", "PLUS"] := Reduce("fact -> NUMBER");
+actionTable["s19", "SEMI"] := Reduce("fact -> NUMBER");
+actionTable["s19", "TIMES"] := Reduce("fact -> NUMBER");
+
+actionTable["s20", "MINUS"] := Shift("s9");
+actionTable["s20", "PLUS"] := Shift("s10");
+actionTable["s20", "SEMI"] := Shift("s25");
+
+actionTable["s21", "DIVIDE"] := Shift("s4");
+actionTable["s21", "MOD"] := Shift("s5");
+actionTable["s21", "TIMES"] := Shift("s6");
+actionTable["s21", "MINUS"] := Reduce("expr -> expr MINUS prod");
+actionTable["s21", "PLUS"] := Reduce("expr -> expr MINUS prod");
+actionTable["s21", "RPAREN"] := Reduce("expr -> expr MINUS prod");
+
+actionTable["s22", "DIVIDE"] := Shift("s11");
+actionTable["s22", "MOD"] := Shift("s12");
+actionTable["s22", "TIMES"] := Shift("s13");
+actionTable["s22", "MINUS"] := Reduce("expr -> expr MINUS prod");
+actionTable["s22", "PLUS"] := Reduce("expr -> expr MINUS prod");
+actionTable["s22", "SEMI"] := Reduce("expr -> expr MINUS prod");
+
+actionTable["s23", "DIVIDE"] := Shift("s4");
+actionTable["s23", "MOD"] := Shift("s5");
+actionTable["s23", "TIMES"] := Shift("s6");
+actionTable["s23", "MINUS"] := Reduce("expr -> expr PLUS prod");
+actionTable["s23", "PLUS"] := Reduce("expr -> expr PLUS prod");
+actionTable["s23", "RPAREN"] := Reduce("expr -> expr PLUS prod");
+
+actionTable["s24", "DIVIDE"] := Shift("s11");
+actionTable["s24", "MOD"] := Shift("s12");
+actionTable["s24", "TIMES"] := Shift("s13");
+actionTable["s24", "MINUS"] := Reduce("expr -> expr PLUS prod");
+actionTable["s24", "PLUS"] := Reduce("expr -> expr PLUS prod");
+actionTable["s24", "SEMI"] := Reduce("expr -> expr PLUS prod");
+
+actionTable["s25", '$'] := Reduce("expr_part -> expr SEMI");
+actionTable["s25", "LPAREN"] := Reduce("expr_part -> expr SEMI");
+actionTable["s25", "NUMBER"] := Reduce("expr_part -> expr SEMI");
+
+actionTable["s26", '$'] := Reduce("expr_list -> expr_list expr_part");
+actionTable["s26", "LPAREN"] := Reduce("expr_list -> expr_list expr_part");
+actionTable["s26", "NUMBER"] := Reduce("expr_list -> expr_list expr_part");
+
+actionTable["s27", '$'] := Reduce("expr_list -> expr_part");
+actionTable["s27", "LPAREN"] := Reduce("expr_list -> expr_part");
+actionTable["s27", "NUMBER"] := Reduce("expr_list -> expr_part");
+
+actionTable["s28", "DIVIDE"] := Reduce("prod -> fact");
+actionTable["s28", "MINUS"] := Reduce("prod -> fact");
+actionTable["s28", "MOD"] := Reduce("prod -> fact");
+actionTable["s28", "PLUS"] := Reduce("prod -> fact");
+actionTable["s28", "RPAREN"] := Reduce("prod -> fact");
+actionTable["s28", "TIMES"] := Reduce("prod -> fact");
+
+actionTable["s29", "DIVIDE"] := Reduce("prod -> fact");
+actionTable["s29", "MINUS"] := Reduce("prod -> fact");
+actionTable["s29", "MOD"] := Reduce("prod -> fact");
+actionTable["s29", "PLUS"] := Reduce("prod -> fact");
+actionTable["s29", "SEMI"] := Reduce("prod -> fact");
+actionTable["s29", "TIMES"] := Reduce("prod -> fact");
+
+actionTable["s30", '$'] := Reduce("S -> grammar");
+
+actionTable["s31", "DIVIDE"] := Shift("s4");
+actionTable["s31", "MOD"] := Shift("s5");
+actionTable["s31", "TIMES"] := Shift("s6");
+actionTable["s31", "MINUS"] := Reduce("expr -> prod");
+actionTable["s31", "PLUS"] := Reduce("expr -> prod");
+actionTable["s31", "RPAREN"] := Reduce("expr -> prod");
+
+actionTable["s32", "DIVIDE"] := Shift("s11");
+actionTable["s32", "MOD"] := Shift("s12");
+actionTable["s32", "TIMES"] := Shift("s13");
+actionTable["s32", "MINUS"] := Reduce("expr -> prod");
+actionTable["s32", "PLUS"] := Reduce("expr -> prod");
+actionTable["s32", "SEMI"] := Reduce("expr -> prod");
+
+actionTable["s33", "DIVIDE"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s33", "MINUS"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s33", "MOD"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s33", "PLUS"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s33", "RPAREN"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s33", "TIMES"] := Reduce("prod -> prod DIVIDE fact");
+
+actionTable["s34", "DIVIDE"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s34", "MINUS"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s34", "MOD"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s34", "PLUS"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s34", "SEMI"] := Reduce("prod -> prod DIVIDE fact");
+actionTable["s34", "TIMES"] := Reduce("prod -> prod DIVIDE fact");
+
+actionTable["s35", "DIVIDE"] := Reduce("prod -> prod MOD fact");
+actionTable["s35", "MINUS"] := Reduce("prod -> prod MOD fact");
+actionTable["s35", "MOD"] := Reduce("prod -> prod MOD fact");
+actionTable["s35", "PLUS"] := Reduce("prod -> prod MOD fact");
+actionTable["s35", "RPAREN"] := Reduce("prod -> prod MOD fact");
+actionTable["s35", "TIMES"] := Reduce("prod -> prod MOD fact");
+
+actionTable["s36", "DIVIDE"] := Reduce("prod -> prod MOD fact");
+actionTable["s36", "MINUS"] := Reduce("prod -> prod MOD fact");
+actionTable["s36", "MOD"] := Reduce("prod -> prod MOD fact");
+actionTable["s36", "PLUS"] := Reduce("prod -> prod MOD fact");
+actionTable["s36", "SEMI"] := Reduce("prod -> prod MOD fact");
+actionTable["s36", "TIMES"] := Reduce("prod -> prod MOD fact");
+
+actionTable["s37", "DIVIDE"] := Reduce("prod -> prod TIMES fact");
+actionTable["s37", "MINUS"] := Reduce("prod -> prod TIMES fact");
+actionTable["s37", "MOD"] := Reduce("prod -> prod TIMES fact");
+actionTable["s37", "PLUS"] := Reduce("prod -> prod TIMES fact");
+actionTable["s37", "RPAREN"] := Reduce("prod -> prod TIMES fact");
+actionTable["s37", "TIMES"] := Reduce("prod -> prod TIMES fact");
+
+actionTable["s38", "DIVIDE"] := Reduce("prod -> prod TIMES fact");
+actionTable["s38", "MINUS"] := Reduce("prod -> prod TIMES fact");
+actionTable["s38", "MOD"] := Reduce("prod -> prod TIMES fact");
+actionTable["s38", "PLUS"] := Reduce("prod -> prod TIMES fact");
+actionTable["s38", "SEMI"] := Reduce("prod -> prod TIMES fact");
+actionTable["s38", "TIMES"] := Reduce("prod -> prod TIMES fact");
+
+gotoTable := {};
+gotoTable["s0", "expr"] := "s14";
+gotoTable["s0", "fact"] := "s28";
+gotoTable["s0", "prod"] := "s31";
+gotoTable["s1", "expr"] := "s15";
+gotoTable["s1", "fact"] := "s28";
+gotoTable["s1", "prod"] := "s31";
+gotoTable["s2", "fact"] := "s28";
+gotoTable["s2", "prod"] := "s21";
+gotoTable["s3", "fact"] := "s28";
+gotoTable["s3", "prod"] := "s23";
+gotoTable["s4", "fact"] := "s33";
+gotoTable["s5", "fact"] := "s35";
+gotoTable["s6", "fact"] := "s37";
+gotoTable["s7", "expr"] := "s20";
+gotoTable["s7", "expr_list"] := "s8";
+gotoTable["s7", "expr_part"] := "s27";
+gotoTable["s7", "fact"] := "s29";
+gotoTable["s7", "grammar"] := "s30";
+gotoTable["s7", "prod"] := "s32";
+gotoTable["s8", "expr"] := "s20";
+gotoTable["s8", "expr_part"] := "s26";
+gotoTable["s8", "fact"] := "s29";
+gotoTable["s8", "prod"] := "s32";
+gotoTable["s9", "fact"] := "s29";
+gotoTable["s9", "prod"] := "s22";
+gotoTable["s10", "fact"] := "s29";
+gotoTable["s10", "prod"] := "s24";
+gotoTable["s11", "fact"] := "s34";
+gotoTable["s12", "fact"] := "s36";
+gotoTable["s13", "fact"] := "s38";

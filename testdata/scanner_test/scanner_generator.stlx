@@ -7,6 +7,7 @@ generateScanner := procedure(sc_dict, file) {
 };
 
 sc_dict_generate := procedure(file) {
+	silent_mode := 1 == 1;
 	file := join(readFile(file), "\n");
 	state := "declaration_part";
 	last_identifier := "";
@@ -55,10 +56,13 @@ sc_dict_generate := procedure(file) {
 			// skip parser part
 			parser_part_string := parser_part_string + parser_part;
 		regex '.|\n' as [ c ]:
-			print("unrecognized character: $c$");
-			print("current_state: $state$");
-			print("line: ", map["line"]);
-			print("column: ", map["column"]);
+			if(!silent_mode)
+			{
+				print("unrecognized character: $c$");
+				print("current_state: $state$");
+				print("line: ", map["line"]);
+				print("column: ", map["column"]);
+			}
 	}
 	//print(sc_dict);
 	return [sc_dict, parser_part_string];
@@ -86,6 +90,7 @@ sc_dict_generate := procedure(file) {
 
 // };
 generate_scan_string := procedure(sc_dict) {
+	silent_mode := 1 == 1;
 	scan_string := "scan(lines) { \n";
 
 		for ( i in domain(sc_dict))
@@ -102,37 +107,55 @@ generate_scan_string := procedure(sc_dict) {
 	 		//}
 	 	}
 	 	//scan_string := scan_string + "regex '\\*' as [c]: \n scan_output := scan_output + [[c, \"ASTERISK\"]];\n";
-	 	scan_string := scan_string + "regex '.' as [ c ]: print(\"unrecognized character: \" + c);";
+	 	scan_string := scan_string + "regex '.' as [ c ]: if(!silent_mode){print(\"unrecognized character: \" + c);}";
 	 	scan_string := scan_string + "}";
-	 	print("scan_string: \n $scan_string$ \n");
+	 	if(!silent_mode)
+	 		{
+	 			print("scan_string: \n $scan_string$ \n");
+	 		}
 	 	// print("trimmed : \n $trim(scan_string)$ \n");
 	 	return scan_string;
 	 };
 test_scanner_generator_scan := procedure (scanner_file, test_file){
+	silent_mode := 1 == 1;
 	[sc_dict, parser_part_string] := sc_dict_generate(scanner_file);
 	test_file := split(join(readFile(test_file), "\n"), '\n');
-	print(sc_dict);
+	if(!silent_mode)
+	{
+		print(sc_dict);
+	}
 	scan_output := [];
 	scan_string := generate_scan_string(sc_dict);
 	for( lines in test_file)
 	{
-		print("line :" + lines + " \n");
+		if(!silent_mode)
+		{
+			print("line :" + lines + " \n");
+		}
 
 	 	execute(trim(scan_string));
 		// LINEWISE OUTPUT
 	 	// print(scan_output);
 	 	// scan_output := [];
  	}
- 	print(scan_output);
+ 	if(!silent_mode)
+ 		{
+ 			print(scan_output);
+ 		}
  	return [scan_output, parser_part_string];
 };
 
 test_parser_gen := procedure()
 {
+	silent_mode := 1 == 1;
 	load("..\\parser_test\\grammar_parser_v2.stlx");
 	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	print(scan_output);
 	parser_part_string := trim(parser_part_string);
-	print(parser_part_string);	
+	if(!silent_mode)
+		{
+			print(parser_part_string);	
+		}
 	// load("..\\parser_test\\lr-parser-generator.stlx");
 	testFromString(parser_part_string);
 	// tl := tokenizeString(parser_part_string);
@@ -157,5 +180,6 @@ test_params := procedure(){
 return test_scanner_generator_scan("test_scanner.txt", "test_expression_single_line.txt");
 };
 // test_params();
-
-test_parser_gen();
+silent_mode := 1 == 1;
+// print(silent_mode);
+ test_parser_gen();
