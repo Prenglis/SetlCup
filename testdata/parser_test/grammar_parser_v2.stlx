@@ -214,6 +214,10 @@ class markedRule(variable, alpha, beta, followSet) {
     toRule := procedure() {
         return grammarRule(mVariable, mAlpha + mBeta);
     };
+    toParserRule := procedure(){
+
+        return Rule(mVariable, extractArgList(mAlpha + mBeta));
+    };
     f_str := procedure() {
         rule :=  mVariable + " ->" + list2str(mAlpha) + " (*)" + list2str(mBeta) + ": {";
         n := 1;
@@ -250,6 +254,15 @@ class coreRule(mr) {
     }
 }
 
+// class parserRule(variable, gamma){
+//     this.mVariable := variable;
+//     this.mGamma    := gamma;
+//     f_str := procedure() {
+//         rule   := Rule(mVariable, extractArgList(mGamma));
+//         return rule;
+//     };
+// }
+
 /* This class represents a grammar rule. */
 class grammarRule(variable, gamma) {
     this.mVariable := variable;
@@ -282,11 +295,13 @@ class grammar(rules, variables, start) {
   static {
     assignRuleNames := procedure() {
         counter := 0;
+        print("rulesMap := {};");
         for ([head, body] in mRules) {
         rule                  := Rule(head, extractArgList(body));
             ruleName              := "r" + counter;
             this.mRuleNames[rule] := ruleName;
             print("$ruleName$ := $rule$;");
+            print("rulesMap[\"$ruleName$\"] := $rule$;");
             counter += 1;
         }
         print("\n");
@@ -421,12 +436,30 @@ class grammar(rules, variables, start) {
             // compute reduce actions
             for (mr in state | mr.isComplete()) {
                 for (t in mr.mFollowSet) {
-                    t := escapeDollar2(t);
-                    ruleName := mRuleNames[mr.toRule()];
+                    t := escapeDollar2(t);                    
+                    // print("mRuleNames: $this.mRuleNames$");
+                    // print("mr: $mr$");
+                    // print("mr.toParserRule(): $mr.toParserRule()$");
+                    parserRuleString := mr.toParserRule();
+                    ruleName := this.mRuleNames[parserRuleString];
+                    // print("parserRuleString == Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"]) : $parserRuleString$ == $Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"])$ : " + parserRuleString ==Rule("fact", ["LPAREN", "expr", "RPAREN"]));
+                    // print("this.mRuleNames[Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"])] = "+ this.mRuleNames[Rule("fact", ["LPAREN", "expr", "RPAREN"])]);
+                    // print("this.mRuleNames[mr.toParserRule()] := this.mRuleNames[$parserRuleString$]");
+                    // print("mRuleName: $ruleName$");
                     action1  := actionTable[t];
-                    action2  := Reduce(mr.toRule() + "");
+                    // action2  := Reduce(mr.toRule() + "");
+                    action2 := Reduce(ruleName);
                     if (action1 == om) {
+                        // print("args(parserRuleString) : $args(parserRuleString)$");
+                        // print("[\"S\", [Var(mStart)]] : $[\"S\", [mStart]]$");
+                        if(args(parserRuleString) == ["S", [mStart]])
+                        {
+                            action2 := Accept();
+                        }
                         actionTable[t] := action2;
+                        // print("mSTart: $mStart$");
+                        // print("mRules: $mRules$");
+
                         print("actionTable[\"$stateName$\", $t$] := $action2$;");
                     } else if (action1 != action2) {
                         this.mConflicts := true;
@@ -473,6 +506,8 @@ class grammar(rules, variables, start) {
         }
         return s;
     };
+  }  
+}
     extractArgList := procedure(l) {
         return [extractArg(t) : t in l];
     };
@@ -482,8 +517,6 @@ class grammar(rules, variables, start) {
             case Token(t) : return t;
         }
     };
-  }  
-}
 
 testFromString := procedure(grammar_string){
     [rules, variables, start] := readGrammarFromString(grammar_string);

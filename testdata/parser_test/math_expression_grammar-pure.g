@@ -35,7 +35,7 @@ grammar ::= expr_list
 expr_list ::= expr_list expr_part 
            |  expr_part
            ;
-expr_part ::= expr SEMI 
+expr_part ::= expr SEMICOLON 
            ;
 expr ::= expr PLUS   prod 
       |  expr MINUS  prod 
@@ -47,7 +47,7 @@ prod ::= prod TIMES  fact
       |  fact               
       ;
 fact ::= LPAREN expr RPAREN  
-      |  NUMBER             
+      |  INTEGER             
       ;
 
 
