@@ -21,28 +21,31 @@ TIMES := \* ;
 MINUS   := \- ;
 DIVIDE   := \\ ;
 INTEGER     := 0|[1-9][0-9]* ;
-WHITESPACE := [ \t\v\n\r] ;
+NEWLINE := \n ;
+WHITESPACE := [ \t\v\n\r\s] ;
+MOD := \%;
 PLUS  := \+ ;
-EXCEPTION := [^] ;
+LPAREN := \( ;
+RPAREN := \) ;
 
 %%%
 
 expr_list ::= expr_list expr_part 
            |  expr_part
            ;
-expr_part ::= expr:e {: System.out.println("result = " + e); :} SEMI 
+expr_part ::= expr:e SEMI {: print("result = $e$"); :}
            ;
-expr ::= expr:e PLUS   prod:p {: RESULT = e + p; :} 
-      |  expr:e MINUS  prod:p {: RESULT = e - p; :} 
-      |  prod:p               {: RESULT = p;     :}
+expr ::= expr:e PLUS   prod:p {: RESULT := e + p; :} 
+      |  expr:e MINUS  prod:p {: RESULT := e - p; :} 
+      |  prod:p               {: RESULT := p;     :}
       ;
-prod ::= prod:p TIMES  fact:f {: RESULT = p * f; :}
-      |  prod:p DIVIDE fact:f {: RESULT = p / f; :} 
-      |  prod:p MOD    fact:f {: RESULT = p % f; :} 
-      |  fact:f               {: RESULT = f;     :}
+prod ::= prod:p TIMES  fact:f {: RESULT := p * f; :}
+      |  prod:p DIVIDE fact:f {: RESULT := p / f; :} 
+      |  prod:p MOD    fact:f {: RESULT := p % f; :} 
+      |  fact:f               {: RESULT := f;     :}
       ;
-fact ::= LPAREN expr:e RPAREN {: RESULT = e;   :} 
-      |  NUMBER:n             {: RESULT = n;   :} 
+fact ::= LPAREN expr:e RPAREN {: RESULT := e;   :} 
+      |  INTEGER:n             {: RESULT := n;   :} 
       ;
 
 

@@ -1,0 +1,10 @@
+x := Var("X", om);
+
+match(x)
+{
+	case Var(v1, v2):
+		if(v2 != {})
+			{
+					print("v1 : $v1$, v2: $v2$, v2==om : $v2 == om$, #v1 : $#v1$");
+				}
+}

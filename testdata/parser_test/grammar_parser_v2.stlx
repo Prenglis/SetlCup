@@ -1,20 +1,3 @@
-// The parser implemented in the function parseExpr parses an arithmetic 
-// expression according to the following EBNF grammar.
-// 
-// grammar : rule+ 
-//         ;
-// 
-// rule : VAR ':' body ('|' body )* ';' 
-//      ;
-//  
-// body : item*
-//      ; 
-// 
-// item : VAR     
-//      | TOKEN   
-//      | LITERAL 
-//      ;
-
 // Read a grammar from the file f, parse the grammar, and return it.
 readGrammar := procedure(f) {
     gs := join(readFile(f), "\n");
@@ -30,7 +13,6 @@ readGrammarFromString := procedure(grammar_string){
     return parseGrammar(tl);
 };
 // This procedure takes a token list tl and tries to interpret this list
-// as an arithmetic expression.
 parseGrammar := procedure(tl) {
     [rule, rl] := parseRule(tl);
     ruleList := [ rule ];
@@ -47,7 +29,7 @@ collectSimpleRules := procedure(ruleList) {
     for ([v, bodyList] in ruleList) {
         variables += { v };
         for (body in bodyList) {
-            rules += [ [v, body] ];
+            rules += [ [v, body[..-2], body[-1]] ];
         }
     }
     start := rules[1][1];
@@ -61,7 +43,9 @@ parseRule := procedure(tl) {
     [body, rl] := parseBody(rl[2..]);
     bodyList := [ body ];
     while (#rl >= 1 && rl[1] == "|") {
-        [body, rl] := parseBody(rl[2..]);
+        [body, rl] := parseBody(rl[2..]);        
+        // user_code := body[-1];
+        // body := body[1..-2];
         bodyList += [ body ];
     }
     assert(rl[1] == ";", "parseRule($tl$), rl = $rl$");
@@ -74,13 +58,18 @@ parseBody := procedure(tl) {
         [item, tl] := parseItem(tl);
         itemList += [ item ];
     }
+    if(fct(itemList[-1]) != "UserCode")
+    {
+        itemList += [ UserCode("") ];
+    }
     return [itemList, tl];
 };
 
 parseItem := procedure(tl) {
     match (tl) {
-        case [ Var(v  ) | rl] : return [ Var(v),     rl];
+        case [ Var(var_name, var_id) | rl] : return [ Var(var_name, var_id),     rl];
         case [ Token(t) | rl] : return [ Token(t),   rl];
+        case [ UserCode(u) | rl]: return [UserCode(u), rl];
         default : abort("parse error in parseItem($tl$)");
     }
 };
@@ -90,13 +79,30 @@ parseItem := procedure(tl) {
 // and the parentheses "(" and ")".
 tokenizeString := procedure(s) {
     tokenList := [];
+    state := "INITIAL";
     scan (s) {
-        regex '::=|\||;'              as [ o ]: tokenList += [ o        ];
-        regex '[a-z][a-zA-Z_0-9]*' as [ v ]: tokenList += [ Var(v)   ];
-        regex '[A-Z][A-Z_0-9]*'    as [ t ]: tokenList += [ Token(t) ];
-        regex '''[^'']*'''         as [ l ]: tokenList += [ Token(l) ];
-        regex '[ \t\v\n\r]+'               : // skip
-        regex '.|\n'               as [ c ]: abort("tokenizeString: $c$");
+        regex '::=|\||;'              as [ o ]: 
+            tokenList += [ o        ];
+        regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ]: 
+            [var_name, var_id] := split(v, ":"); 
+            tokenList += [ Var(var_name, var_id) ];
+        regex '[a-z][a-zA-Z_0-9]*' as [ var_name ]: 
+            var_id := null; 
+            tokenList += [ Var(var_name, var_id) ];
+        regex '[A-Z][A-Z_0-9]*'    as [ t ]: 
+            tokenList += [ Token(t) ];
+        regex '\{:'  : 
+            state := "CODESEG";
+        regex '.*:\}' as [ user_code ] | state == "CODESEG" : 
+            state := "INITIAL"; 
+            user_code := replaceFirst(user_code, "[\\s]*:}\$", ""); 
+            tokenList += [ UserCode(user_code)]; 
+        regex '''[^'']*'''         as [ l ]: 
+            tokenList += [ Token(l) ];
+        regex '[ \t\v\n\r]+'               : 
+            // skip
+        regex '.|\n'               as [ c ]: 
+            abort("tokenizeString: $c$");
     }
     return tokenList;
 };
@@ -133,8 +139,17 @@ itemList2String := procedure(l) {
 
 item2String := procedure(i) {
     match (i) {
-        case Var(v):   return v;
+        case Var(var_name, var_id):   
+            if(var_id != null)
+                {
+                    return var_name + ":" + var_id;
+                }
+            else
+            {
+                return var_name;
+            }
         case Token(t): return t;
+        case UserCode(u): return "{: " + u + " :}";
         default:       abort("item2String($i$)");
     }
 };
@@ -156,10 +171,20 @@ testParser := procedure(f) {
  */
 list2str := procedure(l) {
     result := "";
+    print("LIST : $l$");
     for (x in l) {
         match (x) {
-            case Var(v)   : result += " " + v;
+            case Var(var_name, var_id): 
+                if(var_id != om) 
+                {
+                    result += " " + var_name + ":" + var_id;
+                }
+                else
+                {
+                     result += " " + var_name;
+                }
             case Token(t) : result += " " + t;
+            case UserCode(u): result += "{: " + u + " :}";            
         }
     }
     return result;
@@ -183,20 +208,21 @@ escapeDollar2 := procedure(t) {
 };
 
 /* The objects of this class represent extended marked rules of the form
-   variable -> alpha * beta : L.
+   variable -> alpha * beta : L user_code.
 */
-class markedRule(variable, alpha, beta, followSet) {
+class markedRule(variable, alpha, beta, followSet, user_code) {
     this.mVariable  := variable;
     this.mAlpha     := alpha;
     this.mBeta      := beta;
     this.mFollowSet := followSet;
+    this.mUser_Code := user_code;
 
     // check whether the * is at the end of of the rule
     isComplete := procedure() { return mBeta == []; };
     nextVar    := procedure() {
         if (#mBeta > 0) {
             match (mBeta[1]) {
-                case Var(v): return v;
+                case Var(var_name, var_id): return var_name;
             }
         }
     };
@@ -208,33 +234,37 @@ class markedRule(variable, alpha, beta, followSet) {
         return [];
     };
     moveDot := procedure() {
-        return markedRule(mVariable, mAlpha + [mBeta[1]], mBeta[2..], mFollowSet);
+        return markedRule(mVariable, mAlpha + [mBeta[1]], mBeta[2..], mFollowSet, mUser_Code);
     };  
     // turn a marked rule into a grammar rule
     toRule := procedure() {
-        return grammarRule(mVariable, mAlpha + mBeta);
+        return grammarRule(mVariable, mAlpha + mBeta, mUser_Code);
     };
     toParserRule := procedure(){
 
-        return Rule(mVariable, extractArgList(mAlpha + mBeta));
+        return Rule(mVariable, extractArgList(mAlpha + mBeta), mUser_Code);
     };
     f_str := procedure() {
-        rule :=  mVariable + " ->" + list2str(mAlpha) + " (*)" + list2str(mBeta) + ": {";
-        n := 1;
-        for (t in mFollowSet) {
-            rule += escapeDollar(t);
-            if (n < #mFollowSet) {
-                rule += ", ";
-            }
-        }
-        rule += "}";
+                
+        // rule :=  mVariable ;
+        // rule += " ->" ;
+        rule += list2str(mAlpha) + " (*)";
+        // rule +=  list2str(mBeta) + ": {";
+        // n := 1;
+        // for (t in mFollowSet) {
+        //     rule += escapeDollar(t);
+        //     if (n < #mFollowSet) {
+        //         rule += ", ";
+        //     }
+        // }
+        // rule += "}";
         return rule;
     };
 
   static {
     // take a core rule and attach a follow set
     createRule := procedure(cr, followSet) {
-        return markedRule(cr.mVariable, cr.mAlpha, cr.mBeta, followSet);
+        return markedRule(cr.mVariable, cr.mAlpha, cr.mBeta, followSet, cr.user_code);
     };  
   }
 }
@@ -244,12 +274,14 @@ class coreRule(mr) {
     this.mVariable  := mr.mVariable;
     this.mAlpha     := mr.mAlpha;
     this.mBeta      := mr.mBeta;
+    this.mUser_Code := mr.mUser_Code;
 
     static {
         equals := procedure(that) {
             return this.mVariable == that.mVariable &&
                    this.mAlpha    == that.mAlpha    &&
-                   this.mBeta     == that.mBeta;
+                   this.mBeta     == that.mBeta     &&
+                   this.mUser_Code == that.mUser_Code;
         };
     }
 }
@@ -264,9 +296,10 @@ class coreRule(mr) {
 // }
 
 /* This class represents a grammar rule. */
-class grammarRule(variable, gamma) {
+class grammarRule(variable, gamma, user_code) {
     this.mVariable := variable;
     this.mGamma    := gamma;
+    this.mUser_Code := user_code;
     f_str := procedure() {
         return mVariable + " ->" + list2str(mGamma);
     };
@@ -282,7 +315,7 @@ class grammar(rules, variables, start) {
     this.mRules       := rules;
     this.mVariables   := variables;
     this.mStart       := start;
-    this.mRules       += { ["S", [Var(mStart)]] }; // augment grammar
+    this.mRules       += { ["S", [Var(mStart, null)], UserCode("")] }; // augment grammar
     this.mVariables   += { "S" };
     this.mFirst       := initializeMap(mVariables);
     this.mFollow      := initializeMap(mVariables);
@@ -296,8 +329,9 @@ class grammar(rules, variables, start) {
     assignRuleNames := procedure() {
         counter := 0;
         print("rulesMap := {};");
-        for ([head, body] in mRules) {
-        rule                  := Rule(head, extractArgList(body));
+        for ([head, body, user_code] in mRules) {
+        [args, user_code] := extractArgList(body);
+        rule                  := Rule(head, args, user_code);
             ruleName              := "r" + counter;
             this.mRuleNames[rule] := ruleName;
             print("$ruleName$ := $rule$;");
@@ -317,19 +351,19 @@ class grammar(rules, variables, start) {
     };
     // collect all tokens  
     computeTokens := procedure() {
-        for ([_, body] in mRules, x in body) {
+        for ([_, body, _] in mRules, x in body) {
             match (x) {
                 case Token(t): this.mTokens += { x };
             }
         }
     };
     startRule := procedure() {
-        return markedRule("S", [], [ Var(mStart) ], { '$' });
+        return markedRule("S", [], [ Var(mStart, null) ], { '$' }, UserCode(""));
     };
     firstList := procedure(alpha) {
         match (alpha) {
              case []:               return { "" };
-             case [ Var(v)   | r ]: return epsAppend(mFirst[v], firstList(r));
+             case [ Var(var_name, var_id)   | r ]: return epsAppend(mFirst[var_name], firstList(r));
              case [ Token(t) | r ]: return { t };
         }
     };
@@ -337,7 +371,7 @@ class grammar(rules, variables, start) {
         change := true;
         while (change) {
             change := false;    
-            for ([a, body] in mRules) {
+            for ([a, body, _] in mRules) {
                 firstBody := firstList(body);
                 if (!(firstBody <= mFirst[a])) { 
                     change := true;
@@ -354,9 +388,9 @@ class grammar(rules, variables, start) {
             for (mr in newRules) {
                 c := mr.nextVar();
                 if (c == om) { continue; }
-                for ([head, alpha] in mRules | c == head) {
+                for ([head, alpha, code_section] in mRules | c == head) {
                     followSet := epsAppend(firstList(mr.restAfterVariable()), mr.mFollowSet);
-                    moreRules += { markedRule(head, [], alpha, followSet) };
+                    moreRules += { markedRule(head, [], alpha, followSet, code_section) };
                 }
             }
             if (moreRules <= allRules) {
@@ -477,7 +511,7 @@ class grammar(rules, variables, start) {
     computeGotoTable := procedure() {
         print("gotoTable := {};");
         for (state in mStates, var in mVariables) {
-            newState := goto(state, Var(var));
+            newState := goto(state, Var(var_name, var_id));
             if (newState != {}) {
                 stateName := mStateNames[state];
                 newName   := mStateNames[newState];
@@ -509,12 +543,24 @@ class grammar(rules, variables, start) {
   }  
 }
     extractArgList := procedure(l) {
-        return [extractArg(t) : t in l];
+        args := [extractArg(t) : t in l];
+        body := args[-1];
+        return [args[..-2], args[-1]];
     };
     extractArg := procedure(x) {
         match (x) {
-            case Var(v)   : return v;
+            case Var(var_name, var_id)   : 
+                if(var_id!= null)
+                {
+                    return var_name + ":" + var_id;
+                }
+                else
+                {
+                    return var_name;
+                }
+                    
             case Token(t) : return t;
+            case UserCode(u) : return "{:" + user_code + ":}";
         }
     };
 
