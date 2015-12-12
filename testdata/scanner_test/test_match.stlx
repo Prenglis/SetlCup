@@ -3,33 +3,69 @@ s:= "expr_part ::= expr:e SEMI:s {: print(result = $e$); :} ;";
 
 state := "INITIAL";
 tokenList := [];
- scan (s){
+tempVar := Var("","");
+tempToken := Token("","");
+ scan (s) using map{
      regex '::=|\||;'              as [ o ] | state == "INITIAL": 
             tokenList += [ o        ];
-        regex '[a-z][a-zA-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?' as [ v ] | state == "INITIAL": 
-            print("v : $v$");
-            if(matches(v, ".*:.+"))
+        regex '[a-z][a-zA-Z_0-9]*' as [ v ] | state != "CODESEG": 
+            // print("v : $v$");
+            // if(matches(v, ".*:.+"))
+            // {
+            //    [var_name, var_id] := split(v, ":"); 
+            // }
+            // else
+            // {
+            //      [var_name, var_id] := [v, ""];
+            // }
+            // tokenList += [ Var(var_name, var_id) ] ;
+            if(state == "INITIAL")
             {
-               [var_name, var_id] := split(v, ":"); 
+              state := "VARNAMEREAD";
+              tempVar := Var(v, "");
             }
             else
             {
-                 [var_name, var_id] := [v, ""];
+              tokenList += [ tempVar ];
+              state := "INITIAL";
             }
-            tokenList += [ Var(var_name, var_id) ] ;
-          // regex '[a-z][a-zA-Z_0-9]*' as [ var_name ] | state == "INITIAL": 
+              // regex '[a-z][a-zA-Z_0-9]*' as [ var_name ] | state == "INITIAL": 
               // var_id := ""; 
               // tokenList += [ Var(var_name, var_id) ];
-        regex '[A-Z][A-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?'    as [ t ] | state == "INITIAL": 
-            if(matches(t, ".*:.+"))
+        regex ':[a-z][a-zA-Z_0-9]*' as [id] | state == "VARNAMEREAD":
+              if(state == "VARNAMEREAD")
+              {
+                tempVar := Var(args(tempVar)[1], id);
+                tokenList += [ tempVar ];
+              }
+
+              state := "INITIAL";
+
+         regex ':[a-z][a-zA-Z_0-9]*' as [id] | state == "TOKENNAMEREAD":
+
+                tempToken := Token(args(tempToken)[1], id);
+                tokenList += [ tempToken ];
+                 state := "INITIAL";
+        regex '[A-Z][A-Z_0-9]*'    as [ t ] | state != "CODESEG": 
+            // if(matches(t, ".*:.+"))
+            // {
+            //      [token_name, token_id] := split(t, ":");
+            // }
+            // else
+            // {
+            //      [token_name, token_id] := [t, ""];
+            // }            
+            // tokenList += [ Token(token_name, token_id) ];
+            if(state == "INITIAL")
             {
-                 [token_name, token_id] := split(t, ":");
+              state := "TOKENNAMEREAD";
+              tempToken := Token(v, "");
             }
             else
             {
-                 [token_name, token_id] := [t, ""];
+              tokenList += [ tempToken ];
+              state := "INITIAL";
             }
-            tokenList += [ Token(token_name, token_id) ];
         regex '\{:'  | state == "INITIAL": 
             state := "CODESEG";
         regex '.*:\}' as [ user_code ] | state == "CODESEG" : 

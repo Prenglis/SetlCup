@@ -26,6 +26,7 @@ collectSimpleRules := procedure(ruleList) {
     rules     := [];
     variables := {};
     for ([v, bodyList] in ruleList) {
+        // print("v: $v$");
         variables += { v };
         for (body in bodyList) {
             rules += [ [v, body[..-2], body[-1]] ];
@@ -36,7 +37,8 @@ collectSimpleRules := procedure(ruleList) {
 };
 
 parseRule := procedure(tl) {
-    [head, rl] := [args(tl[1])[1], tl[2..]];
+    // print("tl : $tl$");
+    [head, rl] := [tl[1], tl[2..]];
     assert(fct(tl[1]) == "Var", "parseRule($tl$)");
     assert(rl[1] == "::=", "parseRule($tl$)");
     [body, rl] := parseBody(rl[2..]);
@@ -82,29 +84,24 @@ tokenizeString := procedure(s) {
     scan (s){
         regex '::=|\||;'              as [ o ] | state == "INITIAL": 
             tokenList += [ o        ];
-        regex '[a-z][a-zA-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?' as [ v ] | state == "INITIAL": 
-            print("v : $v$");
-            if(matches(v, ".*:.+"))
-            {
-               [var_name, var_id] := split(v, ":"); 
-            }
-            else
-            {
-                 [var_name, var_id] := [v, ""];
-            }
-            tokenList += [ Var(var_name, var_id) ] ;
-          // regex '[a-z][a-zA-Z_0-9]*' as [ var_name ] | state == "INITIAL": 
-              // var_id := ""; 
-              // tokenList += [ Var(var_name, var_id) ];
-        regex '[A-Z][A-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?'    as [ t ] | state == "INITIAL": 
-            if(matches(t, ".*:.+"))
-            {
+        regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ]: 
+            [var_name, var_id] := split(v, ":"); 
+            tokenList += [ Var(var_name, var_id) ];
+        regex '[a-z][a-zA-Z_0-9]*' as [ var_name ]: 
+            var_id := ""; 
+            tokenList += [ Var(var_name, var_id) ];
+        regex '[A-Z][A-Z_0-9]*'    as [ t ]: 
+             [token_name, token_id] := [t, ""];
+            tokenList +=  [ Token(token_name, token_id) ];
+        regex '[A-Z][A-Z_0-9]*:[a-z][a-zA-Z_0-9]*'  as [ t ] | state == "INITIAL": 
+            // if(matches(t, ".*:.+"))
+            // {
                  [token_name, token_id] := split(t, ":");
-            }
-            else
-            {
-                 [token_name, token_id] := [t, ""];
-            }
+            // }
+            // else
+            // {
+                 // [token_name, token_id] := [t, ""];
+            // }
             tokenList += [ Token(token_name, token_id) ];
         regex '\{:'  | state == "INITIAL": 
             state := "CODESEG";
@@ -254,7 +251,7 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
     nextVar    := procedure() {
         if (#mBeta > 0) {
             match (mBeta[1]) {
-                case Var(var_name, var_id): return var_name;
+                case Var(var_name, var_id): return Var(var_name, "");
             }
         }
     };
@@ -347,8 +344,8 @@ class grammar(rules, variables, start) {
     this.mRules       := rules;
     this.mVariables   := variables;
     this.mStart       := start;
-    this.mRules       += { ["S", [Var(mStart, "")], UserCode("")] }; // augment grammar
-    this.mVariables   += { "S" };
+    this.mRules       += { [Var("S",""), [mStart], UserCode("")] }; // augment grammar
+    this.mVariables   += { Var("S", "") };
     this.mFirst       := initializeMap(mVariables);
     this.mFollow      := initializeMap(mVariables);
     this.mTokens      := {};
@@ -362,7 +359,8 @@ class grammar(rules, variables, start) {
         counter := 0;
         print("rulesMap := {};");
         for ([head, body, user_code] in mRules) {
-        [args, user_code] := extractArgList(body);
+            print("mRules : $mRules$");
+        [args, _] := extractArgList(body);
         rule                  := Rule(head, args, user_code);
             ruleName              := "r" + counter;
             this.mRuleNames[rule] := ruleName;
@@ -390,19 +388,23 @@ class grammar(rules, variables, start) {
         }
     };
     startRule := procedure() {
-        return markedRule("S", [], [ Var(mStart, "") ], { '$' }, UserCode(""));
+        return markedRule("S", [], [ mStart ], { '$' }, UserCode(""));
     };
     firstList := procedure(alpha) {
+        // print("alpha : $alpha$");
+        // print("mFirst : $mFirst$");
         match (alpha) {
              case []:               return { "" };
-             case [ Var(var_name, var_id)   | r ]: return epsAppend(mFirst[var_name], firstList(r));
+             case [ Var(var_name, var_id)   | r ]: return epsAppend(mFirst[Var(var_name, "")], firstList(r));
              case [ Token(token_name, token_id) | r ]: return { token_name };
         }
     };
     computeFirst := procedure() {
         change := true;
+        // print("mRules: $mRules$");
         while (change) {
             change := false;    
+
             for ([a, body, _] in mRules) {
                 firstBody := firstList(body);
                 if (!(firstBody <= mFirst[a])) { 
@@ -415,17 +417,23 @@ class grammar(rules, variables, start) {
     epsClosure := procedure(markedRules) {
         allRules := markedRules;
         newRules := markedRules;
+        // print("markedRules : $markedRules$");
         while (true) {
             moreRules := {};
             for (mr in newRules) {
                 c := mr.nextVar();
+                // print("c := mr.nextVar() = $mr.nextVar()$");
+                // print("mRules: $mRules$");
                 if (c == om) { continue; }
                 for ([head, alpha, code_section] in mRules | c == head) {
                     followSet := epsAppend(firstList(mr.restAfterVariable()), mr.mFollowSet);
+                    // print("followSet: $followSet$");
                     moreRules += { markedRule(head, [], alpha, followSet, code_section) };
                 }
             }
+            // print("moreRules : $moreRules$");
             if (moreRules <= allRules) {
+                
                 return combineRules(allRules);
             }
             newRules := moreRules - allRules;
@@ -438,21 +446,47 @@ class grammar(rules, variables, start) {
         combine := procedure(rules, cr) {
             return +/ { mr.mFollowSet : mr in rules | cr == coreRule(mr) };
         };
-        return { markedRule.createRule(cr, combine(markedRules, cr)) : cr in cores };
+        combinedRules := { markedRule.createRule(cr, combine(markedRules, cr)) : cr in cores };
+        // print ("combinedRules : $combinedRules$");
+        return combinedRules;
     };
     goto := procedure(markedRules, x) {
         result := {};
-        for (mr in markedRules | mr.symbolAfterDot() == x) {
-            result += { mr.moveDot() };
+        for (mr in markedRules) {
+        // for (mr in markedRules | mr.symbolAfterDot() == x) {
+             // print("mr.symbolAfterDot() : $mr.symbolAfterDot()$ , x : $x$");
+             tempSymbol := mr.symbolAfterDot();
+             if(tempSymbol != om)
+             {
+                 if(fct(tempSymbol) == "Var" || fct(tempSymbol) == "TOKEN")
+                 {
+                    if(args(tempSymbol)[1] == args(x)[1])
+                    {
+                        result += { mr.moveDot() };
+                    }
+                }
+                else
+                {
+                    if(tempSymbol == x)
+                    {
+                        result += { mr.moveDot() };
+                    }
+                }
+            }
         }
-        return epsClosure(result);
+        // print("result: $result$");
+        epsClosureResult := epsClosure(result);
+        // print("epsClosureResult : $epsClosureResult$");
+        return epsClosureResult;
     };
     computeAllStates := procedure() {
         this.mStates := newStates := { epsClosure({ startRule() }) };
+        // print("mStates : $mStates$");
         while (true) {
             moreStates := {};
             for (ruleSet in newStates) {
                 for (mr in ruleSet | !mr.isComplete()) {
+                    // print(" mr : $mr$");
                     x := mr.symbolAfterDot();
                     moreStates += { goto(ruleSet, x) };
                 }
@@ -467,7 +501,7 @@ class grammar(rules, variables, start) {
         counter := 0;
         for (state in mStates) {
             this.mStateNames[state] := "s" + counter;
-            print("stateTable[\"s$counter$\"] := $state2String(state)$;");
+            print("stateTable[\"s$counter$\"] := '$state2String(state)$';");
             counter += 1;
         }
         print("");
@@ -495,6 +529,10 @@ class grammar(rules, variables, start) {
                 if (newState != {}) {
                     newName := mStateNames[newState];
                     t       := escapeDollar2(extractArg(token));
+                    if(matches(t, ".*:[a-z][a-zA-Z_0-9]*"))
+                    {
+                        t       := split(t, ":")[1] + "\"";
+                    }
                     actionTable[t] := Shift(newName);
                     print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
                 }
@@ -543,12 +581,15 @@ class grammar(rules, variables, start) {
     };
     computeGotoTable := procedure() {
         print("gotoTable := {};");
+        // print("mstates : $mStates$");
+        // print("mVariables : $mVariables$");
         for (state in mStates, var in mVariables) {
-            newState := goto(state, Var(var_name, var_id));
+            newState := goto(state, var);
+            // print("newState : $newState$");
             if (newState != {}) {
                 stateName := mStateNames[state];
                 newName   := mStateNames[newState];
-                print("gotoTable[\"$stateName$\", \"$var$\"] := \"$newName$\";");
+                print("gotoTable[\"$stateName$\", '$var$'] := \"$newName$\";");
             }
         }
     };
