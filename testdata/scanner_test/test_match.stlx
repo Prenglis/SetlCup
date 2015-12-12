@@ -1,10 +1,53 @@
-x := Var("X", om);
 
-match(x)
-{
-	case Var(v1, v2):
-		if(v2 != {})
-			{
-					print("v1 : $v1$, v2: $v2$, v2==om : $v2 == om$, #v1 : $#v1$");
-				}
-}
+s:= "expr_part ::= expr:e SEMI:s {: print(result = $e$); :} ;";
+
+state := "INITIAL";
+tokenList := [];
+ scan (s){
+     regex '::=|\||;'              as [ o ] | state == "INITIAL": 
+            tokenList += [ o        ];
+        regex '[a-z][a-zA-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?' as [ v ] | state == "INITIAL": 
+            print("v : $v$");
+            if(matches(v, ".*:.+"))
+            {
+               [var_name, var_id] := split(v, ":"); 
+            }
+            else
+            {
+                 [var_name, var_id] := [v, ""];
+            }
+            tokenList += [ Var(var_name, var_id) ] ;
+          // regex '[a-z][a-zA-Z_0-9]*' as [ var_name ] | state == "INITIAL": 
+              // var_id := ""; 
+              // tokenList += [ Var(var_name, var_id) ];
+        regex '[A-Z][A-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?'    as [ t ] | state == "INITIAL": 
+            if(matches(t, ".*:.+"))
+            {
+                 [token_name, token_id] := split(t, ":");
+            }
+            else
+            {
+                 [token_name, token_id] := [t, ""];
+            }
+            tokenList += [ Token(token_name, token_id) ];
+        regex '\{:'  | state == "INITIAL": 
+            state := "CODESEG";
+        regex '.*:\}' as [ user_code ] | state == "CODESEG" : 
+            state := "INITIAL"; 
+            user_code := replaceFirst(user_code, "[\\s]*:}\$", ""); 
+            tokenList += [ UserCode(user_code)]; 
+        regex '''[^'']*'''         as [ l ] | state == "INITIAL": 
+            tokenList += [ Token(l, "") ];
+        regex '[ \t\v\n\r]+'               | state == "INITIAL": 
+            // skip
+        regex '.|\n'               as [ c ] | state == "INITIAL": 
+           print("tokenList =$tokenList$");
+           print("ERROR : tokenizeString: $c$");
+        }
+
+// m := matches("expr:e", '[a-z][a-zA-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?');
+
+// print ("m : $m$");
+
+// m := matches("expr_list ", '[a-z][a-zA-Z_0-9]*(:[a-z][a-zA-Z_0-9]*)?');
+// print ("m : $m$");

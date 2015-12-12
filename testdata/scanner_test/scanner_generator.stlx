@@ -149,7 +149,8 @@ test_parser_gen := procedure()
 {
 	silent_mode := 1 == 1;
 	load("..\\parser_test\\grammar_parser_v2.stlx");
-	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	// [scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar.g", "..\\parser_test\\math_expression_input.txt");	
 	scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE"];
 	print("scan_output := $scan_output$;");
 	parser_part_string := trim(parser_part_string);
@@ -172,6 +173,7 @@ test_parser_gen := procedure()
 get_tokenized_parser := procedure()
 {
 	[scan_output, parser_part_string] := test_scanner_generator_scan("..\\parser_test\\math_expression_grammar-pure.g", "..\\parser_test\\math_expression_input.txt");	
+	
 	print(parser_part_string);
 	load("..\\parser_test\\grammar_parser_v2.stlx");
 	return tokenizeString(parser_part_string);
