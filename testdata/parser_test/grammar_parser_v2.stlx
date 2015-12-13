@@ -61,7 +61,7 @@ parseBody := procedure(tl) {
     }
     if(fct(itemList[-1]) != "UserCode")
     {
-        itemList += [ UserCode("") ];
+        itemList += [ UserCode('') ];
     }
     return [itemList, tl];
 };
@@ -108,7 +108,8 @@ tokenizeString := procedure(s) {
         regex '.*:\}' as [ user_code ] | state == "CODESEG" : 
             state := "INITIAL"; 
             user_code := replaceFirst(user_code, "[\\s]*:}\$", ""); 
-            tokenList += [ UserCode(user_code)]; 
+            uc := "UserCode('$user_code$')";
+            tokenList += [ eval(uc)]; 
         regex '''[^'']*'''         as [ l ] | state == "INITIAL": 
             tokenList += [ Token(l, "") ];
         regex '[ \t\v\n\r]+'               | state == "INITIAL": 
@@ -227,13 +228,20 @@ escapeDollar := procedure(t) {
 };
 
 escapeDollar2 := procedure(t) {
-    if (t == '$') { 
-        return "'\$'"; 
+    match(t)
+    {
+        case Token(n, id):
+            return t;
+        default:
+            if(t == '$')
+            {
+                    return Token('\$', "");
+            }
+            else
+            {
+                 return Token(t, ""); 
+            }
     }
-    if (t[1] != "'") {
-        return '"' + t + '"'; 
-    }
-    return t;
 };
 
 /* The objects of this class represent extended marked rules of the form
@@ -245,7 +253,11 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
     this.mBeta      := beta;
     this.mFollowSet := followSet;
     this.mUser_Code := user_code;
-
+    // print("args(user_code)[1] : $args(user_code)[1]$");
+    // this.uc := args(this.mUser_Code)[1];
+    // this.mUser_Code := eval("UserCode('$this.uc$')");
+    // UserCode('$args(user_code)[1]$'));
+    // tokenList += [ eval(uc)]; 
     // check whether the * is at the end of of the rule
     isComplete := procedure() { return mBeta == []; };
     nextVar    := procedure() {
@@ -270,8 +282,12 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
         return grammarRule(mVariable, mAlpha + mBeta, mUser_Code);
     };
     toParserRule := procedure(){
-        [args, mUser_Code] := extractArgList(mAlpha + mBeta);
-        return Rule(mVariable, args, mUser_Code);
+        [rargs, user_code ] := extractArgList(mAlpha + mBeta);
+        if(this.mUser_Code == om)
+        {
+            this.mUser_Code := UserCode('');
+        }
+        return Rule(mVariable, rargs, this.mUser_Code);
     };
     f_str := procedure() {
                 
@@ -295,6 +311,10 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
     createRule := procedure(cr, followSet) {
         return markedRule(cr.mVariable, cr.mAlpha, cr.mBeta, followSet, cr.user_code);
     };  
+        //     if(args(this.mUser_Code)[1] == "")
+        // {           
+        //     this.mUser_Code := UserCode('');
+        // }
   }
 }
 
@@ -359,15 +379,26 @@ class grammar(rules, variables, start) {
         counter := 0;
         print("rulesMap := {};");
         for ([head, body, user_code] in mRules) {
-            print("mRules : $mRules$");
-        [args, _] := extractArgList(body);
-        rule                  := Rule(head, args, user_code);
+            // print("mRules : $mRules$");
+        [rargs, _] := extractArgList(body);
+        // uc_eval := "UserCode('$args(user_code)[1]$')";
+        // print("uc-eval : $uc_eval$");
+        // print("eval(uc_eval) : $eval(\"uc_eval\")$");
+        // user_code := evalTerm(parse(uc_eval));
+        // user_code := eval(uc_eval);
+        execute("user_code := UserCode(@'$args(user_code)[1]$');");
+        // print("uc : $user_code$");
+        // user_code := 
+        rule                  := Rule(head, rargs, user_code);
             ruleName              := "r" + counter;
             this.mRuleNames[rule] := ruleName;
             print("$ruleName$ := $rule$;");
             print("rulesMap[\"$ruleName$\"] := $rule$;");
+            // print("$ruleName$ := Rule($head$, $rargs$, UserCode('$args(user_code)[1]$'));");
+            // print("rulesMap[\"$ruleName$\"] := Rule($head$, $rargs$, UserCode('$args(user_code)[1]$'));");
             counter += 1;
         }
+        // print("this.mRuleNames : $this.mRuleNames$");
         print("\n");
     };
     // check, whether this grammar is an LR-grammar  
@@ -388,7 +419,7 @@ class grammar(rules, variables, start) {
         }
     };
     startRule := procedure() {
-        return markedRule("S", [], [ mStart ], { '$' }, UserCode(""));
+        return markedRule(Var("S", ""), [], [ mStart ], { '$' }, UserCode(""));
     };
     firstList := procedure(alpha) {
         // print("alpha : $alpha$");
@@ -519,6 +550,7 @@ class grammar(rules, variables, start) {
         return result;
     };
     computeActionTable := procedure() {
+        // print("mStates: $mStates$");
         print("actionTable := {};");
         for (state in mStates) {
             actionTable := {};
@@ -529,10 +561,10 @@ class grammar(rules, variables, start) {
                 if (newState != {}) {
                     newName := mStateNames[newState];
                     t       := escapeDollar2(extractArg(token));
-                    if(matches(t, ".*:[a-z][a-zA-Z_0-9]*"))
-                    {
-                        t       := split(t, ":")[1] + "\"";
-                    }
+                    // if(matches(t, ".*:[a-z][a-zA-Z_0-9]*"))
+                    // {
+                        // t       := split(t, ":")[1] + "\"";
+                    // }
                     actionTable[t] := Shift(newName);
                     print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
                 }
@@ -545,8 +577,18 @@ class grammar(rules, variables, start) {
                     // print("mr: $mr$");
                     // print("mr.toParserRule(): $mr.toParserRule()$");
                     parserRuleString := mr.toParserRule();
-                    // print("parserRuleString: $parserRuleString$");
-                    ruleName := this.mRuleNames[parserRuleString];
+                    // execute("user_code := UserCode(@'$args(args(parserRuleString)[3])[1]$');");
+                     // print("parserRuleString: $parserRuleString$");
+                     // execute("ruleName := this.mRuleNames[Rule(args(parserRuleString)[1], args(parserRuleString)[2], UserCode(@'$args(args(parserRuleString)[3])[1]$'))];");
+                    // tRule := Rule(args(parserRuleString)[1], args(parserRuleString)[2], user_code);
+                    // print("tRule : $tRule$");
+                    tRule := [x : x in domain(mRuleNames) | args(x)[1..2] == args(parserRuleString)[1..2]];
+                    assert(#tRule == 1, "Only 1 Rule with same content");
+                    tRule := arb(tRule);
+                    ruleName := this.mRuleNames[tRule];
+                    // parserRuleString := replaceFirst("$parserRuleString$", 'UserCode\(""\)', 'UserCode('')');
+                    // ruleName := this.mRuleNames[parserRuleString];
+                    // ruleName := this.mRuleNames[Rule(args(parserRuleString)[1], args(parserRuleString)[2], eval("UserCode($args(args(parserRuleString)[3])[1]$)"))];
                     // print("parserRuleString == Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"]) : $parserRuleString$ == $Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"])$ : " + parserRuleString ==Rule("fact", ["LPAREN", "expr", "RPAREN"]));
                     // print("this.mRuleNames[Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"])] = "+ this.mRuleNames[Rule("fact", ["LPAREN", "expr", "RPAREN"])]);
                     // print("this.mRuleNames[mr.toParserRule()] := this.mRuleNames[$parserRuleString$]");
@@ -557,7 +599,8 @@ class grammar(rules, variables, start) {
                     if (action1 == om) {
                         // print("args(parserRuleString) : $args(parserRuleString)$");
                         // print("[\"S\", [Var(mStart)]] : $[\"S\", [mStart]]$");
-                        if(args(parserRuleString) == ["S", [mStart]])
+                        var_name := mStart;
+                        if(args(parserRuleString)[..2] == [Var("S", ""), [var_name]])
                         {
                             action2 := Accept();
                         }
@@ -589,7 +632,7 @@ class grammar(rules, variables, start) {
             if (newState != {}) {
                 stateName := mStateNames[state];
                 newName   := mStateNames[newState];
-                print("gotoTable[\"$stateName$\", '$var$'] := \"$newName$\";");
+                print("gotoTable[\"$stateName$\", $var$] := \"$newName$\";");
             }
         }
     };
@@ -618,36 +661,44 @@ class grammar(rules, variables, start) {
 }
     extractArgList := procedure(l) {
         args := [extractArg(t) : t in l];
-        user_code := args[-1];        
-        if(!matches(user_code, '\{:.*:\}'))
+        match(args[-1])
         {
-            args[#args+1] := "{: :}";
+            case UserCode(u):
+
+            default:
+             args[#args+1] := UserCode('');
         }
+        // user_code := args[-1];        
+        // if(!matches(user_code, '\{:.*:\}'))
+        // if(fct(user_code) != "UserCode")
+        // {
+           
+        // }
         return [args[..-2], args[-1]];
     };
     extractArg := procedure(x) {
         match (x) {
             case Var(var_name, var_id)   : 
-                if(var_id!= "")
-                {
-                    return var_name + ":" + var_id;
-                }
-                else
-                {
-                    return var_name;
-                }
-                    
+                // if(var_id!= "")
+                // {
+                //     return var_name + ":" + var_id;
+                // }
+                // else
+                // {
+                //     return var_name;
+                // }
+                    return Var(var_name, var_id);
             case Token(token_name, token_id) :
-                if(token_id!= "")
-                {
-                    return token_name + ":" + token_id;
-                }
-                else
-                {
-                    return token_name;
-                }
-                    
-            case UserCode(u) : return "{:" + user_code + ":}";
+                // if(token_id!= "")
+                // {
+                //     return token_name + ":" + token_id;
+                // }
+                // else
+                // {
+                //     return token_name;
+                // }
+                    return Token(token_name, token_id);
+            case UserCode(u) : return UserCode(u);
         }
     };
 

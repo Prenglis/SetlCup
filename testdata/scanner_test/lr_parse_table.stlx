@@ -1,307 +1,294 @@
 scan_output := [["1", "INTEGER"], ["+", "PLUS"], ["2", "INTEGER"], ["*", "TIMES"], ["3", "INTEGER"], ["-", "MINUS"], ["4", "INTEGER"], [";", "SEMICOLON"], ["1", "INTEGER"], ["+", "PLUS"], ["2", "INTEGER"], ["+", "PLUS"], ["3", "INTEGER"], ["+", "PLUS"], ["4", "INTEGER"], [";", "SEMICOLON"], ["1", "INTEGER"], ["+", "PLUS"], ["(", "LPAREN"], ["2", "INTEGER"], ["-", "MINUS"], ["3", "INTEGER"], [")", "RPAREN"], ["*", "TIMES"], ["5", "INTEGER"], ["%", "MOD"], ["6", "INTEGER"], [";", "SEMICOLON"]];
 rulesMap := {};
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r0 := Rule(Var("expr_list", ""), ["expr_list", "expr_part"], UserCode(""));
-rulesMap["r0"] := Rule(Var("expr_list", ""), ["expr_list", "expr_part"], UserCode(""));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r1 := Rule(Var("expr_list", ""), ["expr_part"], UserCode(""));
-rulesMap["r1"] := Rule(Var("expr_list", ""), ["expr_part"], UserCode(""));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r2 := Rule(Var("expr_part", ""), ["expr:e", "SEMI"], UserCode(" print("result = $e$");"));
-rulesMap["r2"] := Rule(Var("expr_part", ""), ["expr:e", "SEMI"], UserCode(" print("result = $e$");"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r3 := Rule(Var("expr", ""), ["expr:e", "PLUS", "prod:p"], UserCode(" RESULT := e + p;"));
-rulesMap["r3"] := Rule(Var("expr", ""), ["expr:e", "PLUS", "prod:p"], UserCode(" RESULT := e + p;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r4 := Rule(Var("expr", ""), ["expr:e", "MINUS", "prod:p"], UserCode(" RESULT := e - p;"));
-rulesMap["r4"] := Rule(Var("expr", ""), ["expr:e", "MINUS", "prod:p"], UserCode(" RESULT := e - p;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r5 := Rule(Var("expr", ""), ["prod:p"], UserCode(" RESULT := p;"));
-rulesMap["r5"] := Rule(Var("expr", ""), ["prod:p"], UserCode(" RESULT := p;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r6 := Rule(Var("prod", ""), ["prod:p", "TIMES", "fact:f"], UserCode(" RESULT := p * f;"));
-rulesMap["r6"] := Rule(Var("prod", ""), ["prod:p", "TIMES", "fact:f"], UserCode(" RESULT := p * f;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r7 := Rule(Var("prod", ""), ["prod:p", "DIVIDE", "fact:f"], UserCode(" RESULT := p / f;"));
-rulesMap["r7"] := Rule(Var("prod", ""), ["prod:p", "DIVIDE", "fact:f"], UserCode(" RESULT := p / f;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r8 := Rule(Var("prod", ""), ["prod:p", "MOD", "fact:f"], UserCode(" RESULT := p % f;"));
-rulesMap["r8"] := Rule(Var("prod", ""), ["prod:p", "MOD", "fact:f"], UserCode(" RESULT := p % f;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r9 := Rule(Var("prod", ""), ["fact:f"], UserCode(" RESULT := f;"));
-rulesMap["r9"] := Rule(Var("prod", ""), ["fact:f"], UserCode(" RESULT := f;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r10 := Rule(Var("fact", ""), ["LPAREN", "expr:e", "RPAREN"], UserCode(" RESULT := e;"));
-rulesMap["r10"] := Rule(Var("fact", ""), ["LPAREN", "expr:e", "RPAREN"], UserCode(" RESULT := e;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r11 := Rule(Var("fact", ""), ["INTEGER:n"], UserCode(" RESULT := n;"));
-rulesMap["r11"] := Rule(Var("fact", ""), ["INTEGER:n"], UserCode(" RESULT := n;"));
-mRules : [[Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode("")], [Var("expr_list", ""), [Var("expr_part", "")], UserCode("")], [Var("expr_part", ""), [Var("expr", "e"), Token("SEMI", "")], UserCode(" print("result = $e$");")], [Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" RESULT := e + p;")], [Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" RESULT := e - p;")], [Var("expr", ""), [Var("prod", "p")], UserCode(" RESULT := p;")], [Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" RESULT := p * f;")], [Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" RESULT := p / f;")], [Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" RESULT := p % f;")], [Var("prod", ""), [Var("fact", "f")], UserCode(" RESULT := f;")], [Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" RESULT := e;")], [Var("fact", ""), [Token("INTEGER", "n")], UserCode(" RESULT := n;")], [Var("S", ""), [Var("expr_list", "")], UserCode("")]]
-r12 := Rule(Var("S", ""), ["expr_list"], UserCode(""));
-rulesMap["r12"] := Rule(Var("S", ""), ["expr_list"], UserCode(""));
+r0 := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(''));
+rulesMap["r0"] := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(''));
+r1 := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(''));
+rulesMap["r1"] := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(''));
+r2 := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(' print("result = $e$");'));
+rulesMap["r2"] := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(' print("result = $e$");'));
+r3 := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(' RESULT := e + p;'));
+rulesMap["r3"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(' RESULT := e + p;'));
+r4 := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(' RESULT := e - p;'));
+rulesMap["r4"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(' RESULT := e - p;'));
+r5 := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(' RESULT := p;'));
+rulesMap["r5"] := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(' RESULT := p;'));
+r6 := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(' RESULT := p * f;'));
+rulesMap["r6"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(' RESULT := p * f;'));
+r7 := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(' RESULT := p / f;'));
+rulesMap["r7"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(' RESULT := p / f;'));
+r8 := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(' RESULT := p % f;'));
+rulesMap["r8"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(' RESULT := p % f;'));
+r9 := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(' RESULT := f;'));
+rulesMap["r9"] := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(' RESULT := f;'));
+r10 := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(' RESULT := e;'));
+rulesMap["r10"] := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(' RESULT := e;'));
+r11 := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(' RESULT := n;'));
+rulesMap["r11"] := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(' RESULT := n;'));
+r12 := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(''));
+rulesMap["r12"] := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(''));
 
 
 stateTable := {};
 stateTable["s0"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> LPAREN (*) expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
-stateTable["s1"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> LPAREN (*) expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
+stateTable["s1"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> LPAREN (*) expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
 stateTable["s2"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> expr:e MINUS (*) prod:p: {MINUS, PLUS, RPAREN, },  }"';
 stateTable["s3"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, RPAREN, },  }"';
 stateTable["s4"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p DIVIDE (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
 stateTable["s5"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p MOD (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
 stateTable["s6"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
-stateTable["s7"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr_part", "") -> (*) expr:e SEMI: {\$, INTEGER, LPAREN, }, S -> (*) expr_list: {\$}, Var("expr_list", "") -> (*) expr_list expr_part: {\$, INTEGER, LPAREN, }, Var("expr_list", "") -> (*) expr_part: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMI, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
-stateTable["s8"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr_part", "") -> (*) expr:e SEMI: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMI, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, S -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, },  }"';
-stateTable["s9"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> expr:e MINUS (*) prod:p: {MINUS, PLUS, SEMI, },  }"';
-stateTable["s10"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMI, },  }"';
-stateTable["s11"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p DIVIDE (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
-stateTable["s12"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p MOD (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
-stateTable["s13"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
+stateTable["s7"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("S", "") -> (*) expr_list: {\$}, Var("expr_list", "") -> (*) expr_list expr_part: {\$, INTEGER, LPAREN, }, Var("expr_list", "") -> (*) expr_part: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
+stateTable["s8"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, },  }"';
+stateTable["s9"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e MINUS (*) prod:p: {MINUS, PLUS, SEMICOLON, },  }"';
+stateTable["s10"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, },  }"';
+stateTable["s11"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p DIVIDE (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
+stateTable["s12"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p MOD (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
+stateTable["s13"] := '"{ Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
 stateTable["s14"] := '"{ Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s15"] := '"{ Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
+stateTable["s15"] := '"{ Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
 stateTable["s16"] := '"{ Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, },  }"';
-stateTable["s17"] := '"{ Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, },  }"';
+stateTable["s17"] := '"{ Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, },  }"';
 stateTable["s18"] := '"{ Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s19"] := '"{ Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
-stateTable["s20"] := '"{ Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMI, }, Var("expr_part", "") -> expr:e (*) SEMI: {\$, INTEGER, LPAREN, },  }"';
+stateTable["s19"] := '"{ Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
+stateTable["s20"] := '"{ Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, },  }"';
 stateTable["s21"] := '"{ Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
-stateTable["s22"] := '"{ Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMI, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
+stateTable["s22"] := '"{ Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
 stateTable["s23"] := '"{ Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
-stateTable["s24"] := '"{ Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMI, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
-stateTable["s25"] := '"{ Var("expr_part", "") -> expr:e SEMI (*): {\$, INTEGER, LPAREN, } }"';
+stateTable["s24"] := '"{ Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
+stateTable["s25"] := '"{ Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }"';
 stateTable["s26"] := '"{ Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, } }"';
 stateTable["s27"] := '"{ Var("expr_list", "") -> expr_part (*): {\$, INTEGER, LPAREN, } }"';
 stateTable["s28"] := '"{ Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s29"] := '"{ Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
+stateTable["s29"] := '"{ Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
 stateTable["s30"] := '"{ Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, },  }"';
-stateTable["s31"] := '"{ Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMI, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, },  }"';
+stateTable["s31"] := '"{ Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, },  }"';
 stateTable["s32"] := '"{ Var("prod", "") -> prod:p DIVIDE fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s33"] := '"{ Var("prod", "") -> prod:p DIVIDE fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
+stateTable["s33"] := '"{ Var("prod", "") -> prod:p DIVIDE fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
 stateTable["s34"] := '"{ Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s35"] := '"{ Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
+stateTable["s35"] := '"{ Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
 stateTable["s36"] := '"{ Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }"';
-stateTable["s37"] := '"{ Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMI, TIMES, } }"';
+stateTable["s37"] := '"{ Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }"';
 
 actionTable := {};
-actionTable["s0", "INTEGER"] := Shift("s14");
-actionTable["s0", "LPAREN"] := Shift("s0");
+actionTable["s0", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s0", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s1", "INTEGER"] := Shift("s14");
-actionTable["s1", "LPAREN"] := Shift("s0");
+actionTable["s1", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s1", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s2", "INTEGER"] := Shift("s14");
-actionTable["s2", "LPAREN"] := Shift("s0");
+actionTable["s2", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s2", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s3", "INTEGER"] := Shift("s14");
-actionTable["s3", "LPAREN"] := Shift("s0");
+actionTable["s3", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s3", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s4", "INTEGER"] := Shift("s14");
-actionTable["s4", "LPAREN"] := Shift("s0");
+actionTable["s4", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s4", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s5", "INTEGER"] := Shift("s14");
-actionTable["s5", "LPAREN"] := Shift("s0");
+actionTable["s5", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s5", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s6", "INTEGER"] := Shift("s14");
-actionTable["s6", "LPAREN"] := Shift("s0");
+actionTable["s6", Token("INTEGER", "n")] := Shift("s14");
+actionTable["s6", Token("LPAREN", "")] := Shift("s0");
 
-actionTable["s7", "INTEGER"] := Shift("s15");
-actionTable["s7", "LPAREN"] := Shift("s1");
+actionTable["s7", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s7", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s8", "INTEGER"] := Shift("s15");
-actionTable["s8", "LPAREN"] := Shift("s1");
-actionTable["s8", '$'] := Reduce(om);
+actionTable["s8", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s8", Token("LPAREN", "")] := Shift("s1");
+actionTable["s8", Token("\$", "")] := Accept();
 
-actionTable["s9", "INTEGER"] := Shift("s15");
-actionTable["s9", "LPAREN"] := Shift("s1");
+actionTable["s9", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s9", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s10", "INTEGER"] := Shift("s15");
-actionTable["s10", "LPAREN"] := Shift("s1");
+actionTable["s10", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s10", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s11", "INTEGER"] := Shift("s15");
-actionTable["s11", "LPAREN"] := Shift("s1");
+actionTable["s11", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s11", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s12", "INTEGER"] := Shift("s15");
-actionTable["s12", "LPAREN"] := Shift("s1");
+actionTable["s12", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s12", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s13", "INTEGER"] := Shift("s15");
-actionTable["s13", "LPAREN"] := Shift("s1");
+actionTable["s13", Token("INTEGER", "n")] := Shift("s15");
+actionTable["s13", Token("LPAREN", "")] := Shift("s1");
 
-actionTable["s14", "DIVIDE"] := Reduce(om);
-actionTable["s14", "MINUS"] := Reduce(om);
-actionTable["s14", "MOD"] := Reduce(om);
-actionTable["s14", "PLUS"] := Reduce(om);
-actionTable["s14", "RPAREN"] := Reduce(om);
-actionTable["s14", "TIMES"] := Reduce(om);
+actionTable["s14", Token("DIVIDE", "")] := Reduce("r11");
+actionTable["s14", Token("MINUS", "")] := Reduce("r11");
+actionTable["s14", Token("MOD", "")] := Reduce("r11");
+actionTable["s14", Token("PLUS", "")] := Reduce("r11");
+actionTable["s14", Token("RPAREN", "")] := Reduce("r11");
+actionTable["s14", Token("TIMES", "")] := Reduce("r11");
 
-actionTable["s15", "DIVIDE"] := Reduce(om);
-actionTable["s15", "MINUS"] := Reduce(om);
-actionTable["s15", "MOD"] := Reduce(om);
-actionTable["s15", "PLUS"] := Reduce(om);
-actionTable["s15", "SEMI"] := Reduce(om);
-actionTable["s15", "TIMES"] := Reduce(om);
+actionTable["s15", Token("DIVIDE", "")] := Reduce("r11");
+actionTable["s15", Token("MINUS", "")] := Reduce("r11");
+actionTable["s15", Token("MOD", "")] := Reduce("r11");
+actionTable["s15", Token("PLUS", "")] := Reduce("r11");
+actionTable["s15", Token("SEMICOLON", "")] := Reduce("r11");
+actionTable["s15", Token("TIMES", "")] := Reduce("r11");
 
-actionTable["s16", "MINUS"] := Shift("s2");
-actionTable["s16", "PLUS"] := Shift("s3");
-actionTable["s16", "RPAREN"] := Shift("s18");
+actionTable["s16", Token("MINUS", "")] := Shift("s2");
+actionTable["s16", Token("PLUS", "")] := Shift("s3");
+actionTable["s16", Token("RPAREN", "")] := Shift("s18");
 
-actionTable["s17", "MINUS"] := Shift("s2");
-actionTable["s17", "PLUS"] := Shift("s3");
-actionTable["s17", "RPAREN"] := Shift("s19");
+actionTable["s17", Token("MINUS", "")] := Shift("s2");
+actionTable["s17", Token("PLUS", "")] := Shift("s3");
+actionTable["s17", Token("RPAREN", "")] := Shift("s19");
 
-actionTable["s18", "DIVIDE"] := Reduce(om);
-actionTable["s18", "MINUS"] := Reduce(om);
-actionTable["s18", "MOD"] := Reduce(om);
-actionTable["s18", "PLUS"] := Reduce(om);
-actionTable["s18", "RPAREN"] := Reduce(om);
-actionTable["s18", "TIMES"] := Reduce(om);
+actionTable["s18", Token("DIVIDE", "")] := Reduce("r10");
+actionTable["s18", Token("MINUS", "")] := Reduce("r10");
+actionTable["s18", Token("MOD", "")] := Reduce("r10");
+actionTable["s18", Token("PLUS", "")] := Reduce("r10");
+actionTable["s18", Token("RPAREN", "")] := Reduce("r10");
+actionTable["s18", Token("TIMES", "")] := Reduce("r10");
 
-actionTable["s19", "DIVIDE"] := Reduce(om);
-actionTable["s19", "MINUS"] := Reduce(om);
-actionTable["s19", "MOD"] := Reduce(om);
-actionTable["s19", "PLUS"] := Reduce(om);
-actionTable["s19", "SEMI"] := Reduce(om);
-actionTable["s19", "TIMES"] := Reduce(om);
+actionTable["s19", Token("DIVIDE", "")] := Reduce("r10");
+actionTable["s19", Token("MINUS", "")] := Reduce("r10");
+actionTable["s19", Token("MOD", "")] := Reduce("r10");
+actionTable["s19", Token("PLUS", "")] := Reduce("r10");
+actionTable["s19", Token("SEMICOLON", "")] := Reduce("r10");
+actionTable["s19", Token("TIMES", "")] := Reduce("r10");
 
-actionTable["s20", "MINUS"] := Shift("s9");
-actionTable["s20", "PLUS"] := Shift("s10");
-actionTable["s20", "SEMI"] := Shift("s25");
+actionTable["s20", Token("MINUS", "")] := Shift("s9");
+actionTable["s20", Token("PLUS", "")] := Shift("s10");
+actionTable["s20", Token("SEMICOLON", "")] := Shift("s25");
 
-actionTable["s21", "DIVIDE"] := Shift("s4");
-actionTable["s21", "MOD"] := Shift("s5");
-actionTable["s21", "TIMES"] := Shift("s6");
-actionTable["s21", "MINUS"] := Reduce(om);
-actionTable["s21", "PLUS"] := Reduce(om);
-actionTable["s21", "RPAREN"] := Reduce(om);
+actionTable["s21", Token("DIVIDE", "")] := Shift("s4");
+actionTable["s21", Token("MOD", "")] := Shift("s5");
+actionTable["s21", Token("TIMES", "")] := Shift("s6");
+actionTable["s21", Token("MINUS", "")] := Reduce("r4");
+actionTable["s21", Token("PLUS", "")] := Reduce("r4");
+actionTable["s21", Token("RPAREN", "")] := Reduce("r4");
 
-actionTable["s22", "DIVIDE"] := Shift("s11");
-actionTable["s22", "MOD"] := Shift("s12");
-actionTable["s22", "TIMES"] := Shift("s13");
-actionTable["s22", "MINUS"] := Reduce(om);
-actionTable["s22", "PLUS"] := Reduce(om);
-actionTable["s22", "SEMI"] := Reduce(om);
+actionTable["s22", Token("DIVIDE", "")] := Shift("s11");
+actionTable["s22", Token("MOD", "")] := Shift("s12");
+actionTable["s22", Token("TIMES", "")] := Shift("s13");
+actionTable["s22", Token("MINUS", "")] := Reduce("r4");
+actionTable["s22", Token("PLUS", "")] := Reduce("r4");
+actionTable["s22", Token("SEMICOLON", "")] := Reduce("r4");
 
-actionTable["s23", "DIVIDE"] := Shift("s4");
-actionTable["s23", "MOD"] := Shift("s5");
-actionTable["s23", "TIMES"] := Shift("s6");
-actionTable["s23", "MINUS"] := Reduce(om);
-actionTable["s23", "PLUS"] := Reduce(om);
-actionTable["s23", "RPAREN"] := Reduce(om);
+actionTable["s23", Token("DIVIDE", "")] := Shift("s4");
+actionTable["s23", Token("MOD", "")] := Shift("s5");
+actionTable["s23", Token("TIMES", "")] := Shift("s6");
+actionTable["s23", Token("MINUS", "")] := Reduce("r3");
+actionTable["s23", Token("PLUS", "")] := Reduce("r3");
+actionTable["s23", Token("RPAREN", "")] := Reduce("r3");
 
-actionTable["s24", "DIVIDE"] := Shift("s11");
-actionTable["s24", "MOD"] := Shift("s12");
-actionTable["s24", "TIMES"] := Shift("s13");
-actionTable["s24", "MINUS"] := Reduce(om);
-actionTable["s24", "PLUS"] := Reduce(om);
-actionTable["s24", "SEMI"] := Reduce(om);
+actionTable["s24", Token("DIVIDE", "")] := Shift("s11");
+actionTable["s24", Token("MOD", "")] := Shift("s12");
+actionTable["s24", Token("TIMES", "")] := Shift("s13");
+actionTable["s24", Token("MINUS", "")] := Reduce("r3");
+actionTable["s24", Token("PLUS", "")] := Reduce("r3");
+actionTable["s24", Token("SEMICOLON", "")] := Reduce("r3");
 
-actionTable["s25", '$'] := Reduce(om);
-actionTable["s25", "INTEGER"] := Reduce(om);
-actionTable["s25", "LPAREN"] := Reduce(om);
+actionTable["s25", Token("\$", "")] := Reduce("r2");
+actionTable["s25", Token("INTEGER", "")] := Reduce("r2");
+actionTable["s25", Token("LPAREN", "")] := Reduce("r2");
 
-actionTable["s26", '$'] := Reduce(om);
-actionTable["s26", "INTEGER"] := Reduce(om);
-actionTable["s26", "LPAREN"] := Reduce(om);
+actionTable["s26", Token("\$", "")] := Reduce("r0");
+actionTable["s26", Token("INTEGER", "")] := Reduce("r0");
+actionTable["s26", Token("LPAREN", "")] := Reduce("r0");
 
-actionTable["s27", '$'] := Reduce(om);
-actionTable["s27", "INTEGER"] := Reduce(om);
-actionTable["s27", "LPAREN"] := Reduce(om);
+actionTable["s27", Token("\$", "")] := Reduce("r1");
+actionTable["s27", Token("INTEGER", "")] := Reduce("r1");
+actionTable["s27", Token("LPAREN", "")] := Reduce("r1");
 
-actionTable["s28", "DIVIDE"] := Reduce(om);
-actionTable["s28", "MINUS"] := Reduce(om);
-actionTable["s28", "MOD"] := Reduce(om);
-actionTable["s28", "PLUS"] := Reduce(om);
-actionTable["s28", "RPAREN"] := Reduce(om);
-actionTable["s28", "TIMES"] := Reduce(om);
+actionTable["s28", Token("DIVIDE", "")] := Reduce("r9");
+actionTable["s28", Token("MINUS", "")] := Reduce("r9");
+actionTable["s28", Token("MOD", "")] := Reduce("r9");
+actionTable["s28", Token("PLUS", "")] := Reduce("r9");
+actionTable["s28", Token("RPAREN", "")] := Reduce("r9");
+actionTable["s28", Token("TIMES", "")] := Reduce("r9");
 
-actionTable["s29", "DIVIDE"] := Reduce(om);
-actionTable["s29", "MINUS"] := Reduce(om);
-actionTable["s29", "MOD"] := Reduce(om);
-actionTable["s29", "PLUS"] := Reduce(om);
-actionTable["s29", "SEMI"] := Reduce(om);
-actionTable["s29", "TIMES"] := Reduce(om);
+actionTable["s29", Token("DIVIDE", "")] := Reduce("r9");
+actionTable["s29", Token("MINUS", "")] := Reduce("r9");
+actionTable["s29", Token("MOD", "")] := Reduce("r9");
+actionTable["s29", Token("PLUS", "")] := Reduce("r9");
+actionTable["s29", Token("SEMICOLON", "")] := Reduce("r9");
+actionTable["s29", Token("TIMES", "")] := Reduce("r9");
 
-actionTable["s30", "DIVIDE"] := Shift("s4");
-actionTable["s30", "MOD"] := Shift("s5");
-actionTable["s30", "TIMES"] := Shift("s6");
-actionTable["s30", "MINUS"] := Reduce(om);
-actionTable["s30", "PLUS"] := Reduce(om);
-actionTable["s30", "RPAREN"] := Reduce(om);
+actionTable["s30", Token("DIVIDE", "")] := Shift("s4");
+actionTable["s30", Token("MOD", "")] := Shift("s5");
+actionTable["s30", Token("TIMES", "")] := Shift("s6");
+actionTable["s30", Token("MINUS", "")] := Reduce("r5");
+actionTable["s30", Token("PLUS", "")] := Reduce("r5");
+actionTable["s30", Token("RPAREN", "")] := Reduce("r5");
 
-actionTable["s31", "DIVIDE"] := Shift("s11");
-actionTable["s31", "MOD"] := Shift("s12");
-actionTable["s31", "TIMES"] := Shift("s13");
-actionTable["s31", "MINUS"] := Reduce(om);
-actionTable["s31", "PLUS"] := Reduce(om);
-actionTable["s31", "SEMI"] := Reduce(om);
+actionTable["s31", Token("DIVIDE", "")] := Shift("s11");
+actionTable["s31", Token("MOD", "")] := Shift("s12");
+actionTable["s31", Token("TIMES", "")] := Shift("s13");
+actionTable["s31", Token("MINUS", "")] := Reduce("r5");
+actionTable["s31", Token("PLUS", "")] := Reduce("r5");
+actionTable["s31", Token("SEMICOLON", "")] := Reduce("r5");
 
-actionTable["s32", "DIVIDE"] := Reduce(om);
-actionTable["s32", "MINUS"] := Reduce(om);
-actionTable["s32", "MOD"] := Reduce(om);
-actionTable["s32", "PLUS"] := Reduce(om);
-actionTable["s32", "RPAREN"] := Reduce(om);
-actionTable["s32", "TIMES"] := Reduce(om);
+actionTable["s32", Token("DIVIDE", "")] := Reduce("r7");
+actionTable["s32", Token("MINUS", "")] := Reduce("r7");
+actionTable["s32", Token("MOD", "")] := Reduce("r7");
+actionTable["s32", Token("PLUS", "")] := Reduce("r7");
+actionTable["s32", Token("RPAREN", "")] := Reduce("r7");
+actionTable["s32", Token("TIMES", "")] := Reduce("r7");
 
-actionTable["s33", "DIVIDE"] := Reduce(om);
-actionTable["s33", "MINUS"] := Reduce(om);
-actionTable["s33", "MOD"] := Reduce(om);
-actionTable["s33", "PLUS"] := Reduce(om);
-actionTable["s33", "SEMI"] := Reduce(om);
-actionTable["s33", "TIMES"] := Reduce(om);
+actionTable["s33", Token("DIVIDE", "")] := Reduce("r7");
+actionTable["s33", Token("MINUS", "")] := Reduce("r7");
+actionTable["s33", Token("MOD", "")] := Reduce("r7");
+actionTable["s33", Token("PLUS", "")] := Reduce("r7");
+actionTable["s33", Token("SEMICOLON", "")] := Reduce("r7");
+actionTable["s33", Token("TIMES", "")] := Reduce("r7");
 
-actionTable["s34", "DIVIDE"] := Reduce(om);
-actionTable["s34", "MINUS"] := Reduce(om);
-actionTable["s34", "MOD"] := Reduce(om);
-actionTable["s34", "PLUS"] := Reduce(om);
-actionTable["s34", "RPAREN"] := Reduce(om);
-actionTable["s34", "TIMES"] := Reduce(om);
+actionTable["s34", Token("DIVIDE", "")] := Reduce("r8");
+actionTable["s34", Token("MINUS", "")] := Reduce("r8");
+actionTable["s34", Token("MOD", "")] := Reduce("r8");
+actionTable["s34", Token("PLUS", "")] := Reduce("r8");
+actionTable["s34", Token("RPAREN", "")] := Reduce("r8");
+actionTable["s34", Token("TIMES", "")] := Reduce("r8");
 
-actionTable["s35", "DIVIDE"] := Reduce(om);
-actionTable["s35", "MINUS"] := Reduce(om);
-actionTable["s35", "MOD"] := Reduce(om);
-actionTable["s35", "PLUS"] := Reduce(om);
-actionTable["s35", "SEMI"] := Reduce(om);
-actionTable["s35", "TIMES"] := Reduce(om);
+actionTable["s35", Token("DIVIDE", "")] := Reduce("r8");
+actionTable["s35", Token("MINUS", "")] := Reduce("r8");
+actionTable["s35", Token("MOD", "")] := Reduce("r8");
+actionTable["s35", Token("PLUS", "")] := Reduce("r8");
+actionTable["s35", Token("SEMICOLON", "")] := Reduce("r8");
+actionTable["s35", Token("TIMES", "")] := Reduce("r8");
 
-actionTable["s36", "DIVIDE"] := Reduce(om);
-actionTable["s36", "MINUS"] := Reduce(om);
-actionTable["s36", "MOD"] := Reduce(om);
-actionTable["s36", "PLUS"] := Reduce(om);
-actionTable["s36", "RPAREN"] := Reduce(om);
-actionTable["s36", "TIMES"] := Reduce(om);
+actionTable["s36", Token("DIVIDE", "")] := Reduce("r6");
+actionTable["s36", Token("MINUS", "")] := Reduce("r6");
+actionTable["s36", Token("MOD", "")] := Reduce("r6");
+actionTable["s36", Token("PLUS", "")] := Reduce("r6");
+actionTable["s36", Token("RPAREN", "")] := Reduce("r6");
+actionTable["s36", Token("TIMES", "")] := Reduce("r6");
 
-actionTable["s37", "DIVIDE"] := Reduce(om);
-actionTable["s37", "MINUS"] := Reduce(om);
-actionTable["s37", "MOD"] := Reduce(om);
-actionTable["s37", "PLUS"] := Reduce(om);
-actionTable["s37", "SEMI"] := Reduce(om);
-actionTable["s37", "TIMES"] := Reduce(om);
+actionTable["s37", Token("DIVIDE", "")] := Reduce("r6");
+actionTable["s37", Token("MINUS", "")] := Reduce("r6");
+actionTable["s37", Token("MOD", "")] := Reduce("r6");
+actionTable["s37", Token("PLUS", "")] := Reduce("r6");
+actionTable["s37", Token("SEMICOLON", "")] := Reduce("r6");
+actionTable["s37", Token("TIMES", "")] := Reduce("r6");
 
 gotoTable := {};
-gotoTable["s0", 'Var("expr", "")'] := "s16";
-gotoTable["s0", 'Var("fact", "")'] := "s28";
-gotoTable["s0", 'Var("prod", "")'] := "s30";
-gotoTable["s1", 'Var("expr", "")'] := "s17";
-gotoTable["s1", 'Var("fact", "")'] := "s28";
-gotoTable["s1", 'Var("prod", "")'] := "s30";
-gotoTable["s2", 'Var("fact", "")'] := "s28";
-gotoTable["s2", 'Var("prod", "")'] := "s21";
-gotoTable["s3", 'Var("fact", "")'] := "s28";
-gotoTable["s3", 'Var("prod", "")'] := "s23";
-gotoTable["s4", 'Var("fact", "")'] := "s32";
-gotoTable["s5", 'Var("fact", "")'] := "s34";
-gotoTable["s6", 'Var("fact", "")'] := "s36";
-gotoTable["s7", 'Var("expr", "")'] := "s20";
-gotoTable["s7", 'Var("expr_list", "")'] := "s8";
-gotoTable["s7", 'Var("expr_part", "")'] := "s27";
-gotoTable["s7", 'Var("fact", "")'] := "s29";
-gotoTable["s7", 'Var("prod", "")'] := "s31";
-gotoTable["s8", 'Var("expr", "")'] := "s20";
-gotoTable["s8", 'Var("expr_part", "")'] := "s26";
-gotoTable["s8", 'Var("fact", "")'] := "s29";
-gotoTable["s8", 'Var("prod", "")'] := "s31";
-gotoTable["s9", 'Var("fact", "")'] := "s29";
-gotoTable["s9", 'Var("prod", "")'] := "s22";
-gotoTable["s10", 'Var("fact", "")'] := "s29";
-gotoTable["s10", 'Var("prod", "")'] := "s24";
-gotoTable["s11", 'Var("fact", "")'] := "s33";
-gotoTable["s12", 'Var("fact", "")'] := "s35";
-gotoTable["s13", 'Var("fact", "")'] := "s37";
+gotoTable["s0", Var("expr", "")] := "s16";
+gotoTable["s0", Var("fact", "")] := "s28";
+gotoTable["s0", Var("prod", "")] := "s30";
+gotoTable["s1", Var("expr", "")] := "s17";
+gotoTable["s1", Var("fact", "")] := "s28";
+gotoTable["s1", Var("prod", "")] := "s30";
+gotoTable["s2", Var("fact", "")] := "s28";
+gotoTable["s2", Var("prod", "")] := "s21";
+gotoTable["s3", Var("fact", "")] := "s28";
+gotoTable["s3", Var("prod", "")] := "s23";
+gotoTable["s4", Var("fact", "")] := "s32";
+gotoTable["s5", Var("fact", "")] := "s34";
+gotoTable["s6", Var("fact", "")] := "s36";
+gotoTable["s7", Var("expr", "")] := "s20";
+gotoTable["s7", Var("expr_list", "")] := "s8";
+gotoTable["s7", Var("expr_part", "")] := "s27";
+gotoTable["s7", Var("fact", "")] := "s29";
+gotoTable["s7", Var("prod", "")] := "s31";
+gotoTable["s8", Var("expr", "")] := "s20";
+gotoTable["s8", Var("expr_part", "")] := "s26";
+gotoTable["s8", Var("fact", "")] := "s29";
+gotoTable["s8", Var("prod", "")] := "s31";
+gotoTable["s9", Var("fact", "")] := "s29";
+gotoTable["s9", Var("prod", "")] := "s22";
+gotoTable["s10", Var("fact", "")] := "s29";
+gotoTable["s10", Var("prod", "")] := "s24";
+gotoTable["s11", Var("fact", "")] := "s33";
+gotoTable["s12", Var("fact", "")] := "s35";
+gotoTable["s13", Var("fact", "")] := "s37";

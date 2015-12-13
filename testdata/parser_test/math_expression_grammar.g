@@ -33,7 +33,7 @@ RPAREN := \) ;
 expr_list ::= expr_list expr_part 
            |  expr_part
            ;
-expr_part ::= expr:e SEMI {: print("result = $e$"); :}
+expr_part ::= expr:e SEMICOLON {: print("result = $e$"); :}
            ;
 expr ::= expr:e PLUS   prod:p {: RESULT := e + p; :} 
       |  expr:e MINUS  prod:p {: RESULT := e - p; :} 
