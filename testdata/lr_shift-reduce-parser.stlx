@@ -5,6 +5,7 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap) {
     mRulesMap := rulesMap;
 
     parseSR := procedure(tl) {
+        action_code := [];
         index   := 1;      // point to next token
         symbols := [];     // stack of symbols
         // print("mStateTable[s7] : $mStateTable[\"s7\"]$");
@@ -21,14 +22,55 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap) {
             symbolMap := symbolMapStack[-1];            
             q := states[-1];
             [t_value, t] := tl[index];
-            token_list := {args(t_token)[2] : [t_states, t_token ] in domain(mActionTable) | t_states == q && args(t_token)[1] == t};
-            assert(#token_list == 1, "Only 1 Possible Action for Token in State");
-            token_id := arb(token_list);
-            t := Token(t, token_id);
-            if(token_id != "")
+            token_id := "";
+            // print("[t_value, t] = $[t_value, t]$");
+            action_tokens := { [args(t_token)[2], {mStateTable[shiftState]}] : [t_states, t_token ] in domain(mActionTable), shiftState in mActionTable[t_states, t_token] | t_states == q && args(t_token)[1] == t };
+            action_tokens := {[token_list, {x : x in matches("$followTokens$", '.*\(\*\) ([a-zA-Z][a-zA-Z_0-9]*)', true)}] : [token_list, followTokens] in action_tokens};
+            // action_tokens := {[token_list, "$followTokens$"] : [token_list, followTokens] in action_tokens};
+            token_list := domain(action_tokens);
+            if(#token_list>0)
             {
-                symbolMap[token_id] := t_value;
+                // print("token_list : $token_list$");
+                if(#token_list > 1)
+                {
+                    // print("token_list : $token_list$");
+                    // print("t_rest : $t_rest$");
+                    // print("action_tokens : $action_tokens$");
+                    // for(ts in action_tokens)
+                    // {
+                        // print("ts[2] : $ts[2]$");
+                        // m := matches("'$ts[2]$'", '.*\(\*\) [a-zA-Z][a-zA-Z_0-9]*');
+                        // print ("m : $m$");
+                        // m := matches("'$ts[2]$'", '.*\(\*\) ([a-zA-Z][a-zA-Z_0-9]*)', true);
+                        // print ("m : $m$");
+                    // }
+                    token_list := [x : [x, ft] in action_tokens | (ft * {tl[index+1][2]} != {}) ];
+                    if(#token_list == 0)
+                    {
+                        token_list := [x : [x, ft] in action_tokens | (ft * {tl[index+1][2]} == {} && ft =={})];
+                    }
+                    // print("index : $index$ , tl[index+1] : $tl[index+1][2]$");
+                    // print("token_list : $token_list$");
+                } 
+                print("token_list :$token_list$");               
+                assert(#token_list == 1, "Only one Possible Action for Token in State");
+                token_id := arb(token_list);                
+                if(token_id != "")
+                {
+                    // symbolMap[token_id] := t_value;
+                    // print("t_value : $t_value$");
+                    // if(isString(t_value))
+                    if(t == "STRING" || t == "ID" || t == "VAR" || t =="ZID")
+                    {
+                        action_code := action_code + ["$token_id$ := '$t_value$';"];
+                    }
+                    else
+                    {
+                        action_code := action_code + ["$token_id$ := $t_value$;"];
+                    }
+                }
             }
+            t := Token(t, token_id);             
             t_rest := [ y : [x,y] in tl[index..]];
             print("states:  [ $join(states, \", \")$ ]");
             print("symbols: $join(symbols, \" \")$ | $join(t_rest, \" \")$");
@@ -42,7 +84,8 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap) {
             case Shift(s):
                  print("shifting state $s$");
                  print("state:   { $join(mStateTable[s], \"\")$ }\n");
-                 symbolMapStack := symbolMapStack + [symbolMap];
+                 // symbolMapStack := symbolMapStack + [symbolMap];
+
                  symbols := symbols + [t];
                  states  := states  + [s];
                  index   += 1;
@@ -58,11 +101,13 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap) {
 
                  // ruleNumber := 
                  // rule := rules[m];
-                 head := args(rule)[1];
-                 body := args(rule)[2];
+                 // head := args(rule)[1];
+                 // body := args(rule)[2];
+                 [head, body , user_code] := args(rule);
 
                  
                  print("reducing with rule $ruleName$ : $head$ -> $join(body, \" \")$");
+                 action_code := action_code + [args(user_code)[1]];
                  n       := #body;
                  symbols := symbols[.. -(n+1)];
                  states  := states[.. -(n+1)]; 
@@ -71,17 +116,30 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap) {
                  // print("state, head : $state$ , $head$");
                  // print("mGotoTable : $mGotoTable$");
                  // print("s7 : $mGotoTable[state, head]$");
-                 states  := states + [ mGotoTable[state, head] ];
+                 newStates := mGotoTable[state, head];
+                 states  := states + [ newStates ];
+                 stateString := mStateTable[newStates];
+                 print("stateString : $stateString$");
+                 var_id := matches(stateString, ".*$args(head)[1]$:([a-z][a-zA-Z_0-9]*) \\(\\*\\)", true)[2..];
+                 print("var_id : $var_id$");
+                 if(#var_id > 0)
+                 {
+                    var_id := { x :  x in var_id};
+                    assert(#var_id ==1, "only one variable id should be used for one reduction");
+                    print("var_id : $var_id$");
+                    action_code := action_code + ["$arb(var_id)$ := result;"];
+                 }
                  print("state:   { $join(mStateTable[mGotoTable[state, head]], \"\")$ }\n");
             case Accept():
                  print("accepting\n");
+                 writeFile("output\\action_code.stlx", action_code);
                  return true;
             } 
         }
     };
 }
 
-load("lr_parse_table.stlx");
+load("output\\lr_parse_table.stlx");
 // print(rulesMap);
 // load("parse-table.stlx");
 

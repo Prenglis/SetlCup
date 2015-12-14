@@ -1,0 +1,106 @@
+sc_dict_generate := procedure(file) {
+	silent_mode := 1 == 1;
+	file := join(readFile(file), "\n");
+	state := "declaration_part";
+	last_identifier := "";
+	parser_part_string := "";
+	sc_dict :=  {};
+	scan(file) using map{
+		regex '[^%%%]+%%%.*\n' | state == "declaration_part":
+				state := "scanner_part";
+				// skip intro
+		regex '[\n]*%%%.*' | state == "scanner_part":
+				// skip outro				
+				state := "parser_part";
+		regex '[ \t]*\n' | state == "scanner_part":
+			//skip new lines
+		regex '[a-zA-Z]+' as [ identifier ] | state == "scanner_part":
+		 // save identifier
+			sc_dict[identifier] := "om";
+			last_identifier := identifier;
+		 	state := "ident_read";
+		regex '[\s]*:=[\s]*' | state == "ident_read":
+		// skip white spaces
+			state :=  "scan_section";
+		regex '.*' as [ scan_section ] | state == "scan_section":
+			scan_section := trim(scan_section);
+			scan_section := replaceFirst(scan_section, "[\\s]*;\$", "");
+			sc_dict[last_identifier] := scan_section;
+			state := "scanner_part";
+		regex '.|\n' as [parser_part] | state == "parser_part":
+			// skip parser part
+			parser_part_string := parser_part_string + parser_part;
+		regex '.|\n' as [ c ]:
+			if(!silent_mode)
+			{
+				print("unrecognized character: $c$");
+				print("current_state: $state$");
+				print("line: ", map["line"]);
+				print("column: ", map["column"]);
+			}
+	}
+	return [sc_dict, parser_part_string];
+};
+generate_scan_string := procedure(sc_dict) {
+	silent_mode := 1 == 1;
+	scan_string := "scan(lines) { \n";
+
+		for ( i in domain(sc_dict))
+	 	{
+	 		scan_string := scan_string + "regex '$sc_dict[i]$' as [c]: \n  c := join(split(c, '\"'), \"\"); scan_output := scan_output + [[c, \"$i$\"]];\n";
+	 	}
+	 	scan_string := scan_string + "regex '.' as [ c ]: if(!silent_mode){print(\"unrecognized character: \" + c);}";
+	 	scan_string := scan_string + "}";
+	 	if(!silent_mode)
+	 		{
+	 			print("scan_string: \n $scan_string$ \n");
+	 		}
+	 	return scan_string;
+	 };
+test_scanner_generator_scan := procedure (scanner_file, test_file){
+	silent_mode := 1 == 1;
+	[sc_dict, parser_part_string] := sc_dict_generate(scanner_file);
+	test_file := split(join(readFile(test_file), "\n"), '\n');
+	if(!silent_mode)
+	{
+		print(sc_dict);
+	}
+	scan_output := [];
+	scan_string := generate_scan_string(sc_dict);
+	for( lines in test_file)
+	{
+		if(!silent_mode)
+		{
+			print("line :" + lines + " \n");
+		}
+
+	 	execute(trim(scan_string));
+ 	}
+ 	if(!silent_mode)
+ 		{
+ 			print(scan_output);
+ 		}
+ 	return [scan_output, parser_part_string];
+};
+
+test_parser_gen := procedure()
+{
+	silent_mode := 1 == 1;
+	load("grammar_parser.stlx");
+	// [scan_output, parser_part_string] := test_scanner_generator_scan("input\\interpreter_grammar-pure.g", "input\\factorial.sl");
+	// [scan_output, parser_part_string] := test_scanner_generator_scan("input\\interpreter_grammar.g", "input\\factorial.sl");
+	// [scan_output, parser_part_string] := test_scanner_generator_scan(input\\math_expression_grammar-pure.g", "input\\math_expression_input.txt");	
+	[scan_output, parser_part_string] := test_scanner_generator_scan("input\\math_expression_grammar.g", "input\\math_expression_input.txt");	
+	scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE" && x[2] != "COMMENTS"];
+	print("scan_output := $scan_output$;");
+	parser_part_string := trim(parser_part_string);
+	if(!silent_mode)
+		{
+			print(parser_part_string);	
+		}
+	testFromString(parser_part_string);
+	
+
+};
+silent_mode := 1 == 1;
+ test_parser_gen();

@@ -59,8 +59,11 @@ parseBody := procedure(tl) {
         [item, tl] := parseItem(tl);
         itemList += [ item ];
     }
-    if(fct(itemList[-1]) != "UserCode")
+    match(itemList[-1])
     {
+        case UserCode(u):
+
+        default:
         itemList += [ UserCode('') ];
     }
     return [itemList, tl];
@@ -81,16 +84,19 @@ parseItem := procedure(tl) {
 tokenizeString := procedure(s) {
     tokenList := [];
     state := "INITIAL";
+    user_code := "";
+    // print("toscan: $s$");
     scan (s){
         regex '::=|\||;'              as [ o ] | state == "INITIAL": 
             tokenList += [ o        ];
-        regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ]: 
+
+        regex '[a-z][a-zA-Z_0-9]*' as [ v ] | state == "INITIAL": 
+            var_id := ""; 
+            tokenList += [ Var(v, var_id) ] ;
+        regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ] | state == "INITIAL": 
             [var_name, var_id] := split(v, ":"); 
             tokenList += [ Var(var_name, var_id) ];
-        regex '[a-z][a-zA-Z_0-9]*' as [ var_name ]: 
-            var_id := ""; 
-            tokenList += [ Var(var_name, var_id) ];
-        regex '[A-Z][A-Z_0-9]*'    as [ t ]: 
+        regex '[A-Z][A-Z_0-9]*'    as [ t ] | state == "INITIAL": 
              [token_name, token_id] := [t, ""];
             tokenList +=  [ Token(token_name, token_id) ];
         regex '[A-Z][A-Z_0-9]*:[a-z][a-zA-Z_0-9]*'  as [ t ] | state == "INITIAL": 
@@ -105,19 +111,24 @@ tokenizeString := procedure(s) {
             tokenList += [ Token(token_name, token_id) ];
         regex '\{:'  | state == "INITIAL": 
             state := "CODESEG";
-        regex '.*:\}' as [ user_code ] | state == "CODESEG" : 
-            state := "INITIAL"; 
-            user_code := replaceFirst(user_code, "[\\s]*:}\$", ""); 
+        regex '.|\n' as [ u ] | state == "CODESEG" : 
+            user_code := user_code + u;            
+        regex ':\}' | state == "CODESEG" :
             uc := "UserCode('$user_code$')";
             tokenList += [ eval(uc)]; 
+            user_code := "";
+            state := "INITIAL";
         regex '''[^'']*'''         as [ l ] | state == "INITIAL": 
             tokenList += [ Token(l, "") ];
         regex '[ \t\v\n\r]+'               | state == "INITIAL": 
             // skip
         regex '.|\n'               as [ c ] | state == "INITIAL": 
             print("tokenList =$tokenList$");
+            m := matches(c, '[a-z][a-zA-Z_0-9]*');
+            print("m : $m$");
            print("ERROR : tokenizeString: $c$");
     }
+    // print("tokenList: $tokenList$");
     return tokenList;
 };
 
