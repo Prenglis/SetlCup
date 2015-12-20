@@ -5,10 +5,10 @@ readGrammar := procedure(f) {
     return parseGrammar(tl);
 };
 
-readGrammarFromString := procedure(grammar_string){
+readGrammarFromString := procedure(grammar_string, silent_mode){
     // gs := join(grammar_string, "\n");
     // print(grammar_string);
-    tl := tokenizeString(grammar_string);
+    tl := tokenizeString(grammar_string, silent_mode);
     return parseGrammar(tl);
 };
 // This procedure takes a token list tl and tries to interpret this list
@@ -81,7 +81,7 @@ parseItem := procedure(tl) {
 // This procedure partitions the string s into a list of tokens.
 // It recognizes numbers, the operator symbols "+", "-", "*", "/", "**"
 // and the parentheses "(" and ")".
-tokenizeString := procedure(s) {
+tokenizeString := procedure(s, silent_mode) {
     tokenList := [];
     state := "INITIAL";
     user_code := "";
@@ -123,10 +123,13 @@ tokenizeString := procedure(s) {
         regex '[ \t\v\n\r]+'               | state == "INITIAL": 
             // skip
         regex '.|\n'               as [ c ] | state == "INITIAL": 
-            print("tokenList =$tokenList$");
-            m := matches(c, '[a-z][a-zA-Z_0-9]*');
-            print("m : $m$");
-           print("ERROR : tokenizeString: $c$");
+            if(!silent_mode)
+            {
+                print("tokenList =$tokenList$");
+                m := matches(c, '[a-z][a-zA-Z_0-9]*');
+                print("m : $m$");
+               print("ERROR : tokenizeString: $c$");
+            }
     }
     // print("tokenList: $tokenList$");
     return tokenList;
@@ -189,7 +192,10 @@ item2String := procedure(i) {
 
 testParser := procedure(f) {
     for ([v, il] in readGrammar(f)[1]) {
+        if(!silent_mode)
+        {
          print("$v$ -> $itemList2String(il)$");
+        }
     }
 };
 
@@ -225,7 +231,7 @@ list2str := procedure(l) {
                      result += " " + token_name;
                 }
             case UserCode(u): result += "{: " + u + " :}";
-            default: print("Error, $x$ can not be parsed");
+            default: if(!silent_mode){print("Error, $x$ can not be parsed");}
         }
     }
     return result;
@@ -300,22 +306,22 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
         }
         return Rule(mVariable, rargs, this.mUser_Code);
     };
-    f_str := procedure() {
+    // f_str := procedure() {
                 
-        rule :=  "$mVariable$";
-        rule += " ->" ;
-        rule += list2str(mAlpha) + " (*)";
-        rule +=  list2str(mBeta) + ": {";
-        n := 1;
-        for (t in mFollowSet) {
-            rule += escapeDollar(t);
-            if (n < #mFollowSet) {
-                rule += ", ";
-            }
-        }
-        rule += "}";
-        return rule;
-    };
+    //     rule :=  "$mVariable$";
+    //     rule += " ->" ;
+    //     rule += list2str(mAlpha) + " (*)";
+    //     rule +=  list2str(mBeta) + ": {";
+    //     n := 1;
+    //     for (t in mFollowSet) {
+    //         rule += escapeDollar(t);
+    //         if (n < #mFollowSet) {
+    //             rule += ", ";
+    //         }
+    //     }
+    //     rule += "}";
+    //     return rule;
+    // };
 
   static {
     // take a core rule and attach a follow set
@@ -371,7 +377,7 @@ initializeMap := procedure(keys) {
 };
 
 /* This class represents a context-free grammar */
-class grammar(rules, variables, start) {
+class grammar(rules, variables, start, silent_mode) {
     this.mRules       := rules;
     this.mVariables   := variables;
     this.mStart       := start;
@@ -384,11 +390,20 @@ class grammar(rules, variables, start) {
     this.mStateNames  := {};
     this.mRuleNames   := {};
     this.mConflicts   := false;
+    this.mRulesMap := {};
+    this.mGotoTable := {};
+    this.mStateTable := {};
+    this.mActionTable := {};
+    this.mSilentMode := silent_mode;
 
   static {
     assignRuleNames := procedure() {
         counter := 0;
-        print("rulesMap := {};");
+        if(!mSilentMode)
+        {
+            print("rulesMap := {};");
+        }
+        // rulesMap := {};
         for ([head, body, user_code] in mRules) {
             // print("mRules : $mRules$");
         [rargs, _] := extractArgList(body);
@@ -403,14 +418,21 @@ class grammar(rules, variables, start) {
         rule                  := Rule(head, rargs, user_code);
             ruleName              := "r" + counter;
             this.mRuleNames[rule] := ruleName;
-            print("$ruleName$ := $rule$;");
-            print("rulesMap[\"$ruleName$\"] := $rule$;");
+            if(!mSilentMode)
+             {
+                print("$ruleName$ := $rule$;");
+                print("rulesMap[\"$ruleName$\"] := $rule$;");
+            }
+             this.mRulesMap[ruleName] := rule;
             // print("$ruleName$ := Rule($head$, $rargs$, UserCode('$args(user_code)[1]$'));");
             // print("rulesMap[\"$ruleName$\"] := Rule($head$, $rargs$, UserCode('$args(user_code)[1]$'));");
             counter += 1;
         }
         // print("this.mRuleNames : $this.mRuleNames$");
-        print("\n");
+        if(!mSilentMode)
+        {
+            print("\n");
+        }
     };
     // check, whether this grammar is an LR-grammar  
     checkLR := procedure() {
@@ -420,6 +442,7 @@ class grammar(rules, variables, start) {
         computeAllStates();
         computeActionTable();
         computeGotoTable();
+        return [this.mRuleNames, this.mRulesMap, this.mStateTable, this.mActionTable, this.mGotoTable];
     };
     // collect all tokens  
     computeTokens := procedure() {
@@ -539,14 +562,27 @@ class grammar(rules, variables, start) {
             newStates := moreStates - mStates;
             this.mStates += newStates;
         }
-        print("stateTable := {};");
+        if(!mSilentMode)
+        {   
+            print("stateTable := {};"); 
+        }
+        this.mStateTable := {};
         counter := 0;
         for (state in mStates) {
             this.mStateNames[state] := "s" + counter;
-            print("stateTable[\"s$counter$\"] := '$state2String(state)$';");
+            if(!mSilentMode)
+            {   
+                print("stateTable[\"s$counter$\"] := '$state2String(state)$';");
+            }
+            this.mStateTable["s$counter$"] := state;
+            
             counter += 1;
         }
-        print("");
+        if(!mSilentMode)
+        {   
+             print("");
+        }
+       
     };
     state2String := procedure(state) {
         result := '"{ ';
@@ -562,9 +598,11 @@ class grammar(rules, variables, start) {
     };
     computeActionTable := procedure() {
         // print("mStates: $mStates$");
-        print("actionTable := {};");
+        if(!mSilentMode)
+        {
+            print("actionTable := {};");
+        }
         for (state in mStates) {
-            actionTable := {};
             // compute shift actions
             for (token in mTokens) {
                 stateName := mStateNames[state];
@@ -576,8 +614,11 @@ class grammar(rules, variables, start) {
                     // {
                         // t       := split(t, ":")[1] + "\"";
                     // }
-                    actionTable[t] := Shift(newName);
-                    print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
+                    this.mActionTable[t] := Shift(newName);
+                    if(!mSilentMode)
+                    {
+                        print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
+                    }
                 }
             }
             // compute reduce actions
@@ -604,7 +645,7 @@ class grammar(rules, variables, start) {
                     // print("this.mRuleNames[Rule(\"fact\", [\"LPAREN\", \"expr\", \"RPAREN\"])] = "+ this.mRuleNames[Rule("fact", ["LPAREN", "expr", "RPAREN"])]);
                     // print("this.mRuleNames[mr.toParserRule()] := this.mRuleNames[$parserRuleString$]");
                     // print("mRuleName: $ruleName$");
-                    action1  := actionTable[t];
+                    action1  := this.mActionTable[t];
                     // action2  := Reduce(mr.toRule() + "");
                     action2 := Reduce(ruleName);
                     if (action1 == om) {
@@ -615,26 +656,38 @@ class grammar(rules, variables, start) {
                         {
                             action2 := Accept();
                         }
-                        actionTable[t] := action2;
+                        this.mActionTable[t] := action2;
                         // print("mSTart: $mStart$");
                         // print("mRules: $mRules$");
-
-                        print("actionTable[\"$stateName$\", $t$] := $action2$;");
+                        if(!mSilentMode)
+                        {
+                            print("actionTable[\"$stateName$\", $t$] := $action2$;");
+                        }
                     } else if (action1 != action2) {
                         this.mConflicts := true;
-                        print("//");
-                        print("// conflict:");
-                        print("// action[\"$stateName$\", $t$] := $action1$;");                        
-                        print("// action[\"$stateName$\", $t$] := $action2$;");
-                        print("//");
+                        if(!mSilentMode)
+                        {
+                            print("//");
+                            print("// conflict:");
+                            print("// action[\"$stateName$\", $t$] := $action1$;");                        
+                            print("// action[\"$stateName$\", $t$] := $action2$;");
+                            print("//");
+                        }
                     }
                 }
             }
-            print("");
+            if(!mSilentMode)
+            
+            {   
+                print("");
+            }
         }
     };
     computeGotoTable := procedure() {
-        print("gotoTable := {};");
+        if(!mSilentMode)
+        {
+            print("gotoTable := {};");
+        }
         // print("mstates : $mStates$");
         // print("mVariables : $mVariables$");
         for (state in mStates, var in mVariables) {
@@ -643,7 +696,11 @@ class grammar(rules, variables, start) {
             if (newState != {}) {
                 stateName := mStateNames[state];
                 newName   := mStateNames[newState];
-                print("gotoTable[\"$stateName$\", $var$] := \"$newName$\";");
+                if(!mSilentMode)
+                {
+                    print("gotoTable[\"$stateName$\", $var$] := \"$newName$\";");
+                }
+                this.mGotoTable[stateName, var] := newName;
             }
         }
     };
@@ -713,11 +770,12 @@ class grammar(rules, variables, start) {
         }
     };
 
-testFromString := procedure(grammar_string){
-    [rules, variables, start] := readGrammarFromString(grammar_string);
+testFromString := procedure(grammar_string, silent_mode){
+    [rules, variables, start] := readGrammarFromString(grammar_string, silent_mode);
     // readGrammarFromString(grammar_string);
-    gr := grammar(rules, variables, start);
-    gr.checkLR();
+    gr := grammar(rules, variables, start, silent_mode);
+    [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := gr.checkLR();
+    return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
 
 };
 test := procedure(file) {

@@ -1,0 +1,53 @@
+executing : [input_grammar, file_to_parse] := params;
+			silent_mode := 1 == 1;
+			test_parser_gen(input_grammar, file_to_parse, silent_mode);
+mr.mVariable : Var("fact", "")
+mr.mAlpha : []
+mr.mBeta : [Token("INTEGER", "n")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("fact", "")
+mr.mAlpha : []
+mr.mBeta : [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("expr", "")
+mr.mAlpha : []
+mr.mBeta : [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")]
+mr.mFollowSet : {"MINUS", "PLUS", "RPAREN"}
+mr.mUser_Code : om
+mr.mVariable : Var("expr", "")
+mr.mAlpha : []
+mr.mBeta : [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")]
+mr.mFollowSet : {"MINUS", "PLUS", "RPAREN"}
+mr.mUser_Code : om
+mr.mVariable : Var("prod", "")
+mr.mAlpha : []
+mr.mBeta : [Var("fact", "f")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("expr", "")
+mr.mAlpha : []
+mr.mBeta : [Var("prod", "p")]
+mr.mFollowSet : {"MINUS", "PLUS", "RPAREN"}
+mr.mUser_Code : om
+mr.mVariable : Var("prod", "")
+mr.mAlpha : []
+mr.mBeta : [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("prod", "")
+mr.mAlpha : []
+mr.mBeta : [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("prod", "")
+mr.mAlpha : []
+mr.mBeta : [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}
+mr.mUser_Code : om
+mr.mVariable : Var("fact", "")
+mr.mAlpha : [Token("LPAREN", "")]
+mr.mBeta : [Var("expr", "e"), Token("RPAREN", "")]
+mr.mFollowSet : {"DIVIDE", "MINUS", "MOD", "PLUS", "SEMICOLON", "TIMES"}
+mr.mUser_Code : om
