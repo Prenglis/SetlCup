@@ -252,7 +252,7 @@ escapeDollar2 := procedure(t) {
         default:
             if(t == '$')
             {
-                    return Token('\$', "");
+                    return Token(@"$", "");
             }
             else
             {
@@ -306,22 +306,22 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
         }
         return Rule(mVariable, rargs, this.mUser_Code);
     };
-    // f_str := procedure() {
+    f_str := procedure() {
                 
-    //     rule :=  "$mVariable$";
-    //     rule += " ->" ;
-    //     rule += list2str(mAlpha) + " (*)";
-    //     rule +=  list2str(mBeta) + ": {";
-    //     n := 1;
-    //     for (t in mFollowSet) {
-    //         rule += escapeDollar(t);
-    //         if (n < #mFollowSet) {
-    //             rule += ", ";
-    //         }
-    //     }
-    //     rule += "}";
-    //     return rule;
-    // };
+        rule :=  "$mVariable$";
+        rule += " ->" ;
+        rule += list2str(mAlpha) + " (*)";
+        rule +=  list2str(mBeta) + ": {";
+        n := 1;
+        for (t in mFollowSet) {
+            rule += escapeDollar(t);
+            if (n < #mFollowSet) {
+                rule += ", ";
+            }
+        }
+        rule += "}";
+        return rule;
+    };
 
   static {
     // take a core rule and attach a follow set
@@ -572,7 +572,7 @@ class grammar(rules, variables, start, silent_mode) {
             this.mStateNames[state] := "s" + counter;
             if(!mSilentMode)
             {   
-                print("stateTable[\"s$counter$\"] := '$state2String(state)$';");
+                print("stateTable[\"s$counter$\"] := $state2String(state)$;");
             }
             this.mStateTable["s$counter$"] := state;
             
@@ -607,6 +607,10 @@ class grammar(rules, variables, start, silent_mode) {
             for (token in mTokens) {
                 stateName := mStateNames[state];
                 newState  := goto(state, token);
+                // if(stateName == "" || stateName == om)
+                // {
+                    // print("stateName : $stateName$; state : $state$");
+                // }
                 if (newState != {}) {
                     newName := mStateNames[newState];
                     t       := escapeDollar2(extractArg(token));
@@ -614,7 +618,7 @@ class grammar(rules, variables, start, silent_mode) {
                     // {
                         // t       := split(t, ":")[1] + "\"";
                     // }
-                    this.mActionTable[t] := Shift(newName);
+                    this.mActionTable[stateName, t] := Shift(newName);
                     if(!mSilentMode)
                     {
                         print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
@@ -656,7 +660,7 @@ class grammar(rules, variables, start, silent_mode) {
                         {
                             action2 := Accept();
                         }
-                        this.mActionTable[t] := action2;
+                        this.mActionTable[stateName, t] := action2;
                         // print("mSTart: $mStart$");
                         // print("mRules: $mRules$");
                         if(!mSilentMode)

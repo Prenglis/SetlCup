@@ -89,6 +89,7 @@ test_parser_gen := procedure(input_grammar, file_to_parse, silent_mode)
 	load("grammar_parser.stlx");
 
 	[scan_output, parser_part_string] := test_scanner_generator_scan(input_grammar, file_to_parse);
+	scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE" && x[2] != "COMMENTS"];
 	parser_part_string := trim(parser_part_string);
 	if(!silent_mode)
 	{
@@ -96,28 +97,29 @@ test_parser_gen := procedure(input_grammar, file_to_parse, silent_mode)
 	}
 	tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromString(parser_part_string, silent_mode);
 	names := ["ruleNames", "rulesMap", "stateTable", "actionTable", "gotoTable"];
-	// load("lr_shift_reduce_parser.stlx");
+	load("lr_shift_reduce_parser.stlx");
 	// for(i in [1..#tfs_list])
 	// {
-		// print("$names[i]$ : $tfs_list[i]$");
+	// 	print("$names[i]$ : $tfs_list[i]$");
 	// }
-	for(mr in stateTable["s1"])
-	{
-		print("mr.mVariable : $mr.mVariable$"); 
-		print("mr.mAlpha : $mr.mAlpha$");
-		print("mr.mBeta : $mr.mBeta$");
-		print("mr.mFollowSet : $mr.mFollowSet$");
-		print("mr.mUser_Code : $mr.mUser_Code$");
-	}
+	// print("$names[4]$ : $tfs_list[4]$");
+	// for(mr in stateTable["s1"])
+	// {
+		// print("mr.mVariable : $mr.mVariable$"); 
+		// print("mr.mAlpha : $mr.mAlpha$");
+		// print("mr.mBeta : $mr.mBeta$");
+		// print("mr.mFollowSet : $mr.mFollowSet$");
+		// print("mr.mUser_Code : $mr.mUser_Code$");
+	// }
 	// print("markedRule")
-	// myParse(ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+	myParse(ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
 	// silent_mode := 1 == 1;
 	// load("grammar_parser.stlx");
 	// [scan_output, parser_part_string] := test_scanner_generator_scan("input\\interpreter_grammar-pure.g", "input\\factorial.sl");
 	// [scan_output, parser_part_string] := test_scanner_generator_scan("input\\interpreter_grammar.g", "input\\factorial.sl");
 	// [scan_output, parser_part_string] := test_scanner_generator_scan(input\\math_expression_grammar-pure.g", "input\\math_expression_input.txt");	
 	// [scan_output, parser_part_string] := test_scanner_generator_scan("input\\math_expression_grammar.g", "input\\math_expression_input.txt");	
-	// scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE" && x[2] != "COMMENTS"];
+	
 	// print("scan_output := $scan_output$;");
 	// parser_part_string := trim(parser_part_string);
 	// if(!silent_mode)
@@ -136,9 +138,6 @@ main := closure() {
 	}
 	else if (#params == 2)
 	{
-			print("executing : [input_grammar, file_to_parse] := params;
-			silent_mode := 1 == 1;
-			test_parser_gen(input_grammar, file_to_parse, silent_mode);");
 			[input_grammar, file_to_parse] := params;
 			silent_mode := 1 == 1;
 			test_parser_gen(input_grammar, file_to_parse, silent_mode);

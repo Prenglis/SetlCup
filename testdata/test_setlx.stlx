@@ -1,1 +1,15 @@
-print("params : $params$");
+class markedRule(variable, alpha, beta, followSet, user_code) {
+    this.mVariable  := variable;
+    this.mAlpha     := alpha;
+    this.mBeta      := beta;
+    this.mFollowSet := followSet;
+    this.mUser_Code := user_code;
+}
+m1 := markedRule(Var("fact", ""),[], [Token("INTEGER", "n")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
+m2 := markedRule(Var("fact", ""),[], [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
+m3 := markedRule(Var("S", ""),[], [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
+mStateTable := {};
+mStateTable["s1"] := {m1, m2};
+mStateTable["s2"] := {m3};
+startState := {x : x in domain(mStateTable) | exists(y in mStateTable[x]| y.mVariable == Var("S", "") && y.mAlpha == [])};
+print("#startState : $#startState$");
