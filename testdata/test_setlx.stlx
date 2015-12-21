@@ -13,3 +13,20 @@ print("#b : $#b$");
 a := @' result := e + p;';
 b:= ["e := 15;", "p := 16;"] + [a];
 writeFile("test_output2.stlx", b);
+
+sc_dict:= {["SKIP", "NEWLINE | WHITESPACE"], ["WHITESPACE", "ASDASDSA"], ["NEWLINE", "ASDASDASDAS"], ["PENIS", "asdasdas"]};
+print("sc_dict : $sc_dict$");
+if(sc_dict["SKIP"] != om)
+	{
+		print("sc_dict[\"SKIP\"] : $sc_dict[\"SKIP\"]$");
+		to_skip_list := split(sc_dict["SKIP"], "\\|");
+		print("to_skip_list : $to_skip_list$");
+		for(skips in to_skip_list)
+		{
+			skips := trim(skips);
+			print("skips : $skips$");
+			sc_dict[skips] := om;
+		}
+		sc_dict["SKIP"] := om;
+	}
+print("sc_dict : $sc_dict$");

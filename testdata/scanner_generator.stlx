@@ -14,7 +14,7 @@ sc_dict_generate := procedure(file) {
 				state := "parser_part";
 		regex '[ \t]*\n' | state == "scanner_part":
 			//skip new lines
-		regex '[a-zA-Z]+' as [ identifier ] | state == "scanner_part":
+		regex '[A-Z]+' as [ identifier ] | state == "scanner_part":
 		 // save identifier
 			sc_dict[identifier] := "om";
 			last_identifier := identifier;
@@ -43,6 +43,19 @@ sc_dict_generate := procedure(file) {
 };
 generate_scan_string := procedure(sc_dict) {
 	silent_mode := 1 == 1;
+	print("sc_Dict := $sc_dict$");
+	if(sc_dict["SKIP"] != om)
+	{		
+		to_skip_list := split(sc_dict["SKIP"], "\\|");
+		print("to_skip_list := $to_skip_list$");
+		for(skips in to_skip_list)
+		{
+			skips := trim(skips);
+			print("skips : $skips$");
+			sc_dict[skips] := om;
+		}
+		sc_dict["SKIP"] := om;
+	}
 	scan_string := "scan(lines) { \n";
 
 		for ( i in domain(sc_dict))
@@ -89,7 +102,7 @@ test_parser_gen := procedure(input_grammar, file_to_parse, silent_mode)
 	load("grammar_parser.stlx");
 
 	[scan_output, parser_part_string] := test_scanner_generator_scan(input_grammar, file_to_parse);
-	scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE" && x[2] != "COMMENTS"];
+	// scan_output := [x : x in scan_output | x[2]!="WHITESPACE" && x[2]!="NEWLINE" && x[2] != "COMMENTS"];
 	parser_part_string := trim(parser_part_string);
 	if(!silent_mode)
 	{

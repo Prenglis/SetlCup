@@ -1,53 +1,38 @@
-// CUP specification for a simple expression evaluator (with actions)
-import java_cup.runtime.*;
-class  ExprParser;
 
-/* Terminals (tokens returned by the scanner). */
-terminal            SEMI, PLUS, MINUS, TIMES, DIVIDE, MOD;
-terminal            LPAREN, RPAREN;
-terminal Integer    NUMBER;
-
-/* Non-terminals */
-nonterminal         expr_list, expr_part;
-nonterminal Integer expr, prod, fact;
-
-start with expr_list;
-/* The grammar */
 
 %%%
 
-SEMICOLON := \; ;
+SEMICOLON := ; ;
 TIMES := \* ;
-MINUS   := \- ;
+MINUS   := - ;
 DIVIDE   := \\ ;
 INTEGER     := 0|[1-9][0-9]* ;
 NEWLINE := \n ;
 WHITESPACE := [ \t\v\n\r\s] ;
-MOD := \%;
+MOD := %;
 PLUS  := \+ ;
 LPAREN := \( ;
 RPAREN := \) ;
+SKIP := WHITESPACE | NEWLINE ;
 
 %%%
-grammar ::= expr_list
-          ;
-          
+
 expr_list ::= expr_list expr_part 
            |  expr_part
            ;
-expr_part ::= expr SEMICOLON 
+expr_part ::= expr:e SEMICOLON 
            ;
-expr ::= expr PLUS   prod 
-      |  expr MINUS  prod 
-      |  prod              
+expr ::= expr:e PLUS   prod:p  
+      |  expr:e MINUS  prod:p 
+      |  prod:p              
       ;
-prod ::= prod TIMES  fact
-      |  prod DIVIDE fact
-      |  prod MOD    fact
-      |  fact               
+prod ::= prod:p TIMES  fact:f 
+      |  prod:p DIVIDE fact:f  
+      |  prod:p MOD    fact:f 
+      |  fact:f               
       ;
-fact ::= LPAREN expr RPAREN  
-      |  INTEGER             
+fact ::= LPAREN expr:e RPAREN  
+      |  INTEGER:n             
       ;
 
 

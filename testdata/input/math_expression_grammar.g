@@ -2,17 +2,18 @@
 
 %%%
 
-SEMICOLON := \; ;
+SEMICOLON := ; ;
 TIMES := \* ;
-MINUS   := \- ;
+MINUS   := - ;
 DIVIDE   := \\ ;
 INTEGER     := 0|[1-9][0-9]* ;
 NEWLINE := \n ;
 WHITESPACE := [ \t\v\n\r\s] ;
-MOD := \%;
+MOD := %;
 PLUS  := \+ ;
 LPAREN := \( ;
 RPAREN := \) ;
+SKIP := WHITESPACE | NEWLINE ;
 
 %%%
 

@@ -1,29 +1,11 @@
-import java_cup.runtime.*;
 
-terminal ID, NUMBER, STRING;
-terminal ASSIGN, SEMI;
-terminal AND, OR, NOT;
-terminal NE, EQ, LT, GT, LE, GE;
-terminal PLUS, MINUS, TIMES, DIV, MOD;
-terminal PRINT, IF, ELSE, WHILE, FOR, RETURN, QUIT, FUNCTION;
-terminal LBRACE, RBRACE, LPAR, RPAR, COMMA;
-
-nonterminal program, dfnStmntList, definition, stmntList, statement;
-nonterminal printExprList, nePrintExprList, printExpr, assignment;
-nonterminal paramList, neIDList, boolExpr, expr, exprList, neExprList;
-
-precedence left  OR;
-precedence left  AND;
-precedence right NOT;
-precedence left  PLUS, MINUS;
-precedence left  TIMES, DIV, MOD;
 %%%
 
-SEMI := \; ;
+SEMI := ; ;
 TIMES := \* ;
-MINUS   := \- ;
+MINUS   := - ;
 DIV   := \\ ;
-MOD := \%;
+MOD := %;
 PLUS  := \+ ;
 LPAR := \( ;
 RPAR := \) ;
@@ -52,107 +34,121 @@ STRING := \"[^\"]*\" ;
 NEWLINE := \n ;
 COMMENTS := // [^\n]* ;
 WHITESPACE := [ \t\v\n\r\s] ;
-
+SKIP := WHITESPACE | NEWLINE | COMMENTS ;
 INTEGER := 0|[1-9][0-9]* ;
 DECIMAL := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
 ZID := [a-zA-Z_][a-zA-Z0-9_]* ;
 
 
 %%%
-program ::= dfnStmntList ;
+program ::= dfnStmntList:d ;
 
 dfnStmntList 
-    ::= definition dfnStmntList
-     |  statement  dfnStmntList
-     |  
+    ::= definition:d dfnStmntList:dl 
+     |  statement:stmts  dfnStmntList:dsl 
+     | 
      ;
 
-definition 
-    ::= FUNCTION ZID LPAR paramList RPAR LBRACE stmntList RBRACE 
-     ;
+definition ::= FUNCTION ZID:function_name LPAR paramList:param_list RPAR LBRACE stmntList:statement_list RBRACE ;
 
 stmntList
-    ::= statement stmntList
+    ::= statement:s stmntList:sl 
      |  
      ;
 
 statement 
-    ::= assignment SEMI     
-     |  PRINT LPAR printExprList RPAR SEMI       
-     |  IF LPAR boolExpr RPAR LBRACE stmntList RBRACE 
-     |  WHILE LPAR boolExpr RPAR LBRACE stmntList RBRACE 
-     |  FOR LPAR assignment SEMI boolExpr SEMI assignment RPAR LBRACE stmntList RBRACE
-     |  RETURN expr SEMI 
+    ::= assignment:a SEMI     
+     |  PRINT LPAR printExprList:printexpr_list RPAR SEMI       
+     |  IF LPAR boolExpr:b RPAR LBRACE stmntList:st_list1 RBRACE           
+     |  WHILE LPAR boolExpr:b RPAR LBRACE stmntList:st_list2 RBRACE        
+     |  FOR LPAR assignment:i_a SEMI boolExpr:b SEMI assignment:e_a RPAR LBRACE stmntList:st_list3 RBRACE 
+     |  RETURN expr:e SEMI 
      |  RETURN SEMI 
-     |  expr SEMI       
-     |  QUIT SEMI
+     |  expr:e SEMI       
+     |  QUIT SEMI 
      ;
 
 printExprList 
-    ::= printExpr COMMA nePrintExprList 
-     |  printExpr
+    ::= printExpr:p COMMA nePrintExprList:np 
+     |  printExpr:p 
      |  
      ;
 
 nePrintExprList
-    ::= printExpr
-     |  printExpr COMMA nePrintExprList
+    ::= printExpr:p 
+     |  printExpr:p COMMA nePrintExprList:np 
      ;
 
 printExpr 
-    ::= STRING 
-     |  expr   
+    ::= STRING:string 
+     |  expr:e  
      ;
 
 assignment 
-    ::= ZID ASSIGN expr 
+    ::= ZID:id ASSIGN expr:e 
      ;
 
 paramList 
-    ::= ZID COMMA neIDList
-     |  ZID
+    ::= ZID:id COMMA neIDList:nid 
+     |  ZID:id 
      |  
      ;
 
 neIDList
-    ::= ZID COMMA neIDList
-     |  ZID
+    ::= ZID:id COMMA neIDList:nid 
+     |  ZID:id  
      ;
+
 
 boolExpr 
-    ::= boolExpr OR  boolExpr
-     |  boolExpr AND boolExpr
-     |  NOT boolExpr 
-     |  LPAR boolExpr RPAR 
-     |  expr EQ expr  
-     |  expr NE expr 
-     |  expr LE expr 
-     |  expr GE expr 
-     |  expr LT expr 
-     |  expr GT expr 
+    ::= expr:lhs EQ expr:rhs  
+     |  expr:lhs NE expr:rhs  
+     |  disjunction:lhs EQ disjunction:rhs  
+     |  disjunction:lhs NE disjunction:rhs  
+     |  expr:lhs LE expr:rhs  
+     |  expr:lhs GE expr:rhs  
+     |  expr:lhs LT expr:rhs  
+     |  expr:lhs GT expr:rhs  
+     |  disjunction:d 
+     ;
+disjunction
+    ::= disjunction:d OR conjunction:c 
+     |  conjunction:c 
+     ;
+conjunction
+    ::= conjunction:c AND boolFactor:f 
+     | boolFactor:f 
+     ;
+boolFactor
+    ::= LPAR boolExpr:e RPAR 
+     | NOT boolExpr:e 
      ;
 
-expr
-    ::= expr PLUS expr
-     |  expr MINUS expr
-     |  expr TIMES expr
-     |  expr DIV   expr
-     |  expr MOD   expr
-     |  LPAR expr RPAR      
-     |  ZID    
-     |  INTEGER
-     |  DECIMAL        
-     |  ZID LPAR exprList RPAR
-     ;
+
+expr ::= expr:e PLUS   prod:p  
+      |  expr:e MINUS  prod:p  
+      |  prod:p               
+      ;
+prod ::= prod:p TIMES  fact:f 
+      |  prod:p DIV fact:f  
+      |  prod:p MOD    fact:f  
+      |  fact:f               
+      ;
+fact ::= LPAR expr:e RPAR  
+      |  INTEGER:n              
+      |  DECIMAL:d               
+      |  ZID:id_1 LPAR exprList:el RPAR 
+      | ZID:id_2 
+      ;
 
 exprList
-    ::= expr COMMA neExprList
-     |  expr
+    ::= expr:e COMMA neExprList:el 
+     |  expr:e 
      |  
      ;
 
 neExprList
-    ::= expr COMMA neExprList
-     |  expr
+    ::= expr:e COMMA neExprList:el 
+     |  expr:e 
      ;
 

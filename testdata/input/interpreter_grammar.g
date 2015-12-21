@@ -1,11 +1,11 @@
 
 %%%
 
-SEMI := \; ;
+SEMI := ; ;
 TIMES := \* ;
-MINUS   := \- ;
+MINUS   := - ;
 DIV   := \\ ;
-MOD := \%;
+MOD := %;
 PLUS  := \+ ;
 LPAR := \( ;
 RPAR := \) ;
@@ -34,7 +34,7 @@ STRING := \"[^\"]*\" ;
 NEWLINE := \n ;
 COMMENTS := // [^\n]* ;
 WHITESPACE := [ \t\v\n\r\s] ;
-
+SKIP := WHITESPACE | NEWLINE | COMMENTS ;
 INTEGER := 0|[1-9][0-9]* ;
 DECIMAL := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
 ZID := [a-zA-Z_][a-zA-Z0-9_]* ;
