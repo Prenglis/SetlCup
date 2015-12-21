@@ -1,15 +1,15 @@
-class markedRule(variable, alpha, beta, followSet, user_code) {
-    this.mVariable  := variable;
-    this.mAlpha     := alpha;
-    this.mBeta      := beta;
-    this.mFollowSet := followSet;
-    this.mUser_Code := user_code;
-}
-m1 := markedRule(Var("fact", ""),[], [Token("INTEGER", "n")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
-m2 := markedRule(Var("fact", ""),[], [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
-m3 := markedRule(Var("S", ""),[], [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], {"DIVIDE", "MINUS", "MOD", "PLUS", "RPAREN", "TIMES"}, om);
-mStateTable := {};
-mStateTable["s1"] := {m1, m2};
-mStateTable["s2"] := {m3};
-startState := {x : x in domain(mStateTable) | exists(y in mStateTable[x]| y.mVariable == Var("S", "") && y.mAlpha == [])};
-print("#startState : $#startState$");
+uc := UserCode(' result := e + p; ');
+luc := #args(uc)[1];
+print("args(uc)[1] == '' : $args(uc)[1]$ == '' : $args(uc)[1] == ''$");	
+print("#args(uc)[1] == $#args(uc)[1]$");	
+print("luc : $luc$");
+print("user_code == UserCode('') : $uc$ == $UserCode('')$ : $uc == UserCode('')$");
+
+a := '';
+b := "";
+print("#a : $#a$");
+print("#b : $#b$");
+
+a := @' result := e + p;';
+b:= ["e := 15;", "p := 16;"] + [a];
+writeFile("test_output2.stlx", b);

@@ -1,18 +1,4 @@
-// CUP specification for a simple expression evaluator (with actions)
-import java_cup.runtime.*;
-class  ExprParser;
 
-/* Terminals (tokens returned by the scanner). */
-terminal            SEMI, PLUS, MINUS, TIMES, DIVIDE, MOD;
-terminal            LPAREN, RPAREN;
-terminal Integer    NUMBER;
-
-/* Non-terminals */
-nonterminal         expr_list, expr_part;
-nonterminal Integer expr, prod, fact;
-
-start with expr_list;
-/* The grammar */
 
 %%%
 

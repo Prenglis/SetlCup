@@ -16,32 +16,32 @@ fact ::= LPAREN expr:e RPAREN {: result := e;   :}
       |  INTEGER:n             {: result := n;   :} 
       ;
 rulesMap := {};
-r0 := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(''));
-rulesMap["r0"] := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(''));
-r1 := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(''));
-rulesMap["r1"] := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(''));
-r2 := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(' print("result = $e$"); '));
-rulesMap["r2"] := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(' print("result = $e$"); '));
-r3 := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(' result := e + p; '));
-rulesMap["r3"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(' result := e + p; '));
-r4 := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(' result := e - p; '));
-rulesMap["r4"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(' result := e - p; '));
-r5 := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(' result := p;     '));
-rulesMap["r5"] := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(' result := p;     '));
-r6 := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(' result := p * f; '));
-rulesMap["r6"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(' result := p * f; '));
-r7 := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(' result := p / f; '));
-rulesMap["r7"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(' result := p / f; '));
-r8 := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(' result := p % f; '));
-rulesMap["r8"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(' result := p % f; '));
-r9 := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(' result := f;     '));
-rulesMap["r9"] := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(' result := f;     '));
-r10 := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(' result := e;   '));
-rulesMap["r10"] := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(' result := e;   '));
-r11 := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(' result := n;   '));
-rulesMap["r11"] := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(' result := n;   '));
-r12 := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(''));
-rulesMap["r12"] := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(''));
+r0 := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(""));
+rulesMap["r0"] := Rule(Var("expr_list", ""), [Var("expr_list", ""), Var("expr_part", "")], UserCode(""));
+r1 := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(""));
+rulesMap["r1"] := Rule(Var("expr_list", ""), [Var("expr_part", "")], UserCode(""));
+r2 := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(" print("result = $e$"); "));
+rulesMap["r2"] := Rule(Var("expr_part", ""), [Var("expr", "e"), Token("SEMICOLON", "")], UserCode(" print("result = $e$"); "));
+r3 := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" result := e + p; "));
+rulesMap["r3"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("PLUS", ""), Var("prod", "p")], UserCode(" result := e + p; "));
+r4 := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" result := e - p; "));
+rulesMap["r4"] := Rule(Var("expr", ""), [Var("expr", "e"), Token("MINUS", ""), Var("prod", "p")], UserCode(" result := e - p; "));
+r5 := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p;     "));
+rulesMap["r5"] := Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p;     "));
+r6 := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" result := p * f; "));
+rulesMap["r6"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("TIMES", ""), Var("fact", "f")], UserCode(" result := p * f; "));
+r7 := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" result := p / f; "));
+rulesMap["r7"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("DIVIDE", ""), Var("fact", "f")], UserCode(" result := p / f; "));
+r8 := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" result := p % f; "));
+rulesMap["r8"] := Rule(Var("prod", ""), [Var("prod", "p"), Token("MOD", ""), Var("fact", "f")], UserCode(" result := p % f; "));
+r9 := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f;     "));
+rulesMap["r9"] := Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f;     "));
+r10 := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" result := e;   "));
+rulesMap["r10"] := Rule(Var("fact", ""), [Token("LPAREN", ""), Var("expr", "e"), Token("RPAREN", "")], UserCode(" result := e;   "));
+r11 := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := n;   "));
+rulesMap["r11"] := Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := n;   "));
+r12 := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(""));
+rulesMap["r12"] := Rule(Var("S", ""), [Var("expr_list", "")], UserCode(""));
 
 
 stateTable := {};
@@ -312,8 +312,6 @@ tokenlist: [["1", "INTEGER"], ["+", "PLUS"], ["2", "INTEGER"], ["*", "TIMES"], [
 
 #startState : 1
 startState : s7
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7 ]
 symbols:  | INTEGER PLUS INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -321,44 +319,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s15 ]
 symbols: Token("INTEGER", "n") | PLUS INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s29 ]
 symbols: Var("fact", "") | PLUS INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s31] : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s31 ]
 symbols: Var("prod", "") | PLUS INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r5 : Var("expr", "") -> Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s20 ]
 symbols: Var("expr", "") | PLUS INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -366,8 +353,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s10
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s20, s10 ]
 symbols: Var("expr", "") Token("PLUS", "") | INTEGER TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -375,32 +360,24 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s10, s15 ]
 symbols: Var("expr", "") Token("PLUS", "") Token("INTEGER", "n") | TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s10, s29 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("fact", "") | TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact"}]}
 token_list :{""}
 states:  [ s7, s20, s10, s24 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("prod", "") | TIMES INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -408,8 +385,6 @@ state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }
 shifting state s13
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s20, s10, s24, s13 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") | INTEGER MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -417,44 +392,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s10, s24, s13, s15 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") Token("INTEGER", "n") | MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s37] : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s10, s24, s13, s37 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") Var("fact", "") | MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r6 : Var("prod", "") -> Var("prod", "p") Token("TIMES", "") Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s10, s24 ]
 symbols: Var("expr", "") Token("PLUS", "") Var("prod", "") | MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r3 : Var("expr", "") -> Var("expr", "e") Token("PLUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e MINUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s20 ]
 symbols: Var("expr", "") | MINUS INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -462,8 +426,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s9
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e MINUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s20, s9 ]
 symbols: Var("expr", "") Token("MINUS", "") | INTEGER SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -471,44 +433,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s9, s15 ]
 symbols: Var("expr", "") Token("MINUS", "") Token("INTEGER", "n") | SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s9, s29 ]
 symbols: Var("expr", "") Token("MINUS", "") Var("fact", "") | SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s22] : {Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s9, s22 ]
 symbols: Var("expr", "") Token("MINUS", "") Var("prod", "") | SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e MINUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r4 : Var("expr", "") -> Var("expr", "e") Token("MINUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, }}]}
-action_tokens : {["", {}]}
 token_list :{""}
 states:  [ s7, s20 ]
 symbols: Var("expr", "") | SEMICOLON INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -516,32 +467,22 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s25
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s20, s25 ]
 symbols: Var("expr", "") Token("SEMICOLON", "") | INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r2 : Var("expr_part", "") -> Var("expr", "e") Token("SEMICOLON", "")
-mStateTable[s27] : {Var("expr_list", "") -> expr_part (*): {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr_list", "") -> expr_part (*): {\$, INTEGER, LPAREN, }}
-var_id : [""]
-var_id : {""}
+var_id : {}
 state:   { Var("expr_list", "") -> expr_part (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s27 ]
 symbols: Var("expr_part", "") | INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr_list", "") -> expr_part (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r1 : Var("expr_list", "") -> Var("expr_part", "")
-mStateTable[s8] : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
 stateString : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
-var_id : ["", ""]
-var_id : {""}
+var_id : {}
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("S", "") -> expr_list (*): {\$}Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8 ]
 symbols: Var("expr_list", "") | INTEGER PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -549,44 +490,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s15 ]
 symbols: Var("expr_list", "") Token("INTEGER", "n") | PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s29 ]
 symbols: Var("expr_list", "") Var("fact", "") | PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s31] : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s31 ]
 symbols: Var("expr_list", "") Var("prod", "") | PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r5 : Var("expr", "") -> Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | PLUS INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -594,8 +524,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s10
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") | INTEGER PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -603,44 +531,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s15 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("INTEGER", "n") | PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s29 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("fact", "") | PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r3 : Var("expr", "") -> Var("expr", "e") Token("PLUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | PLUS INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -648,8 +565,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s10
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") | INTEGER PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -657,44 +572,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s15 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("INTEGER", "n") | PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s29 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("fact", "") | PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r3 : Var("expr", "") -> Var("expr", "e") Token("PLUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | PLUS INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -702,8 +606,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s10
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") | INTEGER SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -711,44 +613,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s15 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("INTEGER", "n") | SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s29 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("fact", "") | SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r3 : Var("expr", "") -> Var("expr", "e") Token("PLUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, }}]}
-action_tokens : {["", {}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | SEMICOLON INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -756,32 +647,22 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s25
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s25 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("SEMICOLON", "") | INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r2 : Var("expr_part", "") -> Var("expr", "e") Token("SEMICOLON", "")
-mStateTable[s26] : {Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, }}
-var_id : [""]
-var_id : {""}
+var_id : {}
 state:   { Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s26 ]
 symbols: Var("expr_list", "") Var("expr_part", "") | INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r0 : Var("expr_list", "") -> Var("expr_list", "") Var("expr_part", "")
-mStateTable[s8] : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
 stateString : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
-var_id : ["", ""]
-var_id : {""}
+var_id : {}
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("S", "") -> expr_list (*): {\$}Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8 ]
 symbols: Var("expr_list", "") | INTEGER PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -789,44 +670,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s15 ]
 symbols: Var("expr_list", "") Token("INTEGER", "n") | PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s29 ]
 symbols: Var("expr_list", "") Var("fact", "") | PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s31] : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s31 ]
 symbols: Var("expr_list", "") Var("prod", "") | PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r5 : Var("expr", "") -> Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | PLUS LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -834,8 +704,6 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s10
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e PLUS (*) prod:p: {MINUS, PLUS, SEMICOLON, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, RPAREN, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> LPAREN (*) expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "expr", "fact", "prod"}]}
 token_list :{""}
 states:  [ s7, s8, s20, s10 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") | LPAREN INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -843,8 +711,6 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s1
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, RPAREN, }Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, RPAREN, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("expr", "") -> (*) prod:p: {MINUS, PLUS, RPAREN, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("fact", "") -> LPAREN (*) expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10, s1 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") | INTEGER TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -852,32 +718,24 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, 
 shifting state s14
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s14 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Token("INTEGER", "n") | TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s28] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s28 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("fact", "") | TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s30] : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
 stateString : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact"}]}
 token_list :{""}
 states:  [ s7, s8, s20, s10, s1, s30 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("prod", "") | TIMES INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -885,8 +743,6 @@ state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }Var("prod", "")
 shifting state s6
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10, s1, s30, s6 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("prod", "") Token("TIMES", "") | INTEGER RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -894,44 +750,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, RPAREN, 
 shifting state s14
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s30, s6, s14 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("prod", "") Token("TIMES", "") Token("INTEGER", "n") | RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s36] : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
 stateString : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s30, s6, s36 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("prod", "") Token("TIMES", "") Var("fact", "") | RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 reducing with rule r6 : Var("prod", "") -> Var("prod", "p") Token("TIMES", "") Var("fact", "f")
-mStateTable[s30] : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
 stateString : {Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s30 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("prod", "") | RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("expr", "") -> prod:p (*): {MINUS, PLUS, RPAREN, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, RPAREN, TIMES, } }
 reducing with rule r5 : Var("expr", "") -> Var("prod", "p")
-mStateTable[s17] : {Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, }}
 stateString : {Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, RPAREN, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, RPAREN, } }
 
-action_tokens : {["", {Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["", {}]}
 token_list :{""}
 states:  [ s7, s8, s20, s10, s1, s17 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("expr", "") | RPAREN TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -939,32 +784,24 @@ state:   { Var("fact", "") -> LPAREN expr:e (*) RPAREN: {DIVIDE, MINUS, MOD, PLU
 shifting state s19
 state:   { Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s1, s17, s19 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Token("LPAREN", "") Var("expr", "") Token("RPAREN", "") | TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> LPAREN expr:e RPAREN (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r10 : Var("fact", "") -> Token("LPAREN", "") Var("expr", "e") Token("RPAREN", "")
-mStateTable[s29] : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s29 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("fact", "") | TIMES INTEGER MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r9 : Var("prod", "") -> Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact"}]}
 token_list :{""}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | TIMES INTEGER MOD INTEGER SEMICOLON "$"
@@ -972,8 +809,6 @@ state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }
 shifting state s13
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p TIMES (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10, s24, s13 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") | INTEGER MOD INTEGER SEMICOLON "$"
@@ -981,32 +816,24 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24, s13, s15 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") Token("INTEGER", "n") | MOD INTEGER SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s37] : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24, s13, s37 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("TIMES", "") Var("fact", "") | MOD INTEGER SEMICOLON "$"
 state:   { Var("prod", "") -> prod:p TIMES fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r6 : Var("prod", "") -> Var("prod", "p") Token("TIMES", "") Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["", {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p MOD (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["", {"INTEGER", "LPAREN", "fact"}]}
 token_list :{""}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | MOD INTEGER SEMICOLON "$"
@@ -1014,8 +841,6 @@ state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }
 shifting state s12
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p MOD (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {["n", {Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}]}
-action_tokens : {["n", {}]}
 token_list :{"n"}
 states:  [ s7, s8, s20, s10, s24, s12 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("MOD", "") | INTEGER SEMICOLON "$"
@@ -1023,44 +848,33 @@ state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLO
 shifting state s15
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24, s12, s15 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("MOD", "") Token("INTEGER", "n") | SEMICOLON "$"
 state:   { Var("fact", "") -> INTEGER:n (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r11 : Var("fact", "") -> Token("INTEGER", "n")
-mStateTable[s35] : {Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["f"]
+var_id : {"f"}
 var_id : {"f"}
 state:   { Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24, s12, s35 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") Token("MOD", "") Var("fact", "") | SEMICOLON "$"
 state:   { Var("prod", "") -> prod:p MOD fact:f (*): {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r8 : Var("prod", "") -> Var("prod", "p") Token("MOD", "") Var("fact", "f")
-mStateTable[s24] : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
 stateString : {Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }}
-var_id : ["p", "p", "p", "p"]
+var_id : {"p"}
 var_id : {"p"}
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s10, s24 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("PLUS", "") Var("prod", "") | SEMICOLON "$"
 state:   { Var("expr", "") -> expr:e PLUS prod:p (*): {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> prod:p (*) DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> prod:p (*) TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, } }
 reducing with rule r3 : Var("expr", "") -> Var("expr", "e") Token("PLUS", "") Var("prod", "p")
-mStateTable[s20] : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, }}
-var_id : ["e", "e", "e"]
+var_id : {"e"}
 var_id : {"e"}
 state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> expr:e (*) PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> expr:e (*) SEMICOLON: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {["", {Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, }}]}
-action_tokens : {["", {}]}
 token_list :{""}
 states:  [ s7, s8, s20 ]
 symbols: Var("expr_list", "") Var("expr", "") | SEMICOLON "$"
@@ -1068,32 +882,22 @@ state:   { Var("expr", "") -> expr:e (*) MINUS prod:p: {MINUS, PLUS, SEMICOLON, 
 shifting state s25
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s20, s25 ]
 symbols: Var("expr_list", "") Var("expr", "") Token("SEMICOLON", "") | "$"
 state:   { Var("expr_part", "") -> expr:e SEMICOLON (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r2 : Var("expr_part", "") -> Var("expr", "e") Token("SEMICOLON", "")
-mStateTable[s26] : {Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, }}
 stateString : {Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, }}
-var_id : [""]
-var_id : {""}
+var_id : {}
 state:   { Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, } }
 
-action_tokens : {[""]}
-action_tokens : {[""]}
 states:  [ s7, s8, s26 ]
 symbols: Var("expr_list", "") Var("expr_part", "") | "$"
 state:   { Var("expr_list", "") -> expr_list expr_part (*): {\$, INTEGER, LPAREN, } }
 reducing with rule r0 : Var("expr_list", "") -> Var("expr_list", "") Var("expr_part", "")
-mStateTable[s8] : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
 stateString : {Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }, Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }, Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }, Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }, Var("S", "") -> expr_list (*): {\$}, Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, }}
-var_id : ["", ""]
-var_id : {""}
+var_id : {}
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("S", "") -> expr_list (*): {\$}Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, } }
 
-action_tokens : {}
-action_tokens : {}
 states:  [ s7, s8 ]
 symbols: Var("expr_list", "") | "$"
 state:   { Var("fact", "") -> (*) INTEGER:n: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("fact", "") -> (*) LPAREN expr:e RPAREN: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) expr:e MINUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr", "") -> (*) expr:e PLUS prod:p: {MINUS, PLUS, SEMICOLON, }Var("expr_part", "") -> (*) expr:e SEMICOLON: {\$, INTEGER, LPAREN, }Var("prod", "") -> (*) fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("expr", "") -> (*) prod:p: {MINUS, PLUS, SEMICOLON, }Var("prod", "") -> (*) prod:p DIVIDE fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p MOD fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("prod", "") -> (*) prod:p TIMES fact:f: {DIVIDE, MINUS, MOD, PLUS, SEMICOLON, TIMES, }Var("S", "") -> expr_list (*): {\$}Var("expr_list", "") -> expr_list (*) expr_part: {\$, INTEGER, LPAREN, } }

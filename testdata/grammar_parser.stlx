@@ -381,7 +381,7 @@ class grammar(rules, variables, start, silent_mode) {
     this.mRules       := rules;
     this.mVariables   := variables;
     this.mStart       := start;
-    this.mRules       += { [Var("S",""), [mStart], UserCode("")] }; // augment grammar
+    this.mRules       += { [Var("S",""), [mStart], UserCode('')] }; // augment grammar
     this.mVariables   += { Var("S", "") };
     this.mFirst       := initializeMap(mVariables);
     this.mFollow      := initializeMap(mVariables);
@@ -412,7 +412,7 @@ class grammar(rules, variables, start, silent_mode) {
         // print("eval(uc_eval) : $eval(\"uc_eval\")$");
         // user_code := evalTerm(parse(uc_eval));
         // user_code := eval(uc_eval);
-        execute("user_code := UserCode(@'$args(user_code)[1]$');");
+        execute("user_code := UserCode('$args(user_code)[1]$');");
         // print("uc : $user_code$");
         // user_code := 
         rule                  := Rule(head, rargs, user_code);
