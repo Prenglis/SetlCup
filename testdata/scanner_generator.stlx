@@ -43,15 +43,12 @@ sc_dict_generate := procedure(file) {
 };
 generate_scan_string := procedure(sc_dict) {
 	silent_mode := 1 == 1;
-	print("sc_Dict := $sc_dict$");
 	if(sc_dict["SKIP"] != om)
 	{		
 		to_skip_list := split(sc_dict["SKIP"], "\\|");
-		print("to_skip_list := $to_skip_list$");
 		for(skips in to_skip_list)
 		{
 			skips := trim(skips);
-			print("skips : $skips$");
 			sc_dict[skips] := om;
 		}
 		sc_dict["SKIP"] := om;

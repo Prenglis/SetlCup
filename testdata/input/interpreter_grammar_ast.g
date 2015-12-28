@@ -73,7 +73,7 @@ statement
 printExprList 
     ::= printExpr:p COMMA nePrintExprList:np {: result := [p] + np ; :}
      |  printExpr:p {: result := [p]; :}
-     |  {: result := [];}
+     |  {: result := []; :}
      ;
 
 nePrintExprList
