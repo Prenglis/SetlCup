@@ -1,0 +1,25 @@
+Program([
+	Function("factorial", ["n"], [
+		If(
+			Equation(
+				Variable("n"), Integer(0)), 
+			[Return(Integer(1))]), 
+		Return(
+			Product(
+				Variable("n"), 
+				FunctionCall("factorial", [
+					Difference(
+						Variable("n"), Integer(1))])))]), 
+	Print([PrintString("Berechnung der Fakultaet fuer i = 1 bis 9")]), 
+	For(
+		Assign("i", Integer(0)), 
+		LessThan(Variable("i"), 
+		Integer(10)), 
+		Assign("i", Sum(Variable("i"), Integer(1))), [
+		Print([
+			Expr(Variable("i")), 
+			PrintString("! = "), 
+			Expr(
+				FunctionCall("factorial", [
+					Variable("i")]))])]), 
+	Print([])])
