@@ -1,7 +1,8 @@
 \select@language {USenglish}
 \vspace *{\baselineskip }
 \contentsline {chapter}{\numberline {1}Functionality}{2}
-\contentsline {section}{\numberline {1.1}Comment-Part}{2}
-\contentsline {section}{\numberline {1.2}Scanner-Part}{2}
-\contentsline {section}{\numberline {1.3}Parser-Part}{3}
-\contentsline {section}{\numberline {1.4}Example}{4}
+\contentsline {section}{\numberline {1.1}Using SetlCup}{2}
+\contentsline {section}{\numberline {1.2}Comment-Part}{2}
+\contentsline {section}{\numberline {1.3}Scanner-Part}{3}
+\contentsline {section}{\numberline {1.4}Parser-Part}{3}
+\contentsline {section}{\numberline {1.5}Example}{4}

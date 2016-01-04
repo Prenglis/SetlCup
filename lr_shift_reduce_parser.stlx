@@ -8,12 +8,10 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
         action_code := [];
         //init vars
         mrs := +/range(mStateTable);
-        // print("mrs : $mrs$");
-        // print("isObject(arb(mrs) :$isObject(arb(mrs))$");
         vars := {mr.mAlpha : mr in mrs | mr.mAlpha != []};
         vars := +/vars;
         vars := {  args(mvars)[2] : mvars in vars | args(mvars)[2] != ""};
-        // print("vars : $vars$");
+        action_code += ["result := [];"]
         for(var_id in vars)
         {
             action_code += ["$var_id$ := [];"];
@@ -58,9 +56,6 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                     if(token_id != "")
                     {
                             action_code += ["$token_id$ += ['$t_value$'];"];
-                            // action_code += ["t_$token_id$ := $token_id$"];
-                            // action_code += ["$token_id$ := $token_id[-1]"]                            
-                            // action_code += ["$t_vars$ := t_$t_vars$[..-2];"];
                     }
                 }
             t := Token(t, token_id);             
@@ -160,7 +155,7 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  { 
                     print("accepting\n");
                  }
-                 writeFile("output\\action_code.stlx", action_code);
+                 writeFile("temp_action_code.stlx", action_code);
 
                  return true;
             } 
@@ -175,8 +170,11 @@ myParse := closure(ruleNames, rulesMap, stateTable, actionTable, gotoTable, sile
         print("tokenlist: $tl$\n");
     }
     if (parser.parseSR(tl + [[@"$", @"$"]])) {
-        print("Parse successful!");
-        load("output\\action_code.stlx");
+        if(!silent_mode)
+        {
+            print("Parse successful!");
+        }
+        load("temp_action_code.stlx");
         return result;
     } else {
         print("Parse failed!");

@@ -12,6 +12,17 @@ A sample input file is divided into three Sections:
 	\item Parser-Part
 \end{enumerate}
 
+At first the correct call of the program is discussed.
+\section{Using SetlCup}
+SetlCup has three different variants in which it can be called:
+\begin{enumerate}
+	\item \begin{verbatim}setlx setlcup.stlx -p parser_scanner_file.stlx file_to_be_read.txt \end{verbatim}
+			With this call there will be no output for the user.
+	\item \begin{verbatim}setlx setlcup.stlx -p parser_scanner_file.stlx file_to_be_read.txt -d\end{verbatim}
+			With this call debugging is possible. It shows the different tables and states and the whole parsing progress. HINT: It is recommended to pipe the output into a file if you are using the "-d" option.
+	\item \begin{verbatim}setlx setlcup.stlx -h\end{verbatim}
+			With this call a little help will be showed, on how to call SetlCup correctly.
+\end{enumerate}
 \section{Comment-Part}
 In the comment-part everything which is written will not be used by the Program itself. It is adviced to comment your idea behind the parser and scanner structure in this section.
 The section is ended with the "\%\%\%" symbol.

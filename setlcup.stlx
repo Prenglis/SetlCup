@@ -1,0 +1,54 @@
+load("scanner_generator.stlx");
+generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
+{
+	silent_mode := silent_mode;
+	load("grammar_parser.stlx");
+
+	[scan_output, parser_part_string] := test_scanner_generator_scan(input_grammar, file_to_parse);
+	parser_part_string := trim(parser_part_string);
+
+	if(!silent_mode)
+	{
+			print("scan_output :$scan_output$");
+			print(parser_part_string);	
+	}
+	tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromString(parser_part_string, silent_mode);
+	names := ["ruleNames", "rulesMap", "stateTable", "actionTable", "gotoTable"];
+	load("lr_shift_reduce_parser.stlx");
+	ast := myParse(ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+	if(!silent_mode)
+	{
+		print("ast := $ast$");
+	}
+	return ast;
+
+	
+
+};
+main := closure() {
+	assert(#params > 0, "Params need to be specified. Try -p -help to get help about params");
+	if("-h" in params)
+	{
+		print("setlx setlcup.stlx -p <input_grammar> <file_to_parse> <-d>");
+	}
+	else if (#params == 2)
+	{
+			[input_grammar, file_to_parse] := params;
+			silent_mode := 1 == 1;
+			ast := generate_ast(input_grammar, file_to_parse, silent_mode);
+			deleteFile("temp_action_code.stlx");
+			return ast;
+	}
+	else if (#params == 3)
+	{
+		if("-d" in params)
+		{
+			[input_grammar, file_to_parse] := params[1..2];
+			silent_mode := 1 == 0;
+			ast := generate_ast(input_grammar, file_to_parse, silent_mode);
+			return ast;
+		}
+	}
+};
+ast := main();
+return ast;
