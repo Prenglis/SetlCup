@@ -30,9 +30,9 @@ WHILE := while ;
 FOR := for ;
 PRINT := print ;
 QUIT := exit ;
-STRING := \"[^\"]*\" ;
+STRING := \"(?:\\.|[^\"])*\" ;
 NEWLINE := \n ;
-COMMENTS := // [^\n]* ;
+COMMENTS := //[^\n]* ;
 WHITESPACE := [ \t\v\n\r\s] ;
 SKIP := WHITESPACE | NEWLINE | COMMENTS ;
 INTEGER := 0|[1-9][0-9]* ;
@@ -41,11 +41,11 @@ ZID := [a-zA-Z_][a-zA-Z0-9_]* ;
 
 
 %%%
-program ::= dfnStmntList:d {: Result := Program(d); :};
+program ::= dfnStmntList:d {: result := Program(d); :};
 
 dfnStmntList 
     ::= definition:d dfnStmntList:dl {: result := [d] + dl; :}
-     |  statement:stmts  dfnStmntList:dsl {: result := [stms] + dsl; :}
+     |  statement:stmts  dfnStmntList:dsl {: result := [stmts] + dsl; :}
      | {: result := []; :}
      ;
 
@@ -107,7 +107,7 @@ boolExpr
      |  expr:lhs NE expr:rhs  {: result := Inequation(lhs,rhs); :}
      |  disjunction:lhs EQ disjunction:rhs  {: result := Equation(lhs,rhs); :}
      |  disjunction:lhs NE disjunction:rhs  {: result := Inequation(lhs,rhs); :}
-     |  expr:lhs LE expr:rhs  {: result := LessOrEqual(lhs,rhs$); :}
+     |  expr:lhs LE expr:rhs  {: result := LessOrEqual(lhs,rhs); :}
      |  expr:lhs GE expr:rhs  {: result := GreaterOrEqual(lhs,rhs); :}
      |  expr:lhs LT expr:rhs  {: result := LessThan(lhs,rhs); :}
      |  expr:lhs GT expr:rhs  {: result := GreaterThan(lhs,rhs); :}
@@ -122,7 +122,7 @@ conjunction
      | boolFactor:f {: result := f; :}
      ;
 boolFactor
-    ::= LPAR boolExpr:e RPAR {:  result := (e); :}
+    ::= LPAR boolExpr:be_par RPAR {:  result := be_par; :}
      | NOT boolExpr:e {: result := Negation(e); :}
      ;
 
@@ -136,9 +136,9 @@ prod ::= prod:p TIMES  fact:f {: result := Product(p,f); :}
       |  prod:p MOD    fact:f {: result := Mod(p,f); :} 
       |  fact:f               {: result := f;     :}
       ;
-fact ::= LPAR expr:e RPAR {: result := (e);   :} 
-      |  INTEGER:n             {: result := Integer(n);   :} 
-      |  DECIMAL:d               {: result := Decimal(d); :}
+fact ::= LPAR expr:e_par RPAR {: result := e_par;   :} 
+      |  INTEGER:n             {: result := Integer(eval(n));   :} 
+      |  DECIMAL:d               {: result := Decimal(eval(d)); :}
       |  ZID:id_1 LPAR exprList:el RPAR {: result := FunctionCall(id_1,el); :}
       | ZID:id_2 {: result := Variable(id_2); :}
       ;

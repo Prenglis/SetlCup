@@ -43,16 +43,6 @@ sc_dict_generate := procedure(file) {
 };
 generate_scan_string := procedure(sc_dict) {
 	silent_mode := 1 == 1;
-	if(sc_dict["SKIP"] != om)
-	{		
-		to_skip_list := split(sc_dict["SKIP"], "\\|");
-		for(skips in to_skip_list)
-		{
-			skips := trim(skips);
-			sc_dict[skips] := om;
-		}
-		sc_dict["SKIP"] := om;
-	}
 	scan_string := "scan(lines) { \n";
 
 		for ( i in domain(sc_dict))
@@ -90,6 +80,13 @@ test_scanner_generator_scan := procedure (scanner_file, test_file){
  		{
  			print(scan_output);
  		}
+	if(sc_dict["SKIP"] != om)
+	{		
+		to_skip_list := split(sc_dict["SKIP"], "\\|");
+		to_skip_set := {trim(skips) : skips in to_skip_list};
+		scan_output := [scan_tokens : scan_tokens in scan_output | {scan_tokens[2]} * to_skip_set == {}];
+
+	}
  	return [scan_output, parser_part_string];
 };
 
@@ -100,8 +97,10 @@ test_parser_gen := procedure(input_grammar, file_to_parse, silent_mode)
 
 	[scan_output, parser_part_string] := test_scanner_generator_scan(input_grammar, file_to_parse);
 	parser_part_string := trim(parser_part_string);
+
 	if(!silent_mode)
 	{
+			print("scan_output :$scan_output$");
 			print(parser_part_string);	
 	}
 	tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromString(parser_part_string, silent_mode);

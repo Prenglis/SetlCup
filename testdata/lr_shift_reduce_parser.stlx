@@ -6,6 +6,18 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
     mSilentMode := silent_mode;
     parseSR := procedure(tl) {
         action_code := [];
+        //init vars
+        mrs := +/range(mStateTable);
+        // print("mrs : $mrs$");
+        // print("isObject(arb(mrs) :$isObject(arb(mrs))$");
+        vars := {mr.mAlpha : mr in mrs | mr.mAlpha != []};
+        vars := +/vars;
+        vars := {  args(mvars)[2] : mvars in vars | args(mvars)[2] != ""};
+        // print("vars : $vars$");
+        for(var_id in vars)
+        {
+            action_code += ["$var_id$ := [];"];
+        }
         index   := 1;      // point to next token
         symbols := [];     // stack of symbols
         startState := {x : x in domain(mStateTable) | exists(y in mStateTable[x]| y.mVariable == Var("S", "") && y.mAlpha == [])};
@@ -45,7 +57,10 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                     token_id := arb(token_list);                
                     if(token_id != "")
                     {
-                            action_code := action_code + ["$token_id$ := '$t_value$';"];
+                            action_code += ["$token_id$ += ['$t_value$'];"];
+                            // action_code += ["t_$token_id$ := $token_id$"];
+                            // action_code += ["$token_id$ := $token_id[-1]"]                            
+                            // action_code += ["$t_vars$ := t_$t_vars$[..-2];"];
                     }
                 }
             t := Token(t, token_id);             
@@ -88,7 +103,17 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  }
                  else
                  {
+                    vars := {args(variable)[2] : variable in body | args(variable)[2] != ""};
+                    for(t_vars in vars)
+                    {
+                        action_code += ["t_$t_vars$ := $t_vars$;"];
+                        action_code += ["$t_vars$ := $t_vars$[-1];"];
+                    }
                     action_code := action_code + [args(user_code)[1]];
+                    for(t_vars in vars)
+                    {
+                        action_code += ["$t_vars$ := t_$t_vars$[..-2];"];
+                    }
                  }
                  n       := #body;
                  symbols := symbols[.. -(n+1)];
@@ -102,10 +127,12 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  var_id := {args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates]| (mr.mAlpha != []) && ( args(mr.mAlpha[-1])[1] == args(head)[1]) && args(mr.mAlpha[-1])[2] != ""};
                  if(#var_id > 1)
                  {
-                    var_id := var_id * { args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && ((mr.mBeta != [] &&  ( ( #tl>index &&  args(mr.mBeta[1])[1] == tl[index+1][2] )))  || ( #tl == index && mr.mBeta ==[])) };
+                    alt_ids := { args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && ((mr.mBeta != [] &&  ( ( #tl>index &&  args(mr.mBeta[1])[1] == tl[index][2] )))  || ( #tl == index && mr.mBeta ==[]) || (mr.mBeta ==[] && mr.mFollowSet * {tl[index][2]} != {})) };
+                    var_id := var_id * alt_ids;
                     if(#var_id == 0)
                     {
-                        var_id := { args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && mr.mBeta != [] &&  args(mr.mBeta[1])[1] == tl[index][2] };
+                        var_id := { args(mr.mAlpha[1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && mr.mBeta != [] &&  args(mr.mBeta[1])[1] == tl[index][2] };
+
                     }
                     
 
@@ -122,7 +149,7 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                     {
                         print("var_id : $var_id$");
                     }
-                    action_code := action_code + ["$arb(var_id)$ := result;"];
+                    action_code := action_code + ["$arb(var_id)$ += [result];"];
                  }
                  if(!mSilentMode)
                  {  
@@ -132,7 +159,7 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  if(!mSilentMode)
                  { 
                     print("accepting\n");
-                    }
+                 }
                  writeFile("output\\action_code.stlx", action_code);
 
                  return true;
