@@ -11,7 +11,7 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
         vars := {mr.mAlpha : mr in mrs | mr.mAlpha != []};
         vars := +/vars;
         vars := {  args(mvars)[2] : mvars in vars | args(mvars)[2] != ""};
-        action_code += ["result := [];"]
+        action_code += ["result := [];"];
         for(var_id in vars)
         {
             action_code += ["$var_id$ := [];"];
