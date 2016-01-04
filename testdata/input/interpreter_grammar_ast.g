@@ -44,7 +44,7 @@ ZID := [a-zA-Z_][a-zA-Z0-9_]* ;
 program ::= dfnStmntList:d {: Result := Program(d); :};
 
 dfnStmntList 
-    ::= definition:d dfnStmntList:dl {:result := [d] + dl; :}
+    ::= definition:d dfnStmntList:dl {: result := [d] + dl; :}
      |  statement:stmts  dfnStmntList:dsl {: result := [stms] + dsl; :}
      | {: result := []; :}
      ;

@@ -16,10 +16,9 @@ RPAREN := \) ;
 SKIP := WHITESPACE | NEWLINE ;
 
 %%%
-arith_expr ::= expr_list:esl {: result := ExprList(esl); :};
 
-expr_list ::= expr_part:part expr_list:l {: result := [part] + l; :} 
-           |  {: result := []; :}
+expr_list ::= expr_list:l expr_part:part {: result := l + [part]; :} 
+           |  expr_part:epart {: result := [epart]; :}
            ;
 expr_part ::= expr:e SEMICOLON {: result := e; :}
            ;
