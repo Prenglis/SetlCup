@@ -35,17 +35,17 @@ ASTERISK :=  \*;
 WHITESPACE := [ ];
 SKIP := ASTERISK | INTEGER | WHITESPACE;
 \end{lstlisting}
-\begin{enumerate}
-	\item In line 1 the Token "INTEGER" is defined. Tokens are in the following way:\\
+\begin{itemize}
+	\item In line 1 the Token "INTEGER" is defined. Tokens are defined in the following way:\\
 					token\_name := regex ;
-	\item Predefined tokens in Regular Expressions like "$*,+,?,|,\{,\},(,),\cdots$" need to be escaped.
-	\item In some contexts tokens like Whitespaces are not needed. They can be skipped by using defining the "SKIP"-Token with the tokens, which shall be skipped. Multiple tokens need to be seperated by a pipe "|".
-\end{enumerate}
+	\item In line 2 it is shown, that predefined tokens in Regular Expressions like "$*,+,?,|,\{,\},(,),\cdots$" need to be escaped.
+	\item In Line 3 the "SKIP"-Token is shown. In some contexts tokens like Whitespaces are not needed. They can be skipped by defining the "SKIP"-Token with the tokens, which shall be skipped. Multiple tokens need to be seperated by a pipe "|".
+\end{itemize}
 
 \section{Parser-Part}
 In this part the grammar-rules are defined with the following syntax:
 \begin{lstlisting}[frame=single,numbers=left,basicstyle=\footnotesize]
-rule_name := rule_element:id {: action_code :} 
+rule_name ::= rule_element:id {: action_code :} 
 	| rule_element
 	| {: action_code :} 
 	| ;
@@ -53,14 +53,24 @@ rule_name := rule_element:id {: action_code :}
 \begin{itemize}
 	\item[rule\_name] The rule\_name is the name of the rule. It is possible to reference defined rules via their rule\_name
 	\item[rule\_element] The element can consist of multiple Tokens (defined in the scanner) and rule\_names. Each can have an id, which is possible to be used in the action\_code.
-	\item[action\_code] The action\_code is an optional part in a rule. It needs to be at the end of the rule it self. Each rule\_element can have an action\_code. In this action\_code Setlx Code can be written. By using the variable "`result"' it is possible to pass values between rules. The id of the elements in the respective rule can be referred to by using its name.
+	\item[action\_code] The action\_code is an optional part in a rule. It needs to be at the end of the rule it self. Each rule\_element can have an action\_code. In this action\_code Setlx Code can be written. By using the variable "result" it is possible to pass values between rules. The id of the elements in the respective rule can be referred to by using its name.
 	\item[|] The pipe seperates the rule\_elements.
 \end{itemize}
 \newpage
 \section{Example}
+The first example shows a simple arithmetic grammar.
+The second example shows how a simple programming language can be parsed using SetlCup.
+\subsection{Arithmetic grammar}
+The arithmetic grammar and scanner is the following:
 \lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_grammar_ast.g}
+A sample input file:
 \lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_input.txt}
-\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize,breaklines=true]{math_expression_output.txt}
+The output AST:
+\lstinputlisting[basicstyle=\footnotesize,breaklines=true]{math_expression_output.txt}
+\subsection{Programming language grammar}
+The programming language grammar and scanner:
 \lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{interpreter_grammar_ast.g}
+A sample input file:
 \lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{factorial.sl}
-\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{factorial_output.txt}
+The output AST:
+\lstinputlisting[basicstyle=\footnotesize ,breaklines=true]{factorial_output.txt}

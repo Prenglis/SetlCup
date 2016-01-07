@@ -83,7 +83,7 @@ nePrintExprList
 
 printExpr 
     ::= STRING:string {: result := PrintString(string); :}
-     |  expr:e  {: result := Expr(e); :}
+     |  expr:e  {: result := e; :}
      ;
 
 assignment 

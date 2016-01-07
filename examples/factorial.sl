@@ -5,7 +5,7 @@ function factorial(n) {
     return n * factorial(n - 1);
 }
 
-print("Berechnung der Fakultät für i = 1 bis 9");
+print("Calculation of factorial for i = 1 to 9");
 for (i = 0; i < 10; i = i + 1) {
     print(i, "! = ", factorial(i));
 }
