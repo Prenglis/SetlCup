@@ -59,7 +59,13 @@ generate_scan_string := procedure(sc_dict) {
 	 };
 test_scanner_generator_scan := procedure (scanner_file, test_file){
 	silent_mode := 1 == 1;
-	[sc_dict, parser_part_string] := sc_dict_generate(scanner_file);
+	try{
+		[sc_dict, parser_part_string] := sc_dict_generate(scanner_file);
+	}
+	catch(e){
+		print("error while generating scanner : $e$");
+	}
+
 	test_file := split(join(readFile(test_file), "\n"), '\n');
 	if(!silent_mode)
 	{
@@ -73,7 +79,6 @@ test_scanner_generator_scan := procedure (scanner_file, test_file){
 		{
 			print("line :" + lines + " \n");
 		}
-
 	 	execute(trim(scan_string));
  	}
  	if(!silent_mode)

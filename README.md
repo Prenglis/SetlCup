@@ -6,7 +6,8 @@ A LR-Parser-Generator for the programming language SetlX oriented on JavaCup
  - Setlx 2.4+
  
 ## How to call
-Setlcup can be called in three ways:
+Setlcup can be called in multiple ways:
+### Command Line
 ```
 setlx setlcup.stlx -p <input_grammar> <file_to_parse>
 ```
@@ -19,6 +20,21 @@ Returns the AST of the file_to_parse and outputs information about the parsing p
 setlx setlcup.stlx -h
 ```
 Shows information about how to call SetlCup correctly
+### In Setlx
+If you want to use SetlCup in Setlx it, you need do comment the last two lines of the setlcup.stlx file:
+```
+//ast := main();
+//return ast;
+```
+Afterwards Setlcup can be used via the method call
+```
+call_generate_ast(input_grammar, file_to_parse, silent_mode);
+```
+e.g.
+```
+load("setlcup.stlx");
+print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', 1==1));
+```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.
 ##Example
