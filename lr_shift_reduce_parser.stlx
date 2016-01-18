@@ -7,17 +7,18 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
     parseSR := procedure(tl) {
         action_code := [];
         //init vars
-        mrs := +/range(mStateTable);
-        vars := {mr.mAlpha : mr in mrs | mr.mAlpha != []};
-        vars := +/vars;
-        vars := {  args(mvars)[2] : mvars in vars | args(mvars)[2] != ""};
+        marked_rules := +/range(mStateTable);
+        rule_vars := {mr.mAlpha : mr in marked_rules | mr.mAlpha != []};
+        rule_vars := +/rule_vars;
+        rule_vars := {  args(rule_var)[2] : rule_var in rule_vars | args(rule_var)[2] != ""};
         action_code += ["result := [];"];
-        for(var_id in vars)
+        for(var_id in rule_vars)
         {
             action_code += ["$var_id$ := [];"];
         }
         index   := 1;      // point to next token
         symbols := [];     // stack of symbols
+        //find startState
         startState := {x : x in domain(mStateTable) | exists(y in mStateTable[x]| y.mVariable == Var("S", "") && y.mAlpha == [])};
         if(!mSilentMode)
         {
@@ -34,30 +35,35 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
             q := states[-1];
             [t_value, t] := tl[index];
             token_id := "";
+            //Tokens should have correct ID depending on current state
+            //First: Calculate Token_ids which can be used in current State, and following States
+            //Second: Only try States corresponding to Token_ids, where mBeta is not empty
+            //Third: If there are multiple Token_ids the one should be used, where the FollowSet contains the following Token
+            //Fourth: If there is no Token_id which fulfilles the stated rules, the one is Taken where both the FollowSet is empty and the following tokens are empty
             action_tokens := { [args(t_token)[2], mStateTable[shiftState]] : [t_states, t_token ] in domain(mActionTable), shiftState in mActionTable[t_states, t_token] | t_states == q && args(t_token)[1] == t && mStateTable[shiftState] != om};
             action_tokens := {[token_list, { args(x.mBeta[1])[1] : x in followTokens | x.mBeta != []}] : [token_list, followTokens] in action_tokens};
-                token_list := domain(action_tokens);
-                if(#token_list>0)
+            token_list := domain(action_tokens);
+            if(#token_list>0)
+            {
+                if(#token_list > 1)
                 {
-                    if(#token_list > 1)
+                    token_list := [identifier : [identifier, follow_tokens] in action_tokens | (follow_tokens * {tl[index+1][2]} != {}) ];
+                    if(#token_list == 0)
                     {
-                        token_list := [x : [x, ft] in action_tokens | (ft * {tl[index+1][2]} != {}) ];
-                        if(#token_list == 0)
-                        {
-                            token_list := [x : [x, ft] in action_tokens | (ft * {tl[index+1][2]} == {} && ft =={})];
-                        }
-                    } 
-                    if(!mSilentMode)
-                    {
-                        print("token_list :$token_list$");               
+                        token_list := [identifier : [identifier, follow_tokens] in action_tokens | (follow_tokens * {tl[index+1][2]} == {} && follow_tokens =={})];
                     }
-                    assert(#token_list == 1, "Only one Possible Action for Token in State");
-                    token_id := arb(token_list);                
-                    if(token_id != "")
-                    {
-                            action_code += ["$token_id$ += ['$t_value$'];"];
-                    }
+                } 
+                if(!mSilentMode)
+                {
+                    print("token_list :$token_list$");               
                 }
+                assert(#token_list == 1, "Only one Possible Action for Token in State");
+                token_id := arb(token_list);                
+                if(token_id != "")
+                {
+                        action_code += ["$token_id$ += ['$t_value$'];"];
+                }
+            }
             t := Token(t, token_id);             
             t_rest := [ y : [x,y] in tl[index..]];
             if(!mSilentMode)
@@ -91,6 +97,12 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                 {
                     print("reducing with rule $ruleName$ : $head$ -> $join(body, \" \")$");
                 }
+                //When the User_Code is  not empty, it is appended to a temporary list of commands which will be executed later on
+                //As there might be multiple instances of the Rules which need to be reduced the variables are saved in a Stack-like structure
+                // e.g. t_expr := [2 , 3 , Plus(4,5)];
+                // the rule-id will be replaced with the last index of the list
+                // expr := t_expr[-1] := Plus(4,5);
+                // afterwards the item will be removed from the list
                 if(user_code == UserCode("") || user_code == UserCode(@'') || args(user_code)[1] == @'' || args(user_code)[1] == "" || #args(user_code)[1] == 0)
                  {
                     
@@ -119,6 +131,9 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  states  := states + [ newStates ];
                  stateString := mStateTable[newStates];
                  var_id := [];
+                 // The id of the Rule-Variable is calculated from the StateTable where the Variable-name is the same as the one from the Rule-head and the ID is not empty.
+                 // If there is more than one id all ids preceeding the following Index or having no followTokens in mBeta but the following index in the FollowSet are collected and the Conjunction of both Sets is calculated
+                 // If this leaves no result, only the ids are used, where the following Tokens are equal to the first following Token of the Rule
                  var_id := {args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates]| (mr.mAlpha != []) && ( args(mr.mAlpha[-1])[1] == args(head)[1]) && args(mr.mAlpha[-1])[2] != ""};
                  if(#var_id > 1)
                  {
@@ -174,7 +189,13 @@ myParse := closure(ruleNames, rulesMap, stateTable, actionTable, gotoTable, sile
         {
             print("Parse successful!");
         }
-        load("temp_action_code.stlx");
+        try {
+            load("temp_action_code.stlx");
+        }
+        catch(e)
+        {
+            print("Exception while executing action code : $e$");
+        }
         return result;
     } else {
         print("Parse failed!");
