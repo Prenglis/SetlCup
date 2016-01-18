@@ -80,5 +80,5 @@ main := closure() {
 		return ast;
 	}
 };
-ast := main();
-return ast;
+//ast := main();
+//return ast;

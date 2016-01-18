@@ -14,7 +14,8 @@ A sample input file is divided into three Sections:
 
 At first the correct call of the program is discussed.
 \section{Using SetlCup}
-SetlCup has three different variants in which it can be called:
+SetlCup has multiple different variants in which it can be called:
+\subsection{Calling via comment prompt}
 \begin{enumerate}
 	\item \begin{verbatim}setlx setlcup.stlx -p parser_scanner_file.stlx file_to_be_read.txt \end{verbatim}
 			With this call there will be no output for the user.
@@ -23,6 +24,21 @@ SetlCup has three different variants in which it can be called:
 	\item \begin{verbatim}setlx setlcup.stlx -h\end{verbatim}
 			With this call a little help will be showed, on how to call SetlCup correctly.
 \end{enumerate}
+\subsection{Calling via Setlx}
+SetlCup can also be called in Setlx itself. If this case is used, the last two lines of the " setlcup.stlx" file need to be deleted.
+\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
+//ast := main();
+//return ast;
+\end{lstlisting}
+Afterwards Setlcup can be used via the method call
+\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
+call_generate_ast(input_grammar, file_to_parse, silent_mode);
+\end{lstlisting}
+e.g.
+\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
+load("setlcup.stlx");
+print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', true));
+\end{lstlisting}
 \section{Comment-Part}
 In the comment-part everything which is written will not be used by the Program itself. It is adviced to comment your idea behind the parser and scanner structure in this section.
 The section is ended with the "\%\%\%" symbol.

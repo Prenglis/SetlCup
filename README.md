@@ -33,7 +33,7 @@ call_generate_ast(input_grammar, file_to_parse, silent_mode);
 e.g.
 ```
 load("setlcup.stlx");
-print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', 1==1));
+print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', true));
 ```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.
