@@ -201,16 +201,3 @@ myParse := closure(ruleNames, rulesMap, stateTable, actionTable, gotoTable, sile
         print("Parse failed!");
     }
 };
-
-// This procedure partitions the string s into a list of tokens.
-// It recognizes numbers, the operator symbols "+", "-", "*", "/", "**"
-// and the parentheses "(" and ")".
-tokenizeString := procedure(s) {
-    tokenList := [];
-    scan (s) {
-        regex '0|[1-9][0-9]*' as [ number   ]: tokenList += [ "int"    ];
-        regex '[-+*/()]'      as [ operator ]: tokenList += [ operator ];
-        regex '[ \t\v\n\r]+'                 : // skip
-    }
-    return tokenList;
-};

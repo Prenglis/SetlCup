@@ -5,21 +5,20 @@ generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
 	load("grammar_parser.stlx");
 	try
 	{
-		[scan_output, parser_part_string] := test_scanner_generator_scan(input_grammar, file_to_parse);
+		[scan_output, parser_token_list] := test_scanner_generator_scan(input_grammar, file_to_parse, silent_mode);
 	}
 	catch(e){
 		print("Error while generating Scanner: $e$");
 	}
-	parser_part_string := trim(parser_part_string);
 
 	if(!silent_mode)
 	{
 			print("scan_output :$scan_output$");
-			print(parser_part_string);	
+			print(parser_token_list);	
 	}
 	try
 	{
-		tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromString(parser_part_string, silent_mode);
+		tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromTokenList(parser_token_list, silent_mode);
 	}
 	catch(e)
 	{
@@ -34,10 +33,10 @@ generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
 	{
 		print("error while parsing : $e$");
 	}
-	if(!silent_mode)
-	{
-		print("ast := $ast$");
-	}
+	//if(!silent_mode)
+	//{
+		print("ast := $ast$;");
+	//}
 	return ast;
 
 	
@@ -80,5 +79,5 @@ main := closure() {
 		return ast;
 	}
 };
-//ast := main();
-//return ast;
+ast := main();
+return ast;

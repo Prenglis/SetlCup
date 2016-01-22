@@ -2,76 +2,34 @@
 
 %%%
 
-SEMICOLON := ; ;
-TIMES := \* ;
-MINUS   := - ;
-DIVIDE   := \\ ;
-INTEGER     := 0|[1-9][0-9]* ;
-NEWLINE := \n ;
-WHITESPACE := [ \t\v\n\r\s] ;
-MOD := %;
-PLUS  := \+ ;
-LPAREN := \( ;
-RPAREN := \) ;
-SKIP := WHITESPACE | NEWLINE ;
+INTEGER       := 0|[1-9][0-9]* ;
+WHITESPACE    := [ \t\v\r\s] ;
+SKIP          := {WHITESPACE} | \n ;
 
 %%%
-arith_expr ::= expr_list:esl {: :};
+arith_expr 
+  ::= expr_list:esl                {: :};
 
-expr_list ::= expr_part:part expr_list:l {: :} 
-           |  {: :}
-           ;
-expr_part ::= expr:e SEMICOLON {: :}
-           ;
-expr ::= expr:e PLUS   prod:p {: :} 
-      |  expr:e MINUS  prod:p {: :} 
+expr_list 
+    ::= expr_part:part expr_list:l {: :} 
+      |                            {: :}
+      ;
+expr_part 
+    ::= expr:e ';'            {: :} ;
+expr 
+    ::= expr:e '+'  prod:p    {: :} 
+      |  expr:e '-'  prod:p   {: :} 
       |  prod:p               {: :}
       ;
-prod ::= prod:p TIMES  fact:f {: :}
+prod 
+    ::=  prod:p '*'  fact:f   {: :}
       |  prod:p DIVIDE fact:f {: :} 
-      |  prod:p MOD    fact:f {: :} 
+      |  prod:p '%'    fact:f {: :} 
       |  fact:f               {: :}
       ;
-fact ::= LPAREN expr:e_part RPAREN {: :} 
+fact 
+    ::=  '(' expr:e_part ')'   {: :} 
       |  INTEGER:n             {: :} 
-      ;
-
-
-
-
-%%%
-
-SEMICOLON := ; ;
-TIMES := \* ;
-MINUS   := - ;
-DIVIDE   := \\ ;
-INTEGER     := 0|[1-9][0-9]* ;
-NEWLINE := \n ;
-WHITESPACE := [ \t\v\n\r\s] ;
-MOD := %;
-PLUS  := \+ ;
-LPAREN := \( ;
-RPAREN := \) ;
-SKIP := WHITESPACE | NEWLINE ;
-
-%%%
-
-expr_list ::= expr_list expr_part 
-           |  expr_part
-           ;
-expr_part ::= expr:e SEMICOLON 
-           ;
-expr ::= expr:e PLUS   prod:p  
-      |  expr:e MINUS  prod:p 
-      |  prod:p              
-      ;
-prod ::= prod:p TIMES  fact:f 
-      |  prod:p DIVIDE fact:f  
-      |  prod:p MOD    fact:f 
-      |  fact:f               
-      ;
-fact ::= LPAREN expr:e RPAREN  
-      |  INTEGER:n             
       ;
 
 

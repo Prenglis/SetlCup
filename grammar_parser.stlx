@@ -4,7 +4,9 @@ readGrammar := procedure(f) {
     tl := tokenizeString(gs);
     return parseGrammar(tl);
 };
-
+readGrammarFromTokenList := procedure(token_list, silent_mode){
+    return parseGrammar(token_list);
+};
 readGrammarFromString := procedure(grammar_string, silent_mode){
     tl := tokenizeString(grammar_string, silent_mode);
     return parseGrammar(tl);
@@ -655,7 +657,13 @@ class grammar(rules, variables, start, silent_mode) {
             case UserCode(u) : return UserCode(u);
         }
     };
-
+testFromTokenList := procedure(token_list, silent_mode)
+ {
+    [rules, variables, start] := parseGrammar(token_list);
+    gr := grammar(rules, variables, start, silent_mode);
+    [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := gr.checkLR();
+    return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
+ };
 testFromString := procedure(grammar_string, silent_mode){
     [rules, variables, start] := readGrammarFromString(grammar_string, silent_mode);
     gr := grammar(rules, variables, start, silent_mode);
