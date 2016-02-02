@@ -131,20 +131,18 @@ class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
                  states  := states + [ newStates ];
                  stateString := mStateTable[newStates];
                  var_id := [];
-                 // The id of the Rule-Variable is calculated from the StateTable where the Variable-name is the same as the one from the Rule-head and the ID is not empty.
-                 // If there is more than one id all ids preceeding the following Index or having no followTokens in mBeta but the following index in the FollowSet are collected and the Conjunction of both Sets is calculated
-                 // If this leaves no result, only the ids are used, where the following Tokens are equal to the first following Token of the Rule
+                 // The id of the Rule-Variable is calculated from the StateTable where the Variable-name is the same as the one from the Rule-head and the where additionally the ID is not empty.
+                 // If there is more than one, the following are selected:
+                 // The ones, where Alpha (the Tokens before the (*) marker) is not empty and
+                 // either: the tokens after the marker are not empty and there are still tokens to read and the first element from Beta is the next token to be read
+                 // or: it is the last sign to be read and Beta is empty
+                 // or: the following symbol is not in the the FollowTokens of the rule andmBeta is not empty
+                 // The conjunction of both sets is made afterwards.
                  var_id := {args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates]| (mr.mAlpha != []) && ( args(mr.mAlpha[-1])[1] == args(head)[1]) && args(mr.mAlpha[-1])[2] != ""};
                  if(#var_id > 1)
                  {
                     alt_ids := { args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && ((mr.mBeta != [] &&  ( ( #tl>index &&  args(mr.mBeta[1])[1] == tl[index][2] )))  || ( #tl == index && mr.mBeta ==[]) || (mr.mBeta ==[] && mr.mFollowSet * {tl[index][2]} != {})) };
-                    var_id := var_id * alt_ids;
-                    if(#var_id == 0)
-                    {
-                        var_id := { args(mr.mAlpha[1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && mr.mBeta != [] &&  args(mr.mBeta[1])[1] == tl[index][2] };
-
-                    }
-                    
+                    var_id := var_id * alt_ids;                    
 
                  }
                  if(!mSilentMode)

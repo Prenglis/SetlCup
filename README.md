@@ -21,10 +21,9 @@ setlx setlcup.stlx -h
 ```
 Shows information about how to call SetlCup correctly
 ### In Setlx
-If you want to use SetlCup in Setlx it, you need do comment the last two lines of the setlcup.stlx file:
+You need to load the program "setlcup_load.stlx"
 ```
-//ast := main();
-//return ast;
+load("setlcup_load.stlx");
 ```
 Afterwards Setlcup can be used via the method call
 ```
@@ -32,8 +31,8 @@ call_generate_ast(input_grammar, file_to_parse, silent_mode);
 ```
 e.g.
 ```
-load("setlcup.stlx");
-print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', true));
+load("setlcup_load.stlx");
+print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', false));
 ```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.

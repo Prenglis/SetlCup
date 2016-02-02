@@ -31,32 +31,62 @@ SetlCup has multiple different variants in which it can be called:
 			With this call a little help will be showed, on how to call SetlCup correctly.
 \end{enumerate}
 \subsection{Calling via Setlx}
-SetlCup can also be called in Setlx itself. If this case is used, the last two lines of the " setlcup.stlx" file need to be deleted.
-\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
-//ast := main();
-//return ast;
-\end{lstlisting}
+SetlCup can also be called in Setlx itself. If this case is used, you need to load the program "setlcup\_load.stlx".
+%\begin{figure}[!ht]
+%\begin{Verbatim}[ frame         = lines, 
+                  %framesep      = 0.3cm, 
+                  %labelposition = bottomline,
+                  %numbers       = left,
+                  %numbersep     = -0.2cm,
+                  %xleftmargin   = 0.8cm,
+                  %xrightmargin  = 0.8cm,
+                %]
+	%load("setlcup_load.stlx");
+%\end{Verbatim}
+%\end{figure}
 Afterwards Setlcup can be used via the method call
-\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
-call_generate_ast(input_grammar, file_to_parse, silent_mode);
-\end{lstlisting}
+\begin{Verbatim}
+	call_generate_ast(input_grammar, file_to_parse, silent_mode);
+\end{Verbatim}
+
 e.g.
-\begin{lstlisting}[frame=single,basicstyle=\footnotesize ,breaklines=true]
-load("setlcup.stlx");
-print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', true));
-\end{lstlisting}
+\begin{figure}[!ht]
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+	load("setlcup_load.stlx");
+	print(call_generate_ast('examples\math_expression_grammar_ast.g', 
+	                    'examples\math_expression_input.txt', true));
+\end{Verbatim}
+\end{figure}
 \section{Comment-Part}
 In the comment-part everything which is written will not be used by the Program itself. It is adviced to comment your idea behind the parser and scanner structure in this section.
 The section is ended with the "\%\%\%" symbol.
 
 \section{Scanner-Part}
 The scanner is responsible for checking whether the input file consists of the defined tokens. It can be written like this:
-\begin{lstlisting}[frame=single,numbers=left,basicstyle=\footnotesize]
-  INTEGER       := 0|[1-9][0-9]*     ;
+\begin{figure}[!ht]
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+	INTEGER       := 0|[1-9][0-9]*     ;
 	ASTERISK      := \*                ;
-  WHITESPACE    := [ \t\v\r\s]       ;
-  SKIP          := {WHITESPACE} | \n ;
-\end{lstlisting}
+	WHITESPACE    := [ \t\v\r\s]       ;
+	SKIP          := {WHITESPACE} | \n ;
+\end{Verbatim}
+\caption{Scanner Definition}
+\label{fig:scanner_def}
+\end{figure}
 \begin{itemize}
 	\item In line 1 the Token "INTEGER" is defined. Tokens are defined in the following way:\\
 					token\_name := regex ;
@@ -77,7 +107,7 @@ In this part the grammar-rules are defined with the following syntax:
                   xrightmargin  = 0.8cm,
                 ]
 	expr ::= 
-	  expr:e MINUS prod:p {: result := Minus(e,p); :} 
+	  expr:e MINUS prod:p {: result := Minus(e,p);:} 
 	| expr:e '+' prod:p   {: result := Plus(e,p); :} 
 	| 										{: :}
 	;
@@ -104,7 +134,7 @@ In this part the grammar-rules are defined with the following syntax:
 The first example shows a simple arithmetic grammar.
 The second example shows how a simple programming language can be parsed using SetlCup.
 \subsection{Arithmetic grammar}
-The arithmetic grammar and scanner is the following:
+The arithmetic grammar and scanner is the following \ref{fig:example_arithmetic_grammer}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -131,7 +161,7 @@ The arithmetic grammar and scanner is the following:
   expr_part 
    ::= expr:e ';'            {: result := e; :} ;
   expr 
-   ::=  expr:e '+'  prod:p   {: result := Plus(e , p); :} 
+   ::=  expr:e '+'  prod:p   {: result := Plus(e , p);  :} 
      |  expr:e '-'  prod:p   {: result := Minus(e , p); :} 
      |  prod:p               {: result := p;     :}
      ;
@@ -150,7 +180,7 @@ The arithmetic grammar and scanner is the following:
 \label{fig:example_arithmetic_grammer}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_grammar_ast.g}
-A sample input file:
+A sample input file\ref{fig:example_arithmetic_input}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -179,7 +209,11 @@ The output AST:
 \end{figure}
 
 \subsection{Programming language grammar}
-The programming language grammar and scanner:
+The programming language grammar and scanner.
+The Scanner \ref{fig:example_interpreter_grammar_scanner}.
+The Statements \ref{fig:example_interpreter_grammar_statements}.
+The Lists \ref{fig:example_interpreter_grammar_lists}.
+The Expressions \ref{fig:example_interpreter_grammar_expression}.
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{interpreter_grammar_ast.g}
 \begin{figure}[!ht]
 
@@ -250,9 +284,9 @@ The programming language grammar and scanner:
 		    '{' stmntList:st_list3 '}' 
                           {: result := For(i_a, b, e_a, st_list3);  :}
      |  RETURN expr:e ';' {: result := Return(e); :}
-     |  RETURN ';'        {: result := Return(); :}
-     |  expr:e ';'        {: result := Expr(e); :}      
-     |  QUIT ';'          {: result := Exit(); :}
+     |  RETURN ';'        {: result := Return();  :}
+     |  expr:e ';'        {: result := Expr(e);   :}      
+     |  QUIT ';'          {: result := Exit();    :}
      ;
 \end{Verbatim}
 \caption{Example interpreter statements}
@@ -271,7 +305,7 @@ The programming language grammar and scanner:
   printExprList 
    ::= printExpr:p ',' nePrintExprList:np {: result := [p] + np ; :}
      |  printExpr:p                       {: result := [p]; :}
-     |                                    {: result := []; :}
+     |                                    {: result := [];  :}
      ;
   nePrintExprList
    ::= printExpr:p                         {: result := [p]; :}
@@ -296,7 +330,7 @@ The programming language grammar and scanner:
   exprList
    ::= expr:e ',' neExprList:el {: result := [e] + el; :}
      |  expr:e                  {: result := [e]; :}
-     |                          {: result := []; :}
+     |                          {: result := [];  :}
      ;
   neExprList
    ::= expr:e ',' neExprList:el {: result := [e] + el; :}
@@ -321,7 +355,7 @@ The programming language grammar and scanner:
      |  expr:lhs '!=' expr:rhs               {: result := Inequation(lhs,rhs); :}
      |  disjunction:lhs '==' disjunction:rhs {: result := Equation(lhs,rhs); :}
      |  disjunction:lhs '!=' disjunction:rhs {: result := Inequation(lhs,rhs); :}
-     |  expr:lhs '<=' expr:rhs               {: result := LessOrEqual(lhs,rhs); :}
+     |  expr:lhs '<=' expr:rhs               {: result := LessOrEqual(lhs,rhs);    :}
      |  expr:lhs '>=' expr:rhs               {: result := GreaterOrEqual(lhs,rhs); :}
      |  expr:lhs '<' expr:rhs                {: result := LessThan(lhs,rhs); :}
      |  expr:lhs '>' expr:rhs                {: result := GreaterThan(lhs,rhs); :}
@@ -361,7 +395,7 @@ The programming language grammar and scanner:
 \caption{Example interpreter expressions}
 \label{fig:example_interpreter_grammar_expression}
 \end{figure}
-A sample input file:
+A sample input file \ref{fig:example_interpreter_input}.
 \begin{figure}[!ht]
 
 \begin{Verbatim}[ frame         = lines, 
