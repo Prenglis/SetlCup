@@ -51,14 +51,7 @@ Afterwards Setlcup can be used via the method call
 
 e.g.
 \begin{figure}[!ht]
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+\begin{Verbatim}
 	load("setlcup_load.stlx");
 	print(call_generate_ast('examples\math_expression_grammar_ast.g', 
 	                    'examples\math_expression_input.txt', true));
@@ -69,7 +62,7 @@ In the comment-part everything which is written will not be used by the Program 
 The section is ended with the "\%\%\%" symbol.
 
 \section{Scanner-Part}
-The scanner is responsible for checking whether the input file consists of the defined tokens. It can be written like this:
+The scanner is responsible for checking whether the input file consists of the defined tokens. It can be written by assigning the Regex to the Tokenname \mRefFigure{fig:scanner_def}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -96,7 +89,7 @@ The scanner is responsible for checking whether the input file consists of the d
 \end{itemize}
 
 \section{Parser-Part}
-In this part the grammar-rules are defined with the following syntax:
+In this part the grammar-rules are defined with the a syntax which has many analogies to JavaCup and ANTLR \mRefFigure{fig:example_grammer}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -134,7 +127,7 @@ In this part the grammar-rules are defined with the following syntax:
 The first example shows a simple arithmetic grammar.
 The second example shows how a simple programming language can be parsed using SetlCup.
 \subsection{Arithmetic grammar}
-The arithmetic grammar and scanner is the following \ref{fig:example_arithmetic_grammer}.
+The arithmetic grammar and scanner \mRefFigure{fig:example_arithmetic_grammer} can be defined using the syntax mentioned above.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -180,7 +173,7 @@ The arithmetic grammar and scanner is the following \ref{fig:example_arithmetic_
 \label{fig:example_arithmetic_grammer}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_grammar_ast.g}
-A sample input file\ref{fig:example_arithmetic_input}.
+The input file consists of multiple lines with arithmetic expressions \ref{fig:example_arithmetic_input}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -198,7 +191,7 @@ A sample input file\ref{fig:example_arithmetic_input}.
 \label{fig:example_arithmetic_input}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_input.txt}
-The output AST:
+The output AST\mRefFigure{fig:arith_expr_tree} consists of the three expressions noted above.
 %\lstinputlisting[basicstyle=\footnotesize,breaklines=true]{math_expression_output.txt}
 
 \begin{figure}[!ht]
@@ -210,10 +203,10 @@ The output AST:
 
 \subsection{Programming language grammar}
 The programming language grammar and scanner.
-The Scanner \ref{fig:example_interpreter_grammar_scanner}.
-The Statements \ref{fig:example_interpreter_grammar_statements}.
-The Lists \ref{fig:example_interpreter_grammar_lists}.
-The Expressions \ref{fig:example_interpreter_grammar_expression}.
+The Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} consists of the string literals for keywords and the definition of the syntax for a variable or function name, integers and decimals.
+The Statements \mRefFigure{fig:example_interpreter_grammar_statements} describe the structure of the input file. It consists of multiple statement and definitions.
+The Lists \mRefFigure{fig:example_interpreter_grammar_lists} describe how multiple arguments, expressions, definitions and statements are chained.
+The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe boolean and arithmetic expressions.
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{interpreter_grammar_ast.g}
 \begin{figure}[!ht]
 
@@ -395,7 +388,7 @@ The Expressions \ref{fig:example_interpreter_grammar_expression}.
 \caption{Example interpreter expressions}
 \label{fig:example_interpreter_grammar_expression}
 \end{figure}
-A sample input file \ref{fig:example_interpreter_input}.
+A sample input program \mRefFigure{fig:example_interpreter_input} describes the recursive function factorial.
 \begin{figure}[!ht]
 
 \begin{Verbatim}[ frame         = lines, 
@@ -422,7 +415,7 @@ A sample input file \ref{fig:example_interpreter_input}.
 \label{fig:example_interpreter_input}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{factorial.sl}
-The output AST:
+The output AST \mRefFigure{fig:interpreter_tree} represents the syntactic structure of the factorial program. 
 %\lstinputlisting[basicstyle=\footnotesize ,breaklines=true]{factorial_output.txt}
 
 
