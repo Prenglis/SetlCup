@@ -1,37 +1,36 @@
-\chapter{Functionality}
+\chapter{Funktionalität}
+SetlCup ist ein LR-Parser-Generator, welcher angelehnt an den bereits vorhandenen JavaCup ist.
+Dabei ist die Idee wie folgt:
+Der Benutzer von SetlCup erstellt durch eine gegebene Scanner- und Parserdefinition eine neue Setlx-Datei. Diese beinhaltet einen kanonischen LR-Parser, welcher auf den gegebenen Definitionen beruht. Anschließend kann eine Eingabedatei von dem generierten Parser überprüft werden. Dabei wird ggf. angegebener Code bei der Reduzierung der entsprechenden Regeln durchgeführt. 
 
-The Setlx-addition SetlCup is a LR-Parser-Generator based on JavaCup.
-The idea is to use a user given scanner- and parser-definition and create an AST out of a given input using the definitions.
-
-In this document the needed syntax of the definitions is examined and the given output is evaluated.
-
-A sample input file is divided into three Sections:
-\begin{enumerate}
-	\item Commentpart
-	\item Scanner-Part
-	\item Parser-Part
-\end{enumerate}
-
-At first the correct call of the program is discussed.
-\section{Using SetlCup}
-SetlCup has multiple different variants in which it can be called:
-\subsection{Calling via comment prompt}
+Zunächst wird erklärt, wie die Komponente aufgerufen werden kann.
+\chapter{Aufrufsmethoden}
+Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
+\section{Aufruf über Kommandozeile}
 \begin{enumerate}
 	\item \begin{Verbatim}
-	setlx setlcup.stlx -p parser_scanner_file.stlx file_to_be_read.txt 
+	setlx setlcup.stlx -p parser_scanner_datei.stlx
 	\end{Verbatim}
-			With this call there will be no output for the user.
+			Mit diesem Aufruf wird ein Parser gemäß der in der Eingabedatei gegebenen Definitionen erstellt.
 	\item \begin{Verbatim}
-	setlx setlcup.stlx -p parser_scanner_file.stlx file_to_be_read.txt -d
+	setlx setlcup.stlx -p parser_scanner_datei.stlx -d
 	\end{Verbatim}
-			With this call debugging is possible. It shows the different tables and states and the whole parsing progress. HINT: It is recommended to pipe the output into a file if you are using the "-d" option.
+			Um die Art und Weise, wie der Parser generiert wird Nachzuvollziehen, kann mit der Option "`-d"' das Debugging eingeschaltet werden. Dabei wird empfohlen die Ausgabe in eine Datei umzuleiten.
+	\item \begin{Verbatim}
+	setlx parser_datei.stlx -p eingabe_datei.txt
+	\end{Verbatim}
+	Der erstellte Parser kann mit dem o.g. Befehl aufgerufen werden und probiert die Eingabedatei nach den angegebenen Regeln zu überprüfen.
+		\item \begin{Verbatim}
+	setlx parser_datei.stlx -p eingabe_datei.txt -d
+	\end{Verbatim}
+	Analog zur Parsererstellung wird durch die Option "`-d"' das Debugging eingeschaltet.
 	\item \begin{Verbatim}
 	setlx setlcup.stlx -h
 	\end{Verbatim}
-			With this call a little help will be showed, on how to call SetlCup correctly.
+			Dieser Aufruf zeigt die Hilfe an, wie SetlCup aufgerufen werden kann.
 \end{enumerate}
-\subsection{Calling via Setlx}
-SetlCup can also be called in Setlx itself. If this case is used, you need to load the program "setlcup\_load.stlx".
+%\subsection{Calling via Setlx}
+%SetlCup can also be called in Setlx itself. If this case is used, you need to load the program "setlcup\_load.stlx".
 %\begin{figure}[!ht]
 %\begin{Verbatim}[ frame         = lines, 
                   %framesep      = 0.3cm, 
@@ -44,25 +43,32 @@ SetlCup can also be called in Setlx itself. If this case is used, you need to lo
 	%load("setlcup_load.stlx");
 %\end{Verbatim}
 %\end{figure}
-Afterwards Setlcup can be used via the method call
-\begin{Verbatim}
-	call_generate_ast(input_grammar, file_to_parse, silent_mode);
-\end{Verbatim}
+%Afterwards Setlcup can be used via the method call
+%\begin{Verbatim}
+	%call_generate_ast(input_grammar, file_to_parse, silent_mode);
+%\end{Verbatim}
+%
+%e.g.
+%\begin{figure}[!ht]
+%\begin{Verbatim}
+	%load("setlcup_load.stlx");
+	%print(call_generate_ast('examples\math_expression_grammar_ast.g', 
+	                    %'examples\math_expression_input.txt', true));
+%\end{Verbatim}
+%\end{figure}
+\chapter{Aufbau der Definitionen}
 
-e.g.
-\begin{figure}[!ht]
-\begin{Verbatim}
-	load("setlcup_load.stlx");
-	print(call_generate_ast('examples\math_expression_grammar_ast.g', 
-	                    'examples\math_expression_input.txt', true));
-\end{Verbatim}
-\end{figure}
-\section{Comment-Part}
-In the comment-part everything which is written will not be used by the Program itself. It is adviced to comment your idea behind the parser and scanner structure in this section.
-The section is ended with the "\%\%\%" symbol.
-
-\section{Scanner-Part}
-The scanner is responsible for checking whether the input file consists of the defined tokens. It can be written by assigning the Regex to the Tokenname \mRefFigure{fig:scanner_def}.
+Der Aufbau der Scanner- und Parserdefinitionen ist in drei Abschnitte zu unterteilen:
+\begin{enumerate}
+	\item Kommentare
+	\item Scannerdefinition
+	\item Parserdefinition
+\end{enumerate}
+\section{Kommentare}
+Im obersten Bereich der Datei ist es möglich die Idee des Parsers zu beschreiben.
+Dieser Abschnitt endet mit dem Symbol "`\%\%\%"'. 
+\section{Scannerdefinition}
+Der Scanner ist verantwortlich um zu Überprüfen, ob die Eingabedatei aus den angegebenen Tokens besteht. Die Syntax\mRefFigure{fig:scanner_def} wird im Folgenden erklärt.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -81,15 +87,20 @@ The scanner is responsible for checking whether the input file consists of the d
 \label{fig:scanner_def}
 \end{figure}
 \begin{itemize}
-	\item In line 1 the Token "INTEGER" is defined. Tokens are defined in the following way:\\
-					token\_name := regex ;
-	\item In line 2 it is shown, that predefined tokens in Regular Expressions like "$*,+,?,|,\{,\},(,),\cdots$" need to be escaped.
-	\item In line 3 the "Whitespace" symbols are demonstrated.
-	\item In Line 4 the "SKIP"-Token is shown. In some contexts tokens like Whitespaces are not needed. They can be skipped by defining the "SKIP"-Token with "\{TOKENNAME\}" of the respective tokens, which shall be skipped. Multiple tokens need to be seperated by a pipe "|". It is also possible to skip by inserting a regex itself.
+	\item In Zeile 1 wird der Token "INTEGER" definiert. Tokens werden auf die folgende Weise deklariert:\\
+					token\_name := regex ; \\
+					Dabei ist folgendes bei der Syntax des regulären Ausdrucks zu beachten:
+					\begin{itemize}
+						\item Die Rückgabe der Capture-Gruppen z.B. "`ab\textbf{(.*)}ab"'	werden nicht unterstützt. Jedoch sind Nicht-Captures möglich: "`ab(\textbf{?:}.*)ab"'
+						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetz werden. Siehe Zeile 4 - "`\{TOKENNAME\}"'.
+						\item Ansonsten sind die bereits in SetlX vorhandenen Regex-Ausdrücke benutzbar.
+					\end{itemize}
+	\item Wie in SetlX (siehe Zeile 2 und 3) müssen auch in SetlCup vordefinierte Symbole wie "$*,+,?,|,\{,\},(,),\cdots$" escaped werden .
+	\item In Zeile 4 wird "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "`SKIP"'-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ( "` \{TOKENNAME\}"') oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "`|"' separiert werden.
 \end{itemize}
 
-\section{Parser-Part}
-In this part the grammar-rules are defined with the a syntax which has many analogies to JavaCup and ANTLR \mRefFigure{fig:example_grammer}.
+\section{Parserdefinition}
+Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und ANTLR \mRefFigure{fig:example_grammer}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -99,6 +110,20 @@ In this part the grammar-rules are defined with the a syntax which has many anal
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
+	grammar := rule_definition definition_list;
+	rule_definition := rule_head '::=' body_list ';' ;
+	body_list := body body_list
+						| ;
+	body := element_list;
+  element_list := element element_list
+              | ;
+  element := token id;
+  token := '''regex''' 
+         | token_name id
+         | rule_name id
+         ;
+  id := id_name
+      |;
 	expr ::= 
 	  expr:e MINUS prod:p {: result := Minus(e,p);:} 
 	| expr:e '+' prod:p   {: result := Plus(e,p); :} 
