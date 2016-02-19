@@ -1,5 +1,4 @@
-
-
+Diese Grammatik beschreibt eine einfache arithmetische Grammatik.
 %%%
 
 INTEGER       := 0|[1-9][0-9]* ;
@@ -8,28 +7,28 @@ SKIP          := {WHITESPACE} | \n ;
 
 %%%
 arith_expr 
-  ::= expr_list:esl                {: :};
+  ::= expr_list                ;
 
 expr_list 
-    ::= expr_part:part expr_list:l {: :} 
-      |                            {: :}
+    ::= expr_part expr_list  
+      |                            
       ;
 expr_part 
-    ::= expr:e ';'            {: :} ;
+    ::= expr ';'             ;
 expr 
-    ::= expr:e '+'  prod:p    {: :} 
-      |  expr:e '-'  prod:p   {: :} 
-      |  prod:p               {: :}
+    ::= expr '+'  prod     
+      |  expr '-'  prod    
+      |  prod               
       ;
 prod 
-    ::=  prod:p '*'  fact:f   {: :}
-      |  prod:p DIVIDE fact:f {: :} 
-      |  prod:p '%'    fact:f {: :} 
-      |  fact:f               {: :}
+    ::=  prod '*'  fact   
+      |  prod DIVIDE fact  
+      |  prod '%'    fact  
+      |  fact               
       ;
 fact 
-    ::=  '(' expr:e_part ')'   {: :} 
-      |  INTEGER:n             {: :} 
+    ::=  '(' expr ')'    
+      |  INTEGER              
       ;
 
 

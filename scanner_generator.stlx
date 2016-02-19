@@ -55,11 +55,22 @@ sc_dict_generate := procedure(file, silent_mode) {
             parser_token_list += [ eval(uc)]; 
             user_code := "";
             state := "parser_part";
-        regex '''[^'']*'''         as [ l ] | state == "parser_part": 
+        regex '''[^'']*'''         as [ l ] | state == "parser_part":
             parser_token_list += [ Token(l, "") ];
             if(sc_dict[l] == om)
             {
             	sc_dict[l] := "\\Q$l[2..-2]$\\E";
+            } 
+            if(!silent_mode)
+            {
+            	print("l : $l$; sc_dict[$l$] := $sc_dict[l]$");
+            }
+        regex '''[^'']*'':[a-z][a-zA-Z_0-9]*'         as [ l ] | state == "parser_part":
+     	 	[_, token_name, token_id] := matches(l, '(''[^'']*''):([a-z][a-zA-Z_0-9]*)', true);
+            parser_token_list += [ Token(token_name, token_id) ];
+            if(sc_dict[token_name] == om)
+            {
+            	sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
             } 
             if(!silent_mode)
             {

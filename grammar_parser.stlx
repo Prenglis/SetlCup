@@ -284,19 +284,19 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
         return Rule(mVariable, rargs, this.mUser_Code);
     };
     f_str := procedure() {
-                
-        rule :=  "$mVariable$";
-        rule += " ->" ;
-        rule += list2str(mAlpha) + " (*)";
-        rule +=  list2str(mBeta) + ": {";
-        n := 1;
-        for (t in mFollowSet) {
-            rule += escapeDollar(t);
-            if (n < #mFollowSet) {
-                rule += ", ";
-            }
-        }
-        rule += "}";
+        rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$mFollowSet$,$mUser_Code$)";
+        // rule :=  "$mVariable$";
+        // rule += " ->" ;
+        // rule += list2str(mAlpha) + " (*)";
+        // rule +=  list2str(mBeta) + ": {";
+        // n := 1;
+        // for (t in mFollowSet) {
+            // rule += escapeDollar(t);
+            // if (n < #mFollowSet) {
+                // rule += ", ";
+            // }
+        // }
+        // rule += "}";
         return rule;
     };
 
@@ -332,7 +332,8 @@ class grammarRule(variable, gamma, user_code) {
     this.mGamma    := gamma;
     this.mUser_Code := user_code;
     f_str := procedure() {
-        return mVariable + " ->" + list2str(mGamma);
+        return "grammarRule($mVariable$, $mGamma$, $mUser_Code$)";
+        // return mVariable + " ->" + list2str(mGamma);
     };
 }
 
@@ -510,7 +511,8 @@ class grammar(rules, variables, start, silent_mode) {
             this.mStateNames[state] := "s" + counter;
             if(!mSilentMode)
             {   
-                print("stateTable[\"s$counter$\"] := $state2String(state)$;");
+                // print("stateTable[\"s$counter$\"] := $state2String(state)$;");
+                 print("stateTable[\"s$counter$\"] := $state$;");
             }
             this.mStateTable["s$counter$"] := state;
             
@@ -616,14 +618,15 @@ class grammar(rules, variables, start, silent_mode) {
     };
     // auxilliary procedures
     f_str := procedure() {
-        result := "";
-        for ([head, body] in mRules) {
-            result += "$head$ ->";
-            for (i in body) {
-                result += " " + extractArg(i);
-            }
-            result += " ;\n";
-        }                  
+        result := "grammar($mRules$, $mVariables$,$mStart$, $mSilentMode$)";
+        // result := "";
+        // for ([head, body] in mRules) {
+        //     result += "$head$ ->";
+        //     for (i in body) {
+        //         result += " " + extractArg(i);
+        //     }
+        //     result += " ;\n";
+        // }                  
         return result;
     };
     epsAppend := procedure(s, t) {

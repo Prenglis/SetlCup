@@ -1,22 +1,12 @@
-
+Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
 %%%
 
-FUNCTION    := function ;
-RETURN      := return ;
-IF          := if ;
-ELSE        := else ;
-WHILE       := while ;
-FOR         := for ;
-PRINT       := print ;
-QUIT        := exit ;
 STRING      := \"(?:\\.|[^\"])*\" ;
 WHITESPACE  := [ \t\v\r\s] ;
 SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 INTEGER     := 0|[1-9][0-9]* ;
 DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
 ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
-
-
 %%%
 program 
     ::= dfnStmntList:d {: result := Program(d); :}
@@ -29,7 +19,7 @@ dfnStmntList
      ;
 
 definition 
-    ::= FUNCTION ZID:function_name '(' paramList:param_list ')' '{' stmntList:statement_list '}'
+    ::= 'function' ZID:function_name '(' paramList:param_list ')' '{' stmntList:statement_list '}'
         {: result := Function(function_name, param_list, statement_list);:}
      ;
 
@@ -39,16 +29,16 @@ stmntList
      ;
 
 statement 
-    ::= assignment:a ';'                                    {: result := Ass(a); :}    
-     |  PRINT '(' printExprList:printexpr_list ')' ';'      {: result := Print(printexpr_list); :}
-     |  IF '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    {: result := If(b, st_list1); :}
-     |  WHILE '(' boolExpr:b ')' '{' stmntList:st_list2 '}' {: result := While(b, st_list2); :}
-     |  FOR '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' '{' stmntList:st_list3 '}' 
+    ::= assignment:a ';'                                    {: result := Assignment(a); :}    
+     |  'print' '(' printExprList:printexpr_list ')' ';'      {: result := Print(printexpr_list); :}
+     |  'if' '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    {: result := If(b, st_list1); :}
+     |  'while' '(' boolExpr:b ')' '{' stmntList:st_list2 '}' {: result := While(b, st_list2); :}
+     |  'for' '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' '{' stmntList:st_list3 '}' 
                                                             {: result := For(i_a, b, e_a, st_list3);  :}
-     |  RETURN expr:e ';'                                   {: result := Return(e); :}
-     |  RETURN ';'                                          {: result := Return(); :}
+     |  'return' expr:e ';'                                   {: result := Return(e); :}
+     |  'return' ';'                                          {: result := Return(); :}
      |  expr:e ';'                                          {: result := Expr(e); :}      
-     |  QUIT ';'                                            {: result := Exit(); :}
+     |  'quit' ';'                                            {: result := Exit(); :}
      ;
 
 printExprList 

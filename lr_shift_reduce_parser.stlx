@@ -1,201 +1,283 @@
-class srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode) {
-    mActionTable := actionTable;
-    mGotoTable   := gotoTable;
-    mStateTable  := stateTable;
-    mRulesMap := rulesMap;
+class srParser(actiontable, gototable, statetable, rulesMap, silent_mode) {
+    mActiontable := actiontable;
+    mGototable   := gototable;
+    mStatetable  := statetable;
+    scup_mrulesMap := rulesMap;
     mSilentMode := silent_mode;
-    parseSR := procedure(tl) {
-        action_code := [];
-        //init vars
-        marked_rules := +/range(mStateTable);
-        rule_vars := {mr.mAlpha : mr in marked_rules | mr.mAlpha != []};
-        rule_vars := +/rule_vars;
-        rule_vars := {  args(rule_var)[2] : rule_var in rule_vars | args(rule_var)[2] != ""};
-        action_code += ["result := [];"];
-        for(var_id in rule_vars)
-        {
-            action_code += ["$var_id$ := [];"];
-        }
-        index   := 1;      // point to next token
-        symbols := [];     // stack of symbols
-        //find startState
-        startState := {x : x in domain(mStateTable) | exists(y in mStateTable[x]| y.mVariable == Var("S", "") && y.mAlpha == [])};
+    parseSR := procedure(scup_tl) {
+        // print("statetable := $mStatetable$");
+        scup_action_code := [];
+        //init scup_vars
+        scup_marked_rules := +/range(mStatetable);
+        scup_scup_rule_scup_vars := {scup_mr.mAlpha : scup_mr in scup_marked_rules | scup_mr.mAlpha != []};
+        scup_scup_rule_scup_vars := +/scup_scup_rule_scup_vars;
+        scup_scup_rule_scup_vars := {  args(scup_rule_var)[2] : scup_rule_var in scup_scup_rule_scup_vars | args(scup_rule_var)[2] != ""};
+        scup_action_code := "result := [];";
         if(!mSilentMode)
         {
-            print("#startState : $#startState$");
+            print("Executing command: $scup_action_code$");
         }
-        assert(#startState == 1, "multiple States contain S -> (*)");
-        startState := arb(startState);
-        if(!mSilentMode)
+        execute(scup_action_code);
+        // scup_action_code += ["result := [];"];
+        for(scup_var_id in scup_scup_rule_scup_vars)
         {
-            print("startState : $startState$");
-        }
-        states  := [startState];
-        while (true) {      
-            q := states[-1];
-            [t_value, t] := tl[index];
-            token_id := "";
-            //Tokens should have correct ID depending on current state
-            //First: Calculate Token_ids which can be used in current State, and following States
-            //Second: Only try States corresponding to Token_ids, where mBeta is not empty
-            //Third: If there are multiple Token_ids the one should be used, where the FollowSet contains the following Token
-            //Fourth: If there is no Token_id which fulfilles the stated rules, the one is Taken where both the FollowSet is empty and the following tokens are empty
-            action_tokens := { [args(t_token)[2], mStateTable[shiftState]] : [t_states, t_token ] in domain(mActionTable), shiftState in mActionTable[t_states, t_token] | t_states == q && args(t_token)[1] == t && mStateTable[shiftState] != om};
-            action_tokens := {[token_list, { args(x.mBeta[1])[1] : x in followTokens | x.mBeta != []}] : [token_list, followTokens] in action_tokens};
-            token_list := domain(action_tokens);
-            if(#token_list>0)
+            scup_action_code := "$scup_var_id$ := [];";
+            if(!mSilentMode)
             {
-                if(#token_list > 1)
+                print("Executing command: $scup_action_code$");
+            }
+            execute(scup_action_code);
+            // scup_action_code += ["$scup_var_id$ := [];"];
+        }
+        scup_index   := 1;      // point to next token
+        scup_symbols := [];     // stack of scup_symbols
+        //find scup_startState
+        scup_startState := {startState : startState in domain(mStatetable) | exists(firstState in mStatetable[startState]| firstState.mVariable == Var("S", "") && firstState.mAlpha == [])};
+        if(!mSilentMode)
+        {
+            print("#scup_startState : $#scup_startState$");
+        }
+        assert(#scup_startState == 1, "multiple scup_states contain S -> (*)");
+        scup_startState := arb(scup_startState);
+        if(!mSilentMode)
+        {
+            print("scup_startState : $scup_startState$");
+        }
+        scup_states  := [scup_startState];
+        while (true) {      
+            scup_q := scup_states[-1];
+            if(!mSilentMode)
+            {
+                print("scup_q :$scup_q$"); 
+                print("scup_tl : $scup_tl$");
+            }
+            [scup_t_value, scup_t] := scup_tl[scup_index];
+            scup_token_id := "";
+            //tokens should have correct ID depending on current state
+            //First: Calculate scup_token_ids which can be used in current State, and following scup_states
+            //Second: Only try scup_states corresponding to scup_token_ids, where mBeta is not empty
+            //third: If there are multiple scup_token_ids the one should be used, where the FollowSet contains the following token
+            //Fourth: If there is no scup_token_id which fulfilles the stated rules, the one is taken where both the FollowSet is empty and the following tokens are empty
+            scup_action_tokens := { [args(scup_t_token)[2], mStatetable[shiftState]] : [scup_t_states, scup_t_token ] in domain(mActiontable), shiftState in mActiontable[scup_t_states, scup_t_token] | scup_t_states == scup_q && args(scup_t_token)[1] == scup_t && mStatetable[shiftState] != om};
+            if(!mSilentMode)
+            {
+                print("scup_action_tokens :$scup_action_tokens$");               
+            }
+            scup_action_tokens := {[scup_token_list, { args(x.mBeta[1])[1] : x in followtokens | x.mBeta != []}] : [scup_token_list, followtokens] in scup_action_tokens};
+            if(!mSilentMode)
+            {
+                print("scup_action_tokens :$scup_action_tokens$");               
+            }
+            scup_token_list := domain(scup_action_tokens);
+            if(!mSilentMode)
+            {
+                print("scup_token_list :$scup_token_list$");               
+            }
+            if(#scup_token_list>0)
+            {
+                if(#scup_token_list > 1)
                 {
-                    token_list := [identifier : [identifier, follow_tokens] in action_tokens | (follow_tokens * {tl[index+1][2]} != {}) ];
-                    if(#token_list == 0)
+                    scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} != {}) ];
+                    if(#scup_token_list == 0)
                     {
-                        token_list := [identifier : [identifier, follow_tokens] in action_tokens | (follow_tokens * {tl[index+1][2]} == {} && follow_tokens =={})];
+                        scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} == {} && follow_tokens =={})];
                     }
                 } 
                 if(!mSilentMode)
                 {
-                    print("token_list :$token_list$");               
+                    print("scup_token_list :$scup_token_list$");               
                 }
-                assert(#token_list == 1, "Only one Possible Action for Token in State");
-                token_id := arb(token_list);                
-                if(token_id != "")
+                assert(#scup_token_list == 1, "Only one Possible Action for token in State");
+                scup_token_id := arb(scup_token_list);                
+                if(scup_token_id != "")
                 {
-                        action_code += ["$token_id$ += ['$t_value$'];"];
+                        // scup_action_code += ["$scup_token_id$ += ['$scup_t_value$'];"];
+                        scup_action_code := "$scup_token_id$ += ['$scup_t_value$'];";
+                        if(!mSilentMode)
+                        {
+                            print("Executing command: $scup_action_code$");
+                        }
+                        execute(scup_action_code);
                 }
             }
-            t := Token(t, token_id);             
-            t_rest := [ y : [x,y] in tl[index..]];
+            scup_t := Token(scup_t , scup_token_id);             
+            scup_t_rest := [ y : [x,y] in scup_tl[scup_index..]];
             if(!mSilentMode)
             {
-                print("states:  [ $join(states, \", \")$ ]");
-                print("symbols: $join(symbols, \" \")$ | $join(t_rest, \" \")$");
-                print("state:   { $join(mStateTable[q], \"\")$ }");
+                print("scup_states:  [ $join(scup_states, \", \")$ ]");
+                print("scup_symbols: $join(scup_symbols, \" \")$ | $join(scup_t_rest, \" \")$");
+                print("state:   { $join(mStatetable[scup_q], \"\")$ }");
+                print("scup_q,scup_t : $scup_q$,$scup_t$");
             }
-            p := mActionTable[q,t];
-            match (p) {
+            scup_p := mActiontable[scup_q,scup_t];
+            if(!mSilentMode)
+            {
+                  print("scup_p := mActiontable[scup_q,scup_t]-----$scup_p$ := $mActiontable[scup_q,scup_t]$");
+            }
+            match (scup_p) {
             case om: 
                 if(!mSilentMode)
                 {
-                     print("action($q$, $t$) undefined.");
+                     print("action($scup_q$, $scup_t$) undefined.");
                      print("Syntax error!\n");
                 }
                  return false;
-            case Shift(s):
+            case Shift(scup_s):
                 if(!mSilentMode)
                 {
-                     print("shifting state $s$");
-                     print("state:   { $join(mStateTable[s], \"\")$ }\n");
+                     print("shifting state $scup_s$");
+                     print("state:   { $join(mStatetable[scup_s], \"\")$ }\n");
                 }
-                 symbols := symbols + [t];
-                 states  := states  + [s];
-                 index   += 1;
+                 scup_symbols := scup_symbols + [scup_t];
+                 scup_states  := scup_states  + [scup_s];
+                 scup_index   += 1;
             case Reduce(ruleName):
-                 rule := mRulesMap[ruleName];
-                 [head, body , user_code] := args(rule);
+                 rule := scup_mrulesMap[ruleName];
+                 [head, body , scup_user_code] := args(rule);
                  if(!mSilentMode)
                 {
                     print("reducing with rule $ruleName$ : $head$ -> $join(body, \" \")$");
                 }
-                //When the User_Code is  not empty, it is appended to a temporary list of commands which will be executed later on
+                //When the scup_user_code is  not empty, it is appended to a temporary list of commands which will be executed later on
                 //As there might be multiple instances of the Rules which need to be reduced the variables are saved in a Stack-like structure
                 // e.g. t_expr := [2 , 3 , Plus(4,5)];
-                // the rule-id will be replaced with the last index of the list
+                // the rule-id will be replaced with the last scup_index of the list
                 // expr := t_expr[-1] := Plus(4,5);
                 // afterwards the item will be removed from the list
-                if(user_code == UserCode("") || user_code == UserCode(@'') || args(user_code)[1] == @'' || args(user_code)[1] == "" || #args(user_code)[1] == 0)
+                if(scup_user_code == UserCode("") || scup_user_code == UserCode(@'') || args(scup_user_code)[1] == @'' || args(scup_user_code)[1] == "" || #args(scup_user_code)[1] == 0)
                  {
                     
                     
                  }
                  else
                  {
-                    vars := {args(variable)[2] : variable in body | args(variable)[2] != ""};
-                    for(t_vars in vars)
+                    scup_vars := {args(variable)[2] : variable in body | args(variable)[2] != ""};
+                    for(t_scup_vars in scup_vars)
                     {
-                        action_code += ["t_$t_vars$ := $t_vars$;"];
-                        action_code += ["$t_vars$ := $t_vars$[-1];"];
+                        scup_action_code :="t_$t_scup_vars$ := $t_scup_vars$;";
+                        if(!mSilentMode)
+                        {
+                            print("Executing command: $scup_action_code$");
+                        }
+                        execute(scup_action_code);
+                        scup_action_code := "$t_scup_vars$ := $t_scup_vars$[-1];";
+                        if(!mSilentMode)
+                        {
+                            print("Executing command: $scup_action_code$");
+                        }
+                        execute(scup_action_code);
+                        // scup_action_code += ["t_$t_scup_vars$ := $t_scup_vars$;"];
+                        // scup_action_code += ["$t_scup_vars$ := $t_scup_vars$[-1];"];
                     }
-                    action_code := action_code + [args(user_code)[1]];
-                    for(t_vars in vars)
+                    scup_action_code := args(scup_user_code)[1];
+                    if(!mSilentMode)
                     {
-                        action_code += ["$t_vars$ := t_$t_vars$[..-2];"];
+                        print("Executing command: $scup_action_code$");
+                    }
+                    execute(scup_action_code);
+                    // scup_action_code := scup_action_code + [args(scup_user_code)[1]];
+
+                    for(t_scup_vars in scup_vars)
+                    {
+                        scup_action_code := "$t_scup_vars$ := t_$t_scup_vars$[..-2];";
+                        if(!mSilentMode)
+                        {
+                            print("Executing command: $scup_action_code$");
+                        }
+                        execute(scup_action_code);
+                        // scup_action_code += ["$t_scup_vars$ := t_$t_scup_vars$[..-2];"];
                     }
                  }
-                 n       := #body;
-                 symbols := symbols[.. -(n+1)];
-                 states  := states[.. -(n+1)]; 
-                 symbols := symbols + [head];
-                 state   := states[-1];
-                 newStates := mGotoTable[state, head];
-                 states  := states + [ newStates ];
-                 stateString := mStateTable[newStates];
-                 var_id := [];
-                 // The id of the Rule-Variable is calculated from the StateTable where the Variable-name is the same as the one from the Rule-head and the where additionally the ID is not empty.
+                 scup_n       := #body;
+                 scup_symbols := scup_symbols[.. -(scup_n+1)];
+                 scup_states  := scup_states[.. -(scup_n+1)]; 
+                 scup_symbols := scup_symbols + [head];
+                 state   := scup_states[-1];
+                 scup_new_states := mGototable[state, head];
+                 scup_states  := scup_states + [ scup_new_states ];
+                 scup_statestring := mStatetable[scup_new_states];
+                 scup_var_id := [];
+                 // the id of the Rule-Variable is calculated from the Statetable where the Variable-name is the same as the one from the Rule-head and the where additionally the ID is not empty.
                  // If there is more than one, the following are selected:
-                 // The ones, where Alpha (the Tokens before the (*) marker) is not empty and
+                 // the ones, where Alpha (the tokens before the (*) marker) is not empty and
                  // either: the tokens after the marker are not empty and there are still tokens to read and the first element from Beta is the next token to be read
                  // or: it is the last sign to be read and Beta is empty
-                 // or: the following symbol is not in the the FollowTokens of the rule andmBeta is not empty
-                 // The conjunction of both sets is made afterwards.
-                 var_id := {args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates]| (mr.mAlpha != []) && ( args(mr.mAlpha[-1])[1] == args(head)[1]) && args(mr.mAlpha[-1])[2] != ""};
-                 if(#var_id > 1)
+                 // or: the following symbol is not in the the Followtokens of the rule andmBeta is not empty
+                 // the conjunction of both sets is made afterwards.
+                 scup_var_id := {args(scup_mr.mAlpha[-1])[2] : scup_mr in mStatetable[scup_new_states]| (scup_mr.mAlpha != []) && ( args(scup_mr.mAlpha[-1])[1] == args(head)[1]) && args(scup_mr.mAlpha[-1])[2] != ""};
+                 if(#scup_var_id > 1)
                  {
-                    alt_ids := { args(mr.mAlpha[-1])[2] : mr in mStateTable[newStates] | mr.mAlpha != [] && ((mr.mBeta != [] &&  ( ( #tl>index &&  args(mr.mBeta[1])[1] == tl[index][2] )))  || ( #tl == index && mr.mBeta ==[]) || (mr.mBeta ==[] && mr.mFollowSet * {tl[index][2]} != {})) };
-                    var_id := var_id * alt_ids;                    
+                    scup_alt_ids := { args(scup_mr.mAlpha[-1])[2] : scup_mr in mStatetable[scup_new_states] | scup_mr.mAlpha != [] && ((scup_mr.mBeta != [] &&  ( ( #scup_tl>scup_index &&  args(scup_mr.mBeta[1])[1] == scup_tl[scup_index][2] )))  || ( #scup_tl == scup_index && scup_mr.mBeta ==[]) || (scup_mr.mBeta ==[] && scup_mr.mFollowSet * {scup_tl[scup_index][2]} != {})) };
+                    scup_var_id := scup_var_id * scup_alt_ids;                    
 
                  }
                  if(!mSilentMode)
                 {
-                    print("stateString : $stateString$");
-                    print("var_id : $var_id$");
+                    print("scup_statestring : $scup_statestring$");
+                    print("scup_var_id : $scup_var_id$");
                 }
-                 if(#var_id > 0)
+                 if(#scup_var_id > 0)
                  {
-                    assert(#var_id ==1, "only one variable id should be used for one reduction");
+                    assert(#scup_var_id ==1, "only one variable id should be used for one reduction");
                     if(!mSilentMode)
                     {
-                        print("var_id : $var_id$");
+                        print("scup_var_id : $scup_var_id$");
                     }
-                    action_code := action_code + ["$arb(var_id)$ += [result];"];
+                    scup_action_code := "$arb(scup_var_id)$ += [result];";
+                    if(!mSilentMode)
+                    {
+                        print("Executing command: $scup_action_code$");
+                    }
+                    execute(scup_action_code);
+                    // scup_action_code := scup_action_code + ["$arb(scup_var_id)$ += [result];"];
                  }
                  if(!mSilentMode)
                  {  
-                    print("state:   { $join(mStateTable[mGotoTable[state, head]], \"\")$ }\n");
+                    print("state:   { $join(mStatetable[mGototable[state, head]], \"\")$ }\n");
                 }
             case Accept():
                  if(!mSilentMode)
                  { 
                     print("accepting\n");
                  }
-                 writeFile("temp_action_code.stlx", action_code);
+                 // writeFile("temp_scup_action_code.sscup_tlx", scup_action_code);
 
-                 return true;
+                 return result;
             } 
         }
     };
+
+    executeActionCode := procedure(scup_action_code)
+    {
+        if(!mSilentMode)
+        {
+            print("Executing command: $scup_action_code$");
+        }
+        execute(scup_action_code);
+    };
 }
-myParse := closure(ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode) {
-    parser := srParser(actionTable, gotoTable, stateTable, rulesMap, silent_mode);
-    tl := scan_output;
+myParse := closure(ruleNames, rulesMap, statetable, actiontable, gototable, silent_mode) {
+    parser := srParser(actiontable, gototable, statetable, rulesMap, silent_mode);
+    scup_tl := scan_output;
     if(!silent_mode)
     {
-        print("tokenlist: $tl$\n");
+        print("tokenlist: $scup_tl$\n");
     }
-    if (parser.parseSR(tl + [[@"$", @"$"]])) {
-        if(!silent_mode)
-        {
-            print("Parse successful!");
-        }
-        try {
-            load("temp_action_code.stlx");
-        }
-        catch(e)
-        {
-            print("Exception while executing action code : $e$");
-        }
+    result := parser.parseSR(scup_tl + [[@"$", @"$"]]);
+    // if (parser.parseSR(scup_tl + [[@"$", @"$"]])) {
+        // if(!silent_mode)
+        // {
+            // print("Parse successful!");
+        // }
+        // try {
+            // load("temp_scup_action_code.sscup_tlx");
+        // }
+        // catch(e)
+        // {
+            // print("Exception while executing action code : $e$");
+        // }
         return result;
-    } else {
-        print("Parse failed!");
-    }
+    // } else {
+        // print("Parse failed!");
+    // }
 };

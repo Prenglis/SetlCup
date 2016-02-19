@@ -1,140 +1,129 @@
-
+Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
 %%%
 
-FUNCTION    := function ;
-RETURN      := return ;
-IF          := if ;
-ELSE        := else ;
-WHILE       := while ;
-FOR         := for ;
-PRINT       := print ;
-QUIT        := exit ;
 STRING      := \"(?:\\.|[^\"])*\" ;
 WHITESPACE  := [ \t\v\r\s] ;
 SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 INTEGER     := 0|[1-9][0-9]* ;
 DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
 ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
-
-
 %%%
 program 
-    ::= dfnStmntList:d {: :}
+    ::= dfnStmntList 
     ;
 
 dfnStmntList 
-    ::= definition:d dfnStmntList:dl {: :}
-     |  statement:stmts  dfnStmntList:dsl {: :}
-     | {: :}
+    ::= definition dfnStmntList 
+     |  statement  dfnStmntList 
+     | 
      ;
 
 definition 
-    ::= FUNCTION ZID:function_name '(' paramList:param_list ')' '{' stmntList:statement_list '}'
-        {: :}
+    ::= 'function' ZID '(' paramList ')' '{' stmntList '}'        
      ;
 
 stmntList
-    ::= statement:s stmntList:sl {: :}
-     |  {: :}
+    ::= statement stmntList 
+     |  
      ;
 
 statement 
-    ::= assignment:a ';'                                    {: :}    
-     |  PRINT '(' printExprList:printexpr_list ')' ';'      {: :}
-     |  IF '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    {: :}
-     |  WHILE '(' boolExpr:b ')' '{' stmntList:st_list2 '}' {: :}
-     |  FOR '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' '{' stmntList:st_list3 '}' 
-                                                            {: :}
-     |  RETURN expr:e ';'                                   {: :}
-     |  RETURN ';'                                          {: :}
-     |  expr:e ';'                                          {: :}      
-     |  QUIT ';'                                            {: :}
+    ::= assignment ';'                                        
+     |  'print' '(' printExprList ')' ';'      
+     |  'if' '(' boolExpr ')' '{' stmntList '}'    
+     |  'while' '(' boolExpr ')' '{' stmntList '}' 
+     |  'for' '(' assignment ';' boolExpr ';' assignment ')' '{' stmntList '}' 
+                                                            
+     |  'return' expr ';'                                   
+     |  'return' ';'                                          
+     |  expr ';'                                                
+     |  'quit' ';'                                            
      ;
 
 printExprList 
-    ::= printExpr:p ',' nePrintExprList:np {: :}
-     |  printExpr:p                        {: :}
-     |                                     {: :}
+    ::= printExpr ',' nePrintExprList 
+     |  printExpr                        
+     |                                     
      ;
 
 nePrintExprList
-    ::= printExpr:p                        {: :}
-     |  printExpr:p ',' nePrintExprList:np {: :}
+    ::= printExpr                        
+     |  printExpr ',' nePrintExprList 
      ;
 
 printExpr 
-    ::= STRING:string {: :}
-     |  expr:e        {: :}
+    ::= STRING 
+     |  expr        
      ;
 
 assignment 
-    ::= ZID:id '=' expr:e {: :}
+    ::= ZID '=' expr 
      ;
 
 paramList 
-    ::= ZID:id ',' neIDList:nid {: :}
-     |  ZID:id                  {: :}
-     |                          {: :}
+    ::= ZID ',' neIDList 
+     |  ZID                  
+     |                          
      ;
 
 neIDList
-    ::= ZID:id ',' neIDList:nid {: :}
-     |  ZID:id                  {: :}
+    ::= ZID ',' neIDList 
+     |  ZID                  
      ;
 
 
 boolExpr 
-    ::= expr:lhs '==' expr:rhs                {: :}
-     |  expr:lhs '!=' expr:rhs                {: :}
-     |  disjunction:lhs '==' disjunction:rhs  {: :}
-     |  disjunction:lhs '!=' disjunction:rhs  {: :}
-     |  expr:lhs '<=' expr:rhs                {: :}
-     |  expr:lhs '>=' expr:rhs                {: :}
-     |  expr:lhs '<' expr:rhs                 {: :}
-     |  expr:lhs '>' expr:rhs                 {: :}
-     |  disjunction:d                         {: :}
+    ::= expr '==' expr                
+     |  expr '!=' expr                
+     |  disjunction '==' disjunction  
+     |  disjunction '!=' disjunction  
+     |  expr '<=' expr                
+     |  expr '>=' expr                
+     |  expr '<' expr                 
+     |  expr '>' expr                 
+     |  disjunction                         
      ;
 disjunction
-    ::= disjunction:d '||' conjunction:c {: :}
-     |  conjunction:c                    {: :}
+    ::= disjunction '||' conjunction 
+     |  conjunction                    
      ;
 conjunction
-    ::= conjunction:c '&&' boolFactor:f {: :}
-     | boolFactor:f                     {: :}
+    ::= conjunction '&&' boolFactor 
+     | boolFactor                     
      ;
 boolFactor
-    ::= '(' boolExpr:be_par ')' {: :}
-     | '!' boolExpr:e           {: :}
+    ::= '(' boolExpr ')' 
+     | '!' boolExpr           
      ;
 
 
 expr 
-    ::= expr:e '+'   prod:p {: :} 
-      |  expr:e '-'  prod:p {: :} 
-      |  prod:p             {: :}
+    ::= expr '+'   prod  
+      |  expr '-'  prod  
+      |  prod             
       ;
 prod 
-    ::= prod:p '*'  fact:f    {: :}
-      |  prod:p '\' fact:f    {: :} 
-      |  prod:p '%'    fact:f {: :} 
-      |  fact:f               {: :}
+    ::= prod '*'  fact    
+      |  prod '\' fact     
+      |  prod '%'    fact  
+      |  fact               
       ;
 fact 
-    ::= '(' expr:e_par ')'            {: :} 
-      |  INTEGER:n                    {: :} 
-      |  DECIMAL:d                    {: :}
-      |  ZID:id_1 '(' exprList:el ')' {: :}
-      |  ZID:id_2                     {: :}
+    ::= '(' expr ')'             
+      |  INTEGER                     
+      |  DECIMAL                    
+      |  ZID '(' exprList ')' 
+      |  ZID                     
       ;
 
 exprList
-    ::= expr:e ',' neExprList:el {: :}
-     |  expr:e                   {: :}
-     |                           {: :}
+    ::= expr ',' neExprList 
+     |  expr                   
+     |                           
      ;
 
 neExprList
-    ::= expr:e ',' neExprList:el {: :}
-     |  expr:e                   {: :}
+    ::= expr ',' neExprList 
+     |  expr                   
      ;
 

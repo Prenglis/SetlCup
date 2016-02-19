@@ -7,7 +7,7 @@ while (i <= 6 * 6) {
     }
     s = s + sin(i);
 }
-print("Summe sin(i) für i = 1..36 = ", s);
+print("Summe sin(i) fuer i = 1..36 = ", s);
 print("");
 
 quit;

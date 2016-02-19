@@ -1,4 +1,4 @@
-// Iterative Berechnung der Lösung der Gleichung x = cos(x).
+// Iterative Berechnung der Loesung der Gleichung x = cos(x).
 
 function solve() {
     x    = 0;
@@ -10,9 +10,9 @@ function solve() {
     return x;
 }
 
-print("Lösung von \"x = cos(x)\" ist x = ", solve(), " (iterative Lösung)");
+print("Loesung von x = cos(x) ist x = ", solve(), " (iterative Loesung)");
 
-// Rekursive Berechnung der Lösung der Gleichung x = cos(x).
+// Rekursive Berechnung der Loesung der Gleichung x = cos(x).
 function solveRecursive(x) {
     if (x == cos(x)) {
         return x;
@@ -20,7 +20,7 @@ function solveRecursive(x) {
     return solveRecursive(cos(x));
 }
 
-print("Lösung von \"x = cos(x)\" ist x = ", solveRecursive(0), " (rekursive Lösung)");
+print("Loesung von x = cos(x) ist x = ", solveRecursive(0), " (rekursive Loesung)");
 
 quit;
 

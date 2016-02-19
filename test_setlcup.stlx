@@ -1,0 +1,61 @@
+load("setlcup_load.stlx");
+path := "";
+boolean_is_windows := false;
+path_windows := "examples\\";
+path_unix := "examples/";
+arith_grammar := "math_expression_grammar_ast.g";
+interpreter_grammar := "interpreter_grammar_ast.g";
+math_input := [
+	["math_expression_input.txt",
+	ExprList([Minus(Plus(Integer(1), Times(Integer(2), Integer(3))), Integer(4)), Plus(Plus(Plus(Integer(1), Integer(2)), Integer(3)), Integer(4)), Plus(Integer(1), Mod(Times(Times(Integer(2), Integer(3)), Integer(5)), Integer(6)))])]
+	];
+interpreter_input := [
+	["factorial.sl", 
+	Program([Function("factorial", ["n"], [If(Equation(Variable("n"), Integer(0)), [Return(Integer(1))]), Return(Product(Variable("n"), FunctionCall("factorial", [Difference(Variable("n"), Integer(1))])))]), Print([PrintString("Calculation of factorial for i = 1 to 9")]), For(Assign("i", Integer(0)), LessThan(Variable("i"), Integer(10)), Assign("i", Sum(Variable("i"), Integer(1))), [Print([Variable("i"), PrintString("! = "), FunctionCall("factorial", [Variable("i")])])]), Print([])])], 
+	["solve.sl", 
+	Program([Function("solve", [], [Assignment(Assign("x", Integer(0))), Assignment(Assign("oldX", Integer(1))), While(Inequation(Variable("x"), Variable("oldX")), [Assignment(Assign("oldX", Variable("x"))), Assignment(Assign("x", FunctionCall("cos", [Variable("x")])))]), Return(Variable("x"))]), Print([PrintString("Loesung von x = cos(x) ist x = "), FunctionCall("solve", []), PrintString(" (iterative Loesung)")]), Function("solveRecursive", ["x"], [If(Equation(Variable("x"), FunctionCall("cos", [Variable("x")])), [Return(Variable("x"))]), Return(FunctionCall("solveRecursive", [FunctionCall("cos", [Variable("x")])]))]), Print([PrintString("Loesung von x = cos(x) ist x = "), FunctionCall("solveRecursive", [Integer(0)]), PrintString(" (rekursive Loesung)")]), Exit()])],
+	["sum.sl", 
+	Program([Assignment(Assign("s", Integer(0))), Assignment(Assign("i", Integer(0))), While(LessOrEqual(Variable("i"), Product(Integer(6), Integer(6))), [Assignment(Assign("i", Sum(Variable("i"), Integer(1)))), If(LessThan(Integer(0), Variable("i")), [Print([Variable("s")])]), Assignment(Assign("s", Sum(Variable("s"), FunctionCall("sin", [Variable("i")]))))]), Print([PrintString("Summe sin(i) fuer i = 1..36 = "), Variable("s")]), Print([PrintString("")]), Exit()])],
+	["sum-for.sl", 
+	Program([Assignment(Assign("s", Integer(0))), For(Assign("i", Integer(1)), LessThan(Variable("i"), Integer(37)), Assign("i", Sum(Variable("i"), Integer(1))), [Assignment(Assign("s", Sum(Variable("s"), FunctionCall("exp", [FunctionCall("log", [Variable("i")])]))))]), Print([PrintString("Summe i fuer i = 1..36 ist gleich "), Variable("s")]), Print([PrintString("")]), Exit()])],
+	["test-neg.sl",
+	Program([Assignment(Assign("s", Integer(0))), Assignment(Assign("i", Integer(0))), While(Negation(Negation(LessOrEqual(Variable("i"), Integer(36)))), [Assignment(Assign("i", Sum(Variable("i"), Integer(1)))), Assignment(Assign("s", Sum(Variable("s"), Variable("i"))))]), Exit()])]
+	];
+if(matches(getOsID(), 'Windows.*'))
+{
+	boolean_is_windows := true;
+	path := path_windows;
+}
+else{
+	path := path_unix;
+}
+print("Testing math_expression_grammar..");
+for(input in math_input)
+{
+	ast := call_generate_ast(path+arith_grammar, path+input[1], true);
+	if(ast == input[2])
+	{
+		print("grammar: $arith_grammar$ input: $input[1]$ successfull: yes ");
+	}
+	else
+	{
+		print("grammar: $arith_grammar$ input: $input[1]$ successfull: no ");
+		print("correct ast : $input[2]$");
+		print("created ast : $ast$");
+	}
+}
+print("Testing interpreter_grammar..");
+for(input in interpreter_input)
+{
+	ast := call_generate_ast(path+interpreter_grammar, path+input[1], true);
+	if(ast == input[2])
+	{
+		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: yes ");
+	}
+	else
+	{
+		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: no ");
+		print("correct ast : $input[2]$");
+		print("created ast : $ast$");
+	}
+}

@@ -110,42 +110,48 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-	grammar := rule_definition definition_list;
-	rule_definition := rule_head '::=' body_list ';' ;
-	body_list := body body_list
-						| ;
-	body := element_list;
+	grammar :=  definition_list;
+  definition_list := rule_definition  definition_list
+                    | ;
+	rule_definition := RULEHEAD '::=' body_list ';' ;
+	body_list := body '|' neBody_list
+						| body
+            | ;
+  neBody_List := body body_list;
+	body := element_list action_code;
+  action_code := '{:' CODE ':}'
+                | ;
   element_list := element element_list
               | ;
-  element := token id;
-  token := '''regex''' 
-         | token_name id
-         | rule_name id
+  element := token;
+  token := REGEX id
+         | TOKEN_NAME id
+         | RULE_HEAD id
          ;
-  id := id_name
+  id := ':'ID_NAME
       |;
-	expr ::= 
-	  expr:e MINUS prod:p {: result := Minus(e,p);:} 
-	| expr:e '+' prod:p   {: result := Plus(e,p); :} 
-	| 										{: :}
-	;
+  RULE_HEAD := [a-z][a-zA-Z_0-9]*;
+  TOKEN_NAME := [A-Z][A-Z_0-9]*;
+  REGEX := ''[^'']*'';
+  ID_NAME := [a-z][a-zA-Z_0-9]*;
+  CODE := [.\n]*;
 \end{Verbatim}
-\caption{Example grammar rule}
+\caption{Beispiel parser}
 \label{fig:example_grammer}
 \end{figure}
 \begin{itemize}
-	\item[rule\_head] The rule\_head is the name of the rule i.e. "expr". It is possible to reference defined rules via their rule\_name
-	\item[body\_list] The rule can consist of multiple bodys.
-	\item[rule\_body] The body can contain multiple elements. 
-	\item[rule\_element] A rule element is either a :
-	\begin{enumerate}
-		\item Token (defined in the scanner) e.g. "MINUS"
-		\item Token in  ' ' e.g. '+' as a literal
-		\item other rule\_heads e.g. "prod"
-	\end{enumerate}
-	The Tokens defined in the scanner, as well as the rule\_heads can have an id. This can be used in the action\_code.
-	\item[action\_code] The action\_code is an optional part in a body. It needs to be at the end of the body it self. Each rule\_element can have an action\_code. In this action\_code Setlx Code can be written. By using the variable "result" it is possible to pass values between rules. The id of the elements in the respective rule can be referred to by using its name.
-	\item[|] The pipe separates the different bodies.
+	\item[RULE\_HEAD]  RULE\_HEAD beschreibt den Namen einer Regel z.B. "body". Somit können Regeln referenziert werden. 
+	\item[TOKEN\_NAME] TOKEN\_NAME bezieht sich auf einen Token aus der Scanner Definition.
+	\item[REGEX] REGEX beschreibt inline reguläre Ausdrücke, welche genutzt werden können. 
+	\item[ID\_NAME] ID\_NAME ermöglicht es eine ID für den Rückgabewert einer Regel, bzw. eines Regex zu benutzen.
+	% \begin{enumerate}
+	% 	\item Token (defined in the scanner) e.g. "MINUS"
+	% 	\item Token in  ' ' e.g. '+' as a literal
+	% 	\item other rule\_heads e.g. "prod"
+	% \end{enumerate}
+	% The Tokens defined in the scanner, as well as the rule\_heads can have an id. This can be used in the action\_code.
+	\item[action\_code] Der action\_code is ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden.
+	% \item[|] The pipe separates the different bodies.
 \end{itemize}
 \newpage
 \section{Example}

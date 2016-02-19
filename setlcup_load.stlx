@@ -44,7 +44,7 @@ generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
 };
 call_generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
 {
-	print("silent_mode:$silent_mode$");
+	// print("silent_mode:$silent_mode$");
 	ast := generate_ast(input_grammar, file_to_parse, silent_mode);
 	if(silent_mode)
 	{
