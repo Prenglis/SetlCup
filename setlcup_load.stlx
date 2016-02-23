@@ -52,3 +52,4 @@ call_generate_ast := procedure(input_grammar, file_to_parse, silent_mode)
 	}
 	return ast;
 };
+

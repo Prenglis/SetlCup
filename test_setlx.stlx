@@ -1,0 +1,3 @@
+l := "'ax|b|b':hallo";
+[_, token_name, token_id] := matches(l, '(''[^'']*''):([a-z][a-zA-Z_0-9]*)', true);
+print("token_name, token_id: $token_name$, $token_id$");

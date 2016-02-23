@@ -6,6 +6,10 @@ sc_dict_generate := procedure(file, silent_mode) {
 	sc_dict :=  {};
 	parser_token_list := [];
 	user_code := "";
+	if(!silent_mode)
+	{
+		print("grammar will now be scanned");
+	}
 	scan(file) using map{
 		regex '[^%%%]+%%%.*\n' | state == "declaration_part":
 				state := "scanner_part";
@@ -56,25 +60,47 @@ sc_dict_generate := procedure(file, silent_mode) {
             user_code := "";
             state := "parser_part";
         regex '''[^'']*'''         as [ l ] | state == "parser_part":
+        	if(!silent_mode)
+        	{
+        		print("l : $l$;");
+        	}
+            // execute("parser_token_list += [ Token('$l$', \"\") ];");
             parser_token_list += [ Token(l, "") ];
-            if(sc_dict[l] == om)
-            {
-            	sc_dict[l] := "\\Q$l[2..-2]$\\E";
-            } 
+     	 	if(!silent_mode)
+     	 	{
+     	 		print("token_list was expanded");
+     	 	}
+            // if(sc_dict[l] == om)
+            // {
+        	//execute("sc_dict['$l$'] := \"\\Q$l[2..-2]$\\E\";");
+        	sc_dict[l] := "\\Q$l[2..-2]$\\E";
+            // } 
             if(!silent_mode)
             {
-            	print("l : $l$; sc_dict[$l$] := $sc_dict[l]$");
+            	print("sc_dict[$l$] := $sc_dict[l]$");
             }
         regex '''[^'']*'':[a-z][a-zA-Z_0-9]*'         as [ l ] | state == "parser_part":
      	 	[_, token_name, token_id] := matches(l, '(''[^'']*''):([a-z][a-zA-Z_0-9]*)', true);
-            parser_token_list += [ Token(token_name, token_id) ];
-            if(sc_dict[token_name] == om)
-            {
-            	sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
-            } 
+     	 	if(!silent_mode)
+     	 	{
+     	 		print("l with ':' : $l$; ");
+     	 	}
+     	 	parser_token_list += [ Token(token_name, token_id) ];
+     	 	// execute("parser_token_list += [ Token('$token_name$', $token_id$) ];");
+     	 	if(!silent_mode)
+     	 	{
+     	 		print("token_list was expanded");
+     	 	}
+            // parser_token_list += [ Token(token_name, token_id) ];
+            // if(sc_dict[token_name] == om)
+            // {
+     	 	sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
+     	 	// execute("sc_dict['$token_name$'] := \"\\Q$token_name[2..-2]$\\E\";");
+        		// sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
+            // } 
             if(!silent_mode)
             {
-            	print("l : $l$; sc_dict[$l$] := $sc_dict[l]$");
+            	print("sc_dict[$token_name$] := $sc_dict[token_name]$");
             }
         regex '[ \t\v\n\r]+'               | state == "parser_part": 
             // skip
@@ -153,6 +179,16 @@ test_scanner_generator_scan := procedure (scanner_file, test_file, silent_mode){
 	}
 	scan_output := [];
 	scan_string := generate_scan_string(sc_dict, silent_mode);
+	[_ ,output_file_name] := matches(scanner_file, '([a-zA-Z_0-9][a-zA-Z_0-9]*).[a-zA-Z_0-9][a-zA-Z_0-9]*', true);
+	output_file_name := output_file_name + "Grammar.stlx";
+	writeFile(output_file_name, "");
+	appendFile(output_file_name, ["scan_string := procedure(lines) {scan_output := []; sc_dict := $sc_dict$; $scan_string$ if(sc_dict[\"SKIP\"] != om)
+	{		
+		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != \"SKIP\"];
+
+	}return scan_output;};"]);
+	appendFile(output_file_name, readFile("Parser.stlx"));
+
 	// for( lines in test_file)
 	// {
 		if(!silent_mode)

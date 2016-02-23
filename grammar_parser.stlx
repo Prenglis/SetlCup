@@ -74,51 +74,6 @@ parseItem := procedure(tl) {
     }
 };
 
-// This procedure partitions the string s into a list of tokens.
-// It is used to tokenize the grammar Rules
-tokenizeString := procedure(s, silent_mode) {
-    tokenList := [];
-    state := "INITIAL";
-    user_code := "";
-    scan (s){
-        regex '::=|\||;'              as [ o ] | state == "INITIAL": 
-            tokenList += [ o        ];
-        regex '[a-z][a-zA-Z_0-9]*' as [ v ] | state == "INITIAL": 
-            var_id := ""; 
-            tokenList += [ Var(v, var_id) ] ;
-        regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ] | state == "INITIAL": 
-            [var_name, var_id] := split(v, ":"); 
-            tokenList += [ Var(var_name, var_id) ];
-        regex '[A-Z][A-Z_0-9]*'    as [ t ] | state == "INITIAL": 
-             [token_name, token_id] := [t, ""];
-            tokenList +=  [ Token(token_name, token_id) ];
-        regex '[A-Z][A-Z_0-9]*:[a-z][a-zA-Z_0-9]*'  as [ t ] | state == "INITIAL": 
-            [token_name, token_id] := split(t, ":");
-            tokenList += [ Token(token_name, token_id) ];
-        regex '\{:'  | state == "INITIAL": 
-            state := "CODESEG";
-        regex '.|\n' as [ u ] | state == "CODESEG" : 
-            user_code := user_code + u;            
-        regex ':\}' | state == "CODESEG" :
-            uc := "UserCode('$user_code$')";
-            tokenList += [ eval(uc)]; 
-            user_code := "";
-            state := "INITIAL";
-        regex '''[^'']*'''         as [ l ] | state == "INITIAL": 
-            tokenList += [ Token(l, "") ];
-        regex '[ \t\v\n\r]+'               | state == "INITIAL": 
-            // skip
-        regex '.|\n'               as [ c ] | state == "INITIAL": 
-            if(!silent_mode)
-            {
-                print("tokenList =$tokenList$");
-                m := matches(c, '[a-z][a-zA-Z_0-9]*');
-                print("m : $m$");
-               print("ERROR : tokenizeString: $c$");
-            }
-    }
-    return tokenList;
-};
 
 grammar2String := procedure(ruleList) {
     result := "";
@@ -283,8 +238,16 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
         }
         return Rule(mVariable, rargs, this.mUser_Code);
     };
+    escapeDollarFollowSet := procedure(followSet)
+    {
+        newSet := {};
+        for (t in followSet) {
+            newSet += {escapeDollar(t)};
+        }
+        return newSet;
+    };
     f_str := procedure() {
-        rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$mFollowSet$,$mUser_Code$)";
+        rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$escapeDollarFollowSet(mFollowSet)$,$mUser_Code$)";
         // rule :=  "$mVariable$";
         // rule += " ->" ;
         // rule += list2str(mAlpha) + " (*)";
@@ -369,6 +332,9 @@ class grammar(rules, variables, start, silent_mode) {
         {
             print("rulesMap := {};");
         }
+        // writeFile("Parser.stlx" , "");
+        // appendFile("Parser.stlx", ["actionTable := gotoTable := stateTable := rulesMap := {};"]);
+        // appendFile("Parser.stlx", ["rulesMap := {};"]);
         for ([head, body, user_code] in mRules) {
         [rargs, _] := extractArgList(body);
         execute("user_code := UserCode('$args(user_code)[1]$');");
@@ -380,9 +346,11 @@ class grammar(rules, variables, start, silent_mode) {
                 print("$ruleName$ := $rule$;");
                 print("rulesMap[\"$ruleName$\"] := $rule$;");
             }
+            // appendFile("Parser.stlx", ["$ruleName$ := $rule$;", "rulesMap[\"$ruleName$\"] := $rule$;"]);
              this.mRulesMap[ruleName] := rule;
             counter += 1;
         }
+        // appendFile("Parser.stlx", ["$ruleNames$ := $mRuleNames$;"]);
         if(!mSilentMode)
         {
             print("\n");
@@ -514,6 +482,7 @@ class grammar(rules, variables, start, silent_mode) {
                 // print("stateTable[\"s$counter$\"] := $state2String(state)$;");
                  print("stateTable[\"s$counter$\"] := $state$;");
             }
+            // appendFile("Parser.stlx", ["stateTable[\"s$counter$\"] := $state$;"]);
             this.mStateTable["s$counter$"] := state;
             
             counter += 1;
@@ -554,6 +523,7 @@ class grammar(rules, variables, start, silent_mode) {
                     {
                         print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
                     }
+                    // appendFile("Parser.stlx", ["actionTable[\"$stateName$\", $t$] := $Shift(newName)$;"]);
                 }
             }
             // compute reduce actions
@@ -578,6 +548,7 @@ class grammar(rules, variables, start, silent_mode) {
                         {
                             print("actionTable[\"$stateName$\", $t$] := $action2$;");
                         }
+                        // appendFile("Parser.stlx", ["actionTable[\"$stateName$\", $t$] := $action2$;"]);
                     } else if (action1 != action2) {
                         this.mConflicts := true;
                         if(!mSilentMode)
@@ -612,6 +583,7 @@ class grammar(rules, variables, start, silent_mode) {
                 {
                     print("gotoTable[\"$stateName$\", $var$] := \"$newName$\";");
                 }
+                // appendFile("Parser.stlx", ["gotoTable[\"$stateName$\", $var$] := \"$newName$\";"]);
                 this.mGotoTable[stateName, var] := newName;
             }
         }
@@ -660,11 +632,72 @@ class grammar(rules, variables, start, silent_mode) {
             case UserCode(u) : return UserCode(u);
         }
     };
+escapeDollarActionTable := procedure(actionTable, silent_mode){
+    newActionTable := {};
+    for([state, symbol] in domain(actionTable))
+    {
+
+        action := actionTable[state, symbol];
+        if(!silent_mode)
+        {
+            print("state, symbol, action := $[state, symbol, action]$");
+        }
+        match(symbol)
+        {
+            case Token(token_name, token_id):
+                if(!silent_mode)
+                {
+                    print("token found : $Token(token_name, token_id)$");
+                    print('token_name == ''$'' || token_name == ''\$'' || token_name == "\$" || token_name[-1] == ''$'' && #token_name <=2');
+                    nPrint(token_name == '$');
+                    nPrint(token_name == '\$');
+                    nPrint(token_name == "\$");
+                    nPrint(token_name[-1] == '$' && #token_name <=2);
+
+                }
+                if(token_name == '$' || token_name == '\$' || token_name == "\$" || token_name == @"$" || token_name == @'$' || token_name[-1] == '$' && #token_name <=2)
+                {
+                    if(!silent_mode)
+                    {
+                        print("\$ found");
+                    }
+                    token_name := @'$';
+                }
+                newActionTable[state, Token(token_name, token_id)] := action;
+            case Var(var_name, var_id):
+                if(!silent_mode)
+                {
+                    print("var found : $Var(var_name, var_id)$");
+                }
+                if(var_name == '$' || var_name == '\$' || var_name == "\$" || var_name == @"$" || var_name == @'$' || var_name[-1] == '$' && #var_name <=2)
+                {
+                    if(!silent_mode)
+                    {
+                        print("\$ found");
+                    }
+                    token_name := @'$';
+                }
+                newActionTable[state, Var(var_name, var_id)] := action;
+        }
+    }
+    return newActionTable;
+};
 testFromTokenList := procedure(token_list, silent_mode)
  {
     [rules, variables, start] := parseGrammar(token_list);
     gr := grammar(rules, variables, start, silent_mode);
+
+    // def_string := "getDefs := procedure(){ print(\"ruleNames\") };"
     [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := gr.checkLR();
+     def_string := "getDefs := procedure(){ \n";
+     def_string += "ruleNames := $ruleNames$;\n";
+     def_string += "rulesMap := $rulesMap$;\n";
+     def_string += "stateTable := $stateTable$;\n";
+     def_string += "actionTable := $escapeDollarActionTable(actionTable, silent_mode)$;\n";
+     def_string += "gotoTable := $gotoTable$;\n";
+     def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
+     def_string += "};\n main();";
+     appendFile("examplesGrammar.stlx", [def_string]);
     return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
  };
 testFromString := procedure(grammar_string, silent_mode){

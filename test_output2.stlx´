@@ -1,0 +1,311 @@
+grammar will now be scanned
+l : 'function';
+token_list was expanded
+sc_dict['function'] := \Qfunction\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '{';
+token_list was expanded
+sc_dict['{'] := \Q{\E
+l : '}';
+token_list was expanded
+sc_dict['}'] := \Q}\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : 'print';
+token_list was expanded
+sc_dict['print'] := \Qprint\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : 'if';
+token_list was expanded
+sc_dict['if'] := \Qif\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '{';
+token_list was expanded
+sc_dict['{'] := \Q{\E
+l : '}';
+token_list was expanded
+sc_dict['}'] := \Q}\E
+l : 'while';
+token_list was expanded
+sc_dict['while'] := \Qwhile\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '{';
+token_list was expanded
+sc_dict['{'] := \Q{\E
+l : '}';
+token_list was expanded
+sc_dict['}'] := \Q}\E
+l : 'for';
+token_list was expanded
+sc_dict['for'] := \Qfor\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '{';
+token_list was expanded
+sc_dict['{'] := \Q{\E
+l : '}';
+token_list was expanded
+sc_dict['}'] := \Q}\E
+l : 'return';
+token_list was expanded
+sc_dict['return'] := \Qreturn\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : 'return';
+token_list was expanded
+sc_dict['return'] := \Qreturn\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : 'quit';
+token_list was expanded
+sc_dict['quit'] := \Qquit\E
+l : ';';
+token_list was expanded
+sc_dict[';'] := \Q;\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+l : '=';
+token_list was expanded
+sc_dict['='] := \Q=\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+l : '==';
+token_list was expanded
+sc_dict['=='] := \Q==\E
+l : '!=';
+token_list was expanded
+sc_dict['!='] := \Q!=\E
+l : '==';
+token_list was expanded
+sc_dict['=='] := \Q==\E
+l : '!=';
+token_list was expanded
+sc_dict['!='] := \Q!=\E
+l : '<=';
+token_list was expanded
+sc_dict['<='] := \Q<=\E
+l : '>=';
+token_list was expanded
+sc_dict['>='] := \Q>=\E
+l : '<';
+token_list was expanded
+sc_dict['<'] := \Q<\E
+l : '>';
+token_list was expanded
+sc_dict['>'] := \Q>\E
+l : '||';
+token_list was expanded
+sc_dict['||'] := \Q||\E
+l : '&&';
+token_list was expanded
+sc_dict['&&'] := \Q&&\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '!';
+token_list was expanded
+sc_dict['!'] := \Q!\E
+l : '+';
+token_list was expanded
+sc_dict['+'] := \Q+\E
+l : '-';
+token_list was expanded
+sc_dict['-'] := \Q-\E
+l : '*';
+token_list was expanded
+sc_dict['*'] := \Q*\E
+l : '\';
+token_list was expanded
+sc_dict['\'] := \Q\\E
+l : '%';
+token_list was expanded
+sc_dict['%'] := \Q%\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : '(';
+token_list was expanded
+sc_dict['('] := \Q(\E
+l : ')';
+token_list was expanded
+sc_dict[')'] := \Q)\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+l : ',';
+token_list was expanded
+sc_dict[','] := \Q,\E
+sc_dict["SKIP"] : {WHITESPACE}|\n|//[^\n]*
+sc_dict : {["'!'", "\Q!\E"], ["'!='", "\Q!=\E"], ["'%'", "\Q%\E"], ["'&&'", "\Q&&\E"], ["'('", "\Q(\E"], ["')'", "\Q)\E"], ["'*'", "\Q*\E"], ["'+'", "\Q+\E"], ["','", "\Q,\E"], ["'-'", "\Q-\E"], ["';'", "\Q;\E"], ["'<'", "\Q<\E"], ["'<='", "\Q<=\E"], ["'='", "\Q=\E"], ["'=='", "\Q==\E"], ["'>'", "\Q>\E"], ["'>='", "\Q>=\E"], ["'\'", "\Q\\E"], ["'for'", "\Qfor\E"], ["'function'", "\Qfunction\E"], ["'if'", "\Qif\E"], ["'print'", "\Qprint\E"], ["'quit'", "\Qquit\E"], ["'return'", "\Qreturn\E"], ["'while'", "\Qwhile\E"], ["'{'", "\Q{\E"], ["'||'", "\Q||\E"], ["'}'", "\Q}\E"], ["DECIMAL", "0\.[0-9]+|[1-9][0-9]*\.[0-9]+"], ["INTEGER", "0|[1-9][0-9]*"], ["SKIP", "[ \t\v\r\s]|\n|//[^\n]*"], ["STRING", "\"(?:\\.|[^\"])*\""], ["ZID", "[a-zA-Z_][a-zA-Z0-9_]*"]}
+scan_string: 
+ scan(lines) { 
+regex '\Q!\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''!'']];
+regex '\Q!=\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''!='']];
+regex '\Q%\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''%'']];
+regex '\Q&&\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''&&'']];
+regex '\Q(\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''('']];
+regex '\Q)\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, '')'']];
+regex '\Q*\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''*'']];
+regex '\Q+\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''+'']];
+regex '\Q,\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, '','']];
+regex '\Q-\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''-'']];
+regex '\Q;\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, '';'']];
+regex '\Q<\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''<'']];
+regex '\Q<=\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''<='']];
+regex '\Q=\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''='']];
+regex '\Q==\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''=='']];
+regex '\Q>\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''>'']];
+regex '\Q>=\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''>='']];
+regex '\Q\\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''\'']];
+regex '\Qfor\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''for'']];
+regex '\Qfunction\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''function'']];
+regex '\Qif\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''if'']];
+regex '\Qprint\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''print'']];
+regex '\Qquit\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''quit'']];
+regex '\Qreturn\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''return'']];
+regex '\Qwhile\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''while'']];
+regex '\Q{\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''{'']];
+regex '\Q||\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''||'']];
+regex '\Q}\E' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, ''}'']];
+regex '0\.[0-9]+|[1-9][0-9]*\.[0-9]+' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, 'DECIMAL']];
+regex '0|[1-9][0-9]*' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, 'INTEGER']];
+regex '[ \t\v\r\s]|\n|//[^\n]*' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, 'SKIP']];
+regex '\"(?:\\.|[^\"])*\"' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, 'STRING']];
+regex '[a-zA-Z_][a-zA-Z0-9_]*' as [c]: 
+  c := join(split(c, '"'), ""); scan_output := scan_output + [[c, 'ZID']];
+regex '.' as [ c ]: if(!silent_mode){print("unrecognized character: " + c);}} 
+
+lines :function factorial(n) {
+    if (n == 0) {
+        	return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+print("Calculation of factorial for i = 1 to 9");
+for (i = 0; i < 10; i = i + 1) {
+    print(i, "! = ", factorial(i));
+}
+print();
+
+
+ 
+
+Error while generating Scanner: line 3:70 extraneous input '''' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 11:69 mismatched input '(' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 11:73 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 13:69 mismatched input ')' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 23:69 mismatched input ';' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 23:72 mismatched input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 29:69 mismatched input '=' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 39:69 mismatched input 'for' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 39:75 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 41:69 mismatched input 'function' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 41:80 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 43:69 mismatched input 'if' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 43:74 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 45:69 mismatched input 'print' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 45:77 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 47:69 mismatched input 'quit' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 47:76 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 49:69 mismatched input 'return' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 49:78 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 51:69 mismatched input 'while' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 51:77 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 53:69 mismatched input '{' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 53:73 extraneous input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+line 57:69 mismatched input '}' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', '|', ']', 'in', ',', '-', '*/', '=>', '+', '<!=>', '&&', '||', '>', '==', '/', '>=', '..'}
+line 57:72 mismatched input ']' expecting {'*', '<', '!=', '<=', '><', '<==>', '%', '+/', '\', 'notin', 'in', '-', '*/', '=>', '+', '<!=>', ';', '&&', '||', '>', '==', '/', '>='}
+25 syntax error(s) encountered.
+scan_output :om
+om
+error while generating parser : Left hand side "tl" is undefined.
+tokenlist: om
+
+error while parsing : 'om + [["$", "$"]]' is undefined.
+ast := om;
