@@ -632,8 +632,9 @@ class grammar(rules, variables, start, silent_mode) {
             case UserCode(u) : return UserCode(u);
         }
     };
-escapeDollarActionTable := procedure(actionTable, silent_mode){
-    newActionTable := {};
+stringifyActionTable := procedure(actionTable, silent_mode){
+    // newActionTable := {};
+    stringActionTable := "actionTable := {};\n";
     for([state, symbol] in domain(actionTable))
     {
 
@@ -661,9 +662,20 @@ escapeDollarActionTable := procedure(actionTable, silent_mode){
                     {
                         print("\$ found");
                     }
-                    token_name := @'$';
+                    token_name := "@\"\$\"";
+                    stringActionTable += "actionTable[\"$state$\", Token($token_name$, '$token_id$')] := $action$;\n";
                 }
-                newActionTable[state, Token(token_name, token_id)] := action;
+                else{
+                    // if(token_name[-1] == "'" && token_name[1] == "'")
+                    // {
+                         // stringActionTable += "actionTable[$state$, Token($token_name$, '$token_id$')] := $action$;\n";
+                    // }
+                    // else{
+                        stringActionTable += "actionTable[\"$state$\", $Token(token_name, token_id)$] := $action$;\n";          
+                    // }
+                 
+                }
+                // newActionTable[state, Token(token_name, token_id)] := action;
             case Var(var_name, var_id):
                 if(!silent_mode)
                 {
@@ -675,12 +687,23 @@ escapeDollarActionTable := procedure(actionTable, silent_mode){
                     {
                         print("\$ found");
                     }
-                    token_name := @'$';
+                    var_name := "@\"\$\"";
+                    stringActionTable += "actionTable[\"$state$\", Var($var_name$, '$var_id$')] := $action$;\n";
                 }
-                newActionTable[state, Var(var_name, var_id)] := action;
+                else{
+                    // if(var_name[-1] == "'" && var_name[1] == "'")
+                    // {
+                         // stringActionTable += "actionTable[$state$, Var($var_name$, '$var_id$')] := $action$;\n";
+                    // }
+                    // else{
+                              stringActionTable += "actionTable[\"$state$\", $Var(var_name, var_id)$] := $action$;\n";    
+                    // }
+              
+                }
+                // newActionTable[state, Var(var_name, var_id)] := action;
         }
     }
-    return newActionTable;
+    return stringActionTable;
 };
 testFromTokenList := procedure(token_list, silent_mode)
  {
@@ -693,7 +716,8 @@ testFromTokenList := procedure(token_list, silent_mode)
      def_string += "ruleNames := $ruleNames$;\n";
      def_string += "rulesMap := $rulesMap$;\n";
      def_string += "stateTable := $stateTable$;\n";
-     def_string += "actionTable := $escapeDollarActionTable(actionTable, silent_mode)$;\n";
+     def_string += stringifyActionTable(actionTable, silent_mode);
+     // def_string += "actionTable := $escapeDollarActionTable(actionTable, silent_mode)$;\n";
      def_string += "gotoTable := $gotoTable$;\n";
      def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
      def_string += "};\n main();";
