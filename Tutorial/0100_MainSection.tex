@@ -29,33 +29,15 @@ Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
 	\end{Verbatim}
 			Dieser Aufruf zeigt die Hilfe an, wie SetlCup aufgerufen werden kann.
 \end{enumerate}
-%\subsection{Calling via Setlx}
-%SetlCup can also be called in Setlx itself. If this case is used, you need to load the program "setlcup\_load.stlx".
-%\begin{figure}[!ht]
-%\begin{Verbatim}[ frame         = lines, 
-                  %framesep      = 0.3cm, 
-                  %labelposition = bottomline,
-                  %numbers       = left,
-                  %numbersep     = -0.2cm,
-                  %xleftmargin   = 0.8cm,
-                  %xrightmargin  = 0.8cm,
-                %]
-	%load("setlcup_load.stlx");
-%\end{Verbatim}
-%\end{figure}
-%Afterwards Setlcup can be used via the method call
-%\begin{Verbatim}
-	%call_generate_ast(input_grammar, file_to_parse, silent_mode);
-%\end{Verbatim}
-%
-%e.g.
-%\begin{figure}[!ht]
-%\begin{Verbatim}
-	%load("setlcup_load.stlx");
-	%print(call_generate_ast('examples\math_expression_grammar_ast.g', 
-	                    %'examples\math_expression_input.txt', true));
-%\end{Verbatim}
-%\end{figure}
+\chapter{Dateistruktur}
+SetlCup besteht aus 7 verschiedenen SetlX Dateien:
+\paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Parserdefinition als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
+\paragraph{setlcup\_load.stlx} Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. Falls über Setlx mit SetlCup gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
+\paragraph{scanner\_generator.stlx} In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. Dieser wird daraufhin in einer Ausgabedatei abgelegt. Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehangen. Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
+\paragraph{parser\_generator.stlx} Der Parser Generator erstellt den kanonischen LR-Parser. Er erzeugt die notwendigen Action-, State- und Gototabellen. Diese werden zusammen mit den Regeln und dem vom User gewünschten Code auch in der o.g. Datei abgespeichert. 
+\paragraph{\_sr\_parser\_part.stlx} Der Shift-Reduce-Parser ist in dieser Datei umgesetzt. Er wird zusammen mit den benötigten Tabellen, sowie dem Scanner in eine neue Datei kopiert. 
+\paragraph{\_parser.stlx} In dieser Datei wird der erstelle Scanner und Parser abgelegt. Beim Aufruf wird die übergebene Datei geparsed. Dabei werden die o.g. Tabellen, sowie der vorher erstellte Scanner genutzt. Der Parser ist ein Shift-Reduce Parser. Beim Reducen wird der vom User angegebene Code ausgeführt. Der Wert der Variable "result" wird am Ende zurückgegeben.
+\paragraph{test\_setlcup.stlx} Für einen Regressionstest kann mit dieser Datei überprüft werden ob alle Beispiele momentan geparsed werden können. Dabei wird zunächst für den arithmetischen Term der Parser erstellt. Dieser wird anschließend mit einer Eingabedatei aufgerufen und die Ergebnisse mit den vorher festgelegten verglichen. Das gleiche geschieht mit der Parserdefinition für eine einfache Programmiersprache.
 \chapter{Aufbau der Definitionen}
 
 Der Aufbau der Scanner- und Parserdefinitionen ist in drei Abschnitte zu unterteilen:
@@ -124,7 +106,7 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
   element_list := element element_list
               | ;
   element := token;
-  token := REGEX id
+  token := LITERAL id
          | TOKEN_NAME id
          | RULE_HEAD id
          ;
@@ -132,7 +114,7 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
       |;
   RULE_HEAD := [a-z][a-zA-Z_0-9]*;
   TOKEN_NAME := [A-Z][A-Z_0-9]*;
-  REGEX := ''[^'']*'';
+  LITERAL := ''[^'']*'';
   ID_NAME := [a-z][a-zA-Z_0-9]*;
   CODE := [.\n]*;
 \end{Verbatim}
@@ -142,7 +124,7 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
 \begin{itemize}
 	\item[RULE\_HEAD]  RULE\_HEAD beschreibt den Namen einer Regel z.B. "body". Somit können Regeln referenziert werden. 
 	\item[TOKEN\_NAME] TOKEN\_NAME bezieht sich auf einen Token aus der Scanner Definition.
-	\item[REGEX] REGEX beschreibt inline reguläre Ausdrücke, welche genutzt werden können. 
+	\item[LITERAL] LITERAL beschreibt wortwörtliche Ausdrücke, welche genutzt werden können. 
 	\item[ID\_NAME] ID\_NAME ermöglicht es eine ID für den Rückgabewert einer Regel, bzw. eines Regex zu benutzen.
 	% \begin{enumerate}
 	% 	\item Token (defined in the scanner) e.g. "MINUS"
@@ -150,15 +132,15 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
 	% 	\item other rule\_heads e.g. "prod"
 	% \end{enumerate}
 	% The Tokens defined in the scanner, as well as the rule\_heads can have an id. This can be used in the action\_code.
-	\item[action\_code] Der action\_code is ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden.
+	\item[action\_code] Der action\_code is ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit "\\"" oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in SetlX eine Sonderfunktion einnehmen. 
 	% \item[|] The pipe separates the different bodies.
 \end{itemize}
 \newpage
-\section{Example}
-The first example shows a simple arithmetic grammar.
-The second example shows how a simple programming language can be parsed using SetlCup.
-\subsection{Arithmetic grammar}
-The arithmetic grammar and scanner \mRefFigure{fig:example_arithmetic_grammer} can be defined using the syntax mentioned above.
+\section{Beispiele}
+Das erste Beispiel beschreibt eine einfache arithmetische Grammatik.
+Das zweite Beispiel beschreibt eine simple Programmiersprache.
+\subsection{Arithmetische Ausdrücke}
+Der arithmetische Parser \mRefFigure{fig:example_arithmetic_grammer} kann mit der oben beschriebenen Syntax definiert werden.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -172,6 +154,8 @@ The arithmetic grammar and scanner \mRefFigure{fig:example_arithmetic_grammer} c
 
   INTEGER       := 0|[1-9][0-9]* ;
   WHITESPACE    := [ \t\v\r\s] ;
+
+
   SKIP          := {WHITESPACE} | \n ;
 
   %%%
@@ -200,11 +184,11 @@ The arithmetic grammar and scanner \mRefFigure{fig:example_arithmetic_grammer} c
      |  INTEGER:n             {: result := Integer(eval(n)); :} 
      ;
 \end{Verbatim}
-\caption{Example arithmetic grammar}
+\caption{Parserdefinition für arithmetische Ausdrücke}
 \label{fig:example_arithmetic_grammer}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_grammar_ast.g}
-The input file consists of multiple lines with arithmetic expressions \ref{fig:example_arithmetic_input}.
+Eine beispielhafte Eingabe besteht aus drei verschiedenen mathematischen Termen \ref{fig:example_arithmetic_input}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -218,13 +202,10 @@ The input file consists of multiple lines with arithmetic expressions \ref{fig:e
   1 + 2 + 3 + 4;
   1 + ( 2 * 3 ) * 5 % 6;
 \end{Verbatim}
-\caption{Example arithmetic input}
+\caption{Beispiel für arithmetische Terme}
 \label{fig:example_arithmetic_input}
 \end{figure}
-%\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize]{math_expression_input.txt}
-The output AST\mRefFigure{fig:arith_expr_tree} consists of the three expressions noted above.
-%\lstinputlisting[basicstyle=\footnotesize,breaklines=true]{math_expression_output.txt}
-
+Die Ausgabe des AST\mRefFigure{fig:arith_expr_tree} beschreibt die gezeigte Eingabe.
 \begin{figure}[!ht]
 	\centering
 		\includegraphics{arith_expr_tree.pdf}
@@ -232,12 +213,11 @@ The output AST\mRefFigure{fig:arith_expr_tree} consists of the three expressions
 	\label{fig:arith_expr_tree}
 \end{figure}
 
-\subsection{Programming language grammar}
-The programming language grammar and scanner.
-The Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} consists of the string literals for keywords and the definition of the syntax for a variable or function name, integers and decimals.
-The Statements \mRefFigure{fig:example_interpreter_grammar_statements} describe the structure of the input file. It consists of multiple statement and definitions.
-The Lists \mRefFigure{fig:example_interpreter_grammar_lists} describe how multiple arguments, expressions, definitions and statements are chained.
-The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe boolean and arithmetic expressions.
+\subsection{Programmiersprachen Parser}
+Der Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} besteht aus den Tokens für Strings, Dezimalzahlen, Ganzzahlen usw.
+Die Anwwisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_statements} beschreiben den Aufbau der Eingabedatei. Sie besteht aus Definitionen und Anweisungen.
+Listen \mRefFigure{fig:example_interpreter_grammar_lists} sind zur Aneinanderreihung verschiedener Anweisungen, Definitionen, Ausdrücke etc. notwendig. 
+Die Ausdrücke sind für boolsche, sowie arithmetische Terme notwendig \mRefFigure{fig:example_interpreter_grammar_expression}.
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{interpreter_grammar_ast.g}
 \begin{figure}[!ht]
 
@@ -250,23 +230,16 @@ The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe
                   xrightmargin  = 0.8cm,
                 ]
   %%%
-  FUNCTION    := function ;
-  RETURN      := return ;
-  IF          := if ;
-  ELSE        := else ;
-  WHILE       := while ;
-  FOR         := for ;
-  PRINT       := print ;
-  QUIT        := exit ;
   STRING      := \"(?:\\.|[^\"])*\" ;
   WHITESPACE  := [ \t\v\r\s] ;
-  SKIP        := {WHITESPACE}|\n|//[^\n]* ;
   INTEGER     := 0|[1-9][0-9]* ;
   DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
-  ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;  
+  ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
+
+  SKIP        := {WHITESPACE}|\n|//[^\n]* ;
   %%%
 \end{Verbatim}
-\caption{Example interpreter scanner}
+\caption{Scannerdefinition für Programmiersprache}
 \label{fig:example_interpreter_grammar_scanner}
 \end{figure}
 \begin{figure}[!ht]
@@ -280,40 +253,42 @@ The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe
                   xrightmargin  = 0.8cm,
                 ]
   program 
-   ::= dfnStmntList:d {: result := Program(d); :}
-     ;
+    ::= dfnStmntList:d {: result := Program(d); :}
+    ;
+
   dfnStmntList 
    ::= definition:d dfnStmntList:dl       {: result := [d] + dl; :}
      |  statement:stmts  dfnStmntList:dsl {: result := [stmts] + dsl; :}
      |                                    {: result := []; :}
      ;
-  definition 
-   ::= FUNCTION ZID:function_name '(' paramList:param_list ')' 
-			'{' stmntList:statement_list '}'
+
+  definition
+   ::= 'function' ZID:function_name '(' paramList:param_list ')' 
+      '{' stmntList:statement_list '}'
        {: result := Function(function_name, param_list, statement_list);:}
-     ;
+     ; 
   stmntList
-   ::= statement:s stmntList:sl {: result := [s] + sl ; :}
+    ::= statement:s stmntList:sl {: result := [s] + sl ; :}
      |  {: result := []; :}
      ;
   statement 
    ::= assignment:a ';'   {: result := Assign(a); :}    
-     |  PRINT '(' printExprList:printexpr_list ')' ';'      
+     |  'print' '(' printExprList:printexpr_list ')' ';'      
                           {: result := Print(printexpr_list); :}
-     |  IF '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    
+     |  'if' '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    
                           {: result := If(b, st_list1); :}
-     |  WHILE '(' boolExpr:b ')' '{' stmntList:st_list2 '}' 
+     |  'while' '(' boolExpr:b ')' '{' stmntList:st_list2 '}' 
                           {: result := While(b, st_list2); :}
-     |  FOR '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' 
+     |  'for' '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' 
 		    '{' stmntList:st_list3 '}' 
                           {: result := For(i_a, b, e_a, st_list3);  :}
-     |  RETURN expr:e ';' {: result := Return(e); :}
-     |  RETURN ';'        {: result := Return();  :}
+     |  'return' expr:e ';' {: result := Return(e); :}
+     |  'return' ';'        {: result := Return();  :}
      |  expr:e ';'        {: result := Expr(e);   :}      
-     |  QUIT ';'          {: result := Exit();    :}
+     |  'quit' ';'          {: result := Exit();    :}
      ;
 \end{Verbatim}
-\caption{Example interpreter statements}
+\caption{Statements für Progammiersprachenparser}
 \label{fig:example_interpreter_grammar_statements}
 \end{figure}
 \begin{figure}[!ht]
@@ -361,7 +336,7 @@ The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe
      |  expr:e                  {: result := [e]; :}
      ;
 		\end{Verbatim}
-\caption{Example interpreter Lists}
+\caption{Listen für Progammiersprachenparser}
 \label{fig:example_interpreter_grammar_lists}
 \end{figure}
 \begin{figure}[!ht]
@@ -416,10 +391,10 @@ The Expressions \mRefFigure{fig:example_interpreter_grammar_expression} describe
      |  ZID:id_2                     {: result := Variable(id_2); :}
      ;
 		\end{Verbatim}
-\caption{Example interpreter expressions}
+\caption{Ausdrücke für Progammiersprachenparser}
 \label{fig:example_interpreter_grammar_expression}
 \end{figure}
-A sample input program \mRefFigure{fig:example_interpreter_input} describes the recursive function factorial.
+Ein Beispiel Programm \mRefFigure{fig:example_interpreter_input} zum Berechnen der Fakultät wird durch den Syntaxbaum \mRefFigure{fig:interpreter_tree} abgebildet.
 \begin{figure}[!ht]
 
 \begin{Verbatim}[ frame         = lines, 
@@ -446,7 +421,7 @@ A sample input program \mRefFigure{fig:example_interpreter_input} describes the 
 \label{fig:example_interpreter_input}
 \end{figure}
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{factorial.sl}
-The output AST \mRefFigure{fig:interpreter_tree} represents the syntactic structure of the factorial program. 
+%The output AST  represents the syntactic structure of the factorial program. 
 %\lstinputlisting[basicstyle=\footnotesize ,breaklines=true]{factorial_output.txt}
 
 

@@ -1,27 +1,15 @@
+/*
+ Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. 
+ Falls über Setlx mit SetlCup gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. 
+ Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
+*/
 load("scanner_generator.stlx");
-generate_parser := procedure(input_grammar, silent_mode)
-{
+load("parser_generator.stlx");
+generate_parser := procedure(input_grammar, silent_mode){
 	silent_mode := silent_mode;
-	load("parser_generator.stlx");
-	try
-	{
-		parser_token_list := generate_parser_token_list(input_grammar, silent_mode);		
-	}
-	catch(e){
-		print("Error while generating and writing Scanner: $e$");
-	}
-
-	if(!silent_mode)
-	{
+	parser_token_list := generate_parser_token_list(input_grammar, silent_mode);
+	if(!silent_mode){
 			print("parser_token_list : $parser_token_list$");	
 	}
-	try
-	{
-		tfs_list := [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := testFromTokenList(parser_token_list, silent_mode);
-	}
-	catch(e)
-	{
-		print("error while generating parser : $e$");
-	}
-
+	write_parser_file(parser_token_list, silent_mode);
 };

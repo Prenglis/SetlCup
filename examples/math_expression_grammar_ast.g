@@ -3,6 +3,8 @@ Diese Grammatik beschreibt eine einfache arithmetische Grammatik.
 
 INTEGER       := 0|[1-9][0-9]* ;
 WHITESPACE    := [ \t\v\r\s] ;
+
+
 SKIP          := {WHITESPACE} | \n ;
 
 %%%

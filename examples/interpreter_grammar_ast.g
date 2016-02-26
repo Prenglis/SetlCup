@@ -3,42 +3,45 @@ Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmi
 
 STRING      := \"(?:\\.|[^\"])*\" ;
 WHITESPACE  := [ \t\v\r\s] ;
-SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 INTEGER     := 0|[1-9][0-9]* ;
 DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
 ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
+SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 %%%
-program 
+  program 
     ::= dfnStmntList:d {: result := Program(d); :}
     ;
 
-dfnStmntList 
-    ::= definition:d dfnStmntList:dl {: result := [d] + dl; :}
+  dfnStmntList 
+   ::= definition:d dfnStmntList:dl       {: result := [d] + dl; :}
      |  statement:stmts  dfnStmntList:dsl {: result := [stmts] + dsl; :}
-     | {: result := []; :}
+     |                                    {: result := []; :}
      ;
 
-definition 
-    ::= 'function' ZID:function_name '(' paramList:param_list ')' '{' stmntList:statement_list '}'
-        {: result := Function(function_name, param_list, statement_list);:}
-     ;
-
-stmntList
+  definition
+   ::= 'function' ZID:function_name '(' paramList:param_list ')' 
+      '{' stmntList:statement_list '}'
+       {: result := Function(function_name, param_list, statement_list);:}
+     ; 
+  stmntList
     ::= statement:s stmntList:sl {: result := [s] + sl ; :}
      |  {: result := []; :}
      ;
-
-statement 
-    ::= assignment:a ';'                                    {: result := Assignment(a); :}    
-     |  'print' '(' printExprList:printexpr_list ')' ';'      {: result := Print(printexpr_list); :}
-     |  'if' '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    {: result := If(b, st_list1); :}
-     |  'while' '(' boolExpr:b ')' '{' stmntList:st_list2 '}' {: result := While(b, st_list2); :}
-     |  'for' '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' '{' stmntList:st_list3 '}' 
-                                                            {: result := For(i_a, b, e_a, st_list3);  :}
-     |  'return' expr:e ';'                                   {: result := Return(e); :}
-     |  'return' ';'                                          {: result := Return(); :}
-     |  expr:e ';'                                          {: result := Expr(e); :}      
-     |  'quit' ';'                                            {: result := Exit(); :}
+  statement 
+   ::= assignment:a ';'   {: result := Assignment(a); :}    
+     |  'print' '(' printExprList:printexpr_list ')' ';'      
+                          {: result := Print(printexpr_list); :}
+     |  'if' '(' boolExpr:b ')' '{' stmntList:st_list1 '}'    
+                          {: result := If(b, st_list1); :}
+     |  'while' '(' boolExpr:b ')' '{' stmntList:st_list2 '}' 
+                          {: result := While(b, st_list2); :}
+     |  'for' '(' assignment:i_a ';' boolExpr:b ';' assignment:e_a ')' 
+        '{' stmntList:st_list3 '}' 
+                          {: result := For(i_a, b, e_a, st_list3);  :}
+     |  'return' expr:e ';' {: result := Return(e); :}
+     |  'return' ';'        {: result := Return();  :}
+     |  expr:e ';'        {: result := Expr(e);   :}      
+     |  'quit' ';'          {: result := Exit();    :}
      ;
 
 printExprList 

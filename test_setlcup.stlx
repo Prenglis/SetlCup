@@ -1,3 +1,9 @@
+/*
+	Für einen Regressionstest kann mit dieser Datei überprüft werden ob alle Beispiele momentan geparsed werden können. 
+	Dabei wird zunächst für den arithmetischen Term der Parser erstellt. 
+	Dieser wird anschließend mit einer Eingabedatei aufgerufen und die Ergebnisse mit den vorher festgelegten verglichen. 
+	Das gleiche geschieht mit der Parserdefinition für eine einfache Programmiersprache.
+*/
 load("setlcup_load.stlx");
 path := "";
 boolean_is_windows := false;
@@ -33,17 +39,14 @@ print("Testing math_expression_grammar..");
 generate_parser(path+arith_grammar, true);
 print("parser generated succefully for $arith_grammar$");
 load("examplesGrammar.stlx");
-for(input in math_input)
-{	 
+for(input in math_input){	 
 
 	ast := test_parser(path+input[1], true);
 	// ast := run("setlx examplesGrammar.stlx -p $path+input[1]$");
-	if(ast == input[2])
-	{
+	if(ast == input[2]){
 		print("grammar: $arith_grammar$ input: $input[1]$ successfull: yes ");
 	}
-	else
-	{
+	else{
 		print("grammar: $arith_grammar$ input: $input[1]$ successfull: no ");
 		print("correct ast : $input[2]$");
 		print("created ast : $ast$");
@@ -53,16 +56,12 @@ print("Testing interpreter_grammar..");
 generate_parser(path+interpreter_grammar, true);
 print("parser generated succefully for $interpreter_grammar$");
 load("examplesGrammar.stlx");
-for(input in interpreter_input)
-{
-
+for(input in interpreter_input){
 	ast := test_parser(path+input[1], true);
-	if(ast == input[2])
-	{
+	if(ast == input[2]){
 		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: yes ");
 	}
-	else
-	{
+	else{
 		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: no ");
 		print("correct ast : $input[2]$");
 		print("created ast : $ast$");

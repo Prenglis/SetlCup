@@ -1,43 +1,41 @@
 Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
 %%%
 
-STRING      := \"(?:\\.|[^\"])*\" ;
-WHITESPACE  := [ \t\v\r\s] ;
-SKIP        := {WHITESPACE}|\n|//[^\n]* ;
-INTEGER     := 0|[1-9][0-9]* ;
-DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
-ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
+  STRING      := \"(?:\\.|[^\"])*\" ;
+  WHITESPACE  := [ \t\v\r\s] ;
+  INTEGER     := 0|[1-9][0-9]* ;
+  DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
+  ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
+
+  SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 %%%
-program 
+  program 
     ::= dfnStmntList 
     ;
 
-dfnStmntList 
-    ::= definition dfnStmntList 
+  dfnStmntList 
+   ::= definition dfnStmntList       
      |  statement  dfnStmntList 
-     | 
+     |                                    
      ;
 
-definition 
-    ::= 'function' ZID '(' paramList ')' '{' stmntList '}'        
-     ;
-
-stmntList
+  definition
+   ::= 'function' ZID '(' paramList ')' '{' stmntList '}'      
+     ; 
+  stmntList
     ::= statement stmntList 
      |  
      ;
-
-statement 
-    ::= assignment ';'                                        
-     |  'print' '(' printExprList ')' ';'      
+  statement 
+   ::= assignment ';'       
+     |  'print' '(' printExprList ')' ';'     
      |  'if' '(' boolExpr ')' '{' stmntList '}'    
      |  'while' '(' boolExpr ')' '{' stmntList '}' 
      |  'for' '(' assignment ';' boolExpr ';' assignment ')' '{' stmntList '}' 
-                                                            
-     |  'return' expr ';'                                   
-     |  'return' ';'                                          
-     |  expr ';'                                                
-     |  'quit' ';'                                            
+     |  'return' expr ';' 
+     |  'return' ';'        
+     |  expr ';'              
+     |  'quit' ';'          
      ;
 
 printExprList 
