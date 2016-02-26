@@ -1,5 +1,8 @@
 
-scan_string := procedure(lines) {scan_output := []; sc_dict := {["'!'", "\Q!\E"], ["'!='", "\Q!=\E"], ["'%'", "\Q%\E"], ["'&&'", "\Q&&\E"], ["'('", "\Q(\E"], ["')'", "\Q)\E"], ["'*'", "\Q*\E"], ["'+'", "\Q+\E"], ["','", "\Q,\E"], ["'-'", "\Q-\E"], ["';'", "\Q;\E"], ["'<'", "\Q<\E"], ["'<='", "\Q<=\E"], ["'='", "\Q=\E"], ["'=='", "\Q==\E"], ["'>'", "\Q>\E"], ["'>='", "\Q>=\E"], ["'\'", "\Q\\E"], ["'for'", "\Qfor\E"], ["'function'", "\Qfunction\E"], ["'if'", "\Qif\E"], ["'print'", "\Qprint\E"], ["'quit'", "\Qquit\E"], ["'return'", "\Qreturn\E"], ["'while'", "\Qwhile\E"], ["'{'", "\Q{\E"], ["'||'", "\Q||\E"], ["'}'", "\Q}\E"], ["DECIMAL", "0\.[0-9]+|[1-9][0-9]*\.[0-9]+"], ["INTEGER", "0|[1-9][0-9]*"], ["SKIP", "[ \t\v\r\s]|\n|//[^\n]*"], ["STRING", "\"(?:\\.|[^\"])*\""], ["ZID", "[a-zA-Z_][a-zA-Z0-9_]*"]}; scan(lines) { 
+scan_string := procedure(lines) { 
+ scan_output := [];
+ sc_dict := {["'!'", "\Q!\E"], ["'!='", "\Q!=\E"], ["'%'", "\Q%\E"], ["'&&'", "\Q&&\E"], ["'('", "\Q(\E"], ["')'", "\Q)\E"], ["'*'", "\Q*\E"], ["'+'", "\Q+\E"], ["','", "\Q,\E"], ["'-'", "\Q-\E"], ["';'", "\Q;\E"], ["'<'", "\Q<\E"], ["'<='", "\Q<=\E"], ["'='", "\Q=\E"], ["'=='", "\Q==\E"], ["'>'", "\Q>\E"], ["'>='", "\Q>=\E"], ["'\'", "\Q\\E"], ["'for'", "\Qfor\E"], ["'function'", "\Qfunction\E"], ["'if'", "\Qif\E"], ["'print'", "\Qprint\E"], ["'quit'", "\Qquit\E"], ["'return'", "\Qreturn\E"], ["'while'", "\Qwhile\E"], ["'{'", "\Q{\E"], ["'||'", "\Q||\E"], ["'}'", "\Q}\E"], ["DECIMAL", "0\.[0-9]+|[1-9][0-9]*\.[0-9]+"], ["INTEGER", "0|[1-9][0-9]*"], ["SKIP", "[ \t\v\r\s]|\n|//[^\n]*"], ["STRING", "\"(?:\\.|[^\"])*\""], ["ZID", "[a-zA-Z_][a-zA-Z0-9_]*"]};
+scan(lines) { 
 regex '\Q!\E' as [c]: 
   c := join(split(c, '"'), ""); scan_output := scan_output + [[c, "'!'"]];
 regex '\Q!=\E' as [c]: 
@@ -66,267 +69,274 @@ regex '\"(?:\\.|[^\"])*\"' as [c]:
   c := join(split(c, '"'), ""); scan_output := scan_output + [[c, "STRING"]];
 regex '[a-zA-Z_][a-zA-Z0-9_]*' as [c]: 
   c := join(split(c, '"'), ""); scan_output := scan_output + [[c, "ZID"]];
-regex '.' as [ c ]: if(!silent_mode){print("unrecognized character: " + c);}} if(sc_dict["SKIP"] != om)
+regex '.' as [ c ]: if(!silent_mode){print("unrecognized character: " + c);}}if(sc_dict["SKIP"] != om)
 	{		
 		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != "SKIP"];
 
 	}return scan_output;};
 class srParser(actiontable, gototable, statetable, rulesMap, silent_mode) {
-    mActiontable := actiontable;
-    mGototable   := gototable;
-    mStatetable  := statetable;
+    scup_mActiontable := actiontable;
+    scup_mGototable   := gototable;
+    scup_mStatetable  := statetable;
     scup_mrulesMap := rulesMap;
-    mSilentMode := silent_mode;
-    parseSR := procedure(scup_tl) {
-        // print("statetable := $mStatetable$");
-        scup_action_code := [];
+    scup_mSilentMode := silent_mode;
+    init_vars := procedure(){
+         scup_action_code := [];
         //init scup_vars
-        scup_marked_rules := +/range(mStatetable);
+        scup_marked_rules := +/range(scup_mStatetable);
         scup_rule_vars := {scup_mr.mAlpha : scup_mr in scup_marked_rules | scup_mr.mAlpha != []};
         scup_rule_vars := +/scup_rule_vars;
         scup_rule_vars := {  args(scup_rule_var)[2] : scup_rule_var in scup_rule_vars | args(scup_rule_var)[2] != ""};
-        scup_action_code := "result := [];";
-        if(!mSilentMode)
-        {
-            print("Executing command: $scup_action_code$");
-        }
-        execute(scup_action_code);
-        // scup_action_code += ["result := [];"];
+        scup_action_code += ["result := [];"];
         for(scup_var_id in scup_rule_vars)
         {
-            scup_action_code := "$scup_var_id$ := [];";
-            if(!mSilentMode)
-            {
-                print("Executing command: $scup_action_code$");
-            }
-            execute(scup_action_code);
-            // scup_action_code += ["$scup_var_id$ := [];"];
+            scup_action_code += ["$scup_var_id$ := [];"];
         }
         scup_index   := 1;      // point to next token
         scup_symbols := [];     // stack of scup_symbols
         //find scup_startState
-        scup_startState := {startState : startState in domain(mStatetable) | exists(firstState in mStatetable[startState]| firstState.mVariable == Var("S", "") && firstState.mAlpha == [])};
-        if(!mSilentMode)
+        scup_startState := {startState : startState in domain(scup_mStatetable) | exists(firstState in scup_mStatetable[startState]| firstState.mVariable == Var("S", "") && firstState.mAlpha == [])};
+        if(!scup_mSilentMode)
         {
             print("#scup_startState : $#scup_startState$");
         }
         assert(#scup_startState == 1, "multiple scup_states contain S -> (*)");
         scup_startState := arb(scup_startState);
-        if(!mSilentMode)
+        if(!scup_mSilentMode)
         {
             print("scup_startState : $scup_startState$");
         }
         scup_states  := [scup_startState];
+        return [scup_action_code, scup_index, scup_symbols, scup_states, {}];
+    };
+    calculate_token_id:= procedure(scup_tl, scup_t, scup_q, scup_index){
+        //tokens should have correct ID depending on current state
+        //First: Calculate scup_token_ids which can be used in current State, and following scup_states
+        //Second: Only try scup_states corresponding to scup_token_ids, where mBeta is not empty
+        //third: If there are multiple scup_token_ids the one should be used, where the FollowSet contains the following token
+        //Fourth: If there is no scup_token_id which fulfilles the stated rules, the one is taken where both the FollowSet is empty and the following tokens are empty
+        scup_token_id := "";
+        scup_action_tokens := { [args(scup_t_token)[2], scup_mStatetable[shiftState]] : [scup_t_states, scup_t_token ] in domain(scup_mActiontable), shiftState in scup_mActiontable[scup_t_states, scup_t_token] | scup_t_states == scup_q && args(scup_t_token)[1] == scup_t && scup_mStatetable[shiftState] != om};
+        if(!scup_mSilentMode)
+        {
+            print("scup_t : $scup_t$");
+            print("scup_action_tokens :$scup_action_tokens$");               
+        }
+        scup_action_tokens := {[scup_token_list, { args(x.mBeta[1])[1] : x in followtokens | x.mBeta != []}] : [scup_token_list, followtokens] in scup_action_tokens};
+        if(!scup_mSilentMode)
+        {
+            print("scup_action_tokens :$scup_action_tokens$");               
+        }
+        scup_token_list := domain(scup_action_tokens);
+        if(!scup_mSilentMode)
+        {
+            print("scup_token_list :$scup_token_list$");               
+        }
+        if(#scup_token_list>0)
+        {
+            if(#scup_token_list > 1)
+            {
+                scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} != {}) ];
+                if(#scup_token_list == 0)
+                {
+                    scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} == {} && follow_tokens =={})];
+                }
+            } 
+            if(!scup_mSilentMode)
+            {
+                print("scup_token_list :$scup_token_list$");               
+            }
+            assert(#scup_token_list == 1, "Only one Possible Action for token in State");
+            scup_token_id := arb(scup_token_list);     
+        }
+        return scup_token_id;
+    };
+    evaluate_action_code:= procedure(body, scup_user_code){
+        //When the scup_user_code is  not empty, it is appended to a temporary list of commands which will be executed later on
+        //As there might be multiple instances of the Rules which need to be reduced the variables are saved in a Stack-like structure
+        // e.g. t_expr := [2 , 3 , Plus(4,5)];
+        // the rule-id will be replaced with the last scup_index of the list
+        // expr := t_expr[-1] := Plus(4,5);
+        // afterwards the item will be removed from the list
+        scup_action_code := [];
+        if(scup_user_code == UserCode("") || scup_user_code == UserCode(@'') || args(scup_user_code)[1] == @'' || args(scup_user_code)[1] == "" || #args(scup_user_code)[1] == 0)
+         {
+            
+            
+         }
+         else
+         {
+            scup_vars := {args(variable)[2] : variable in body | args(variable)[2] != ""};
+            for(t_scup_vars in scup_vars)
+            {
+                scup_action_code += ["t_$t_scup_vars$ := $t_scup_vars$;"];
+                scup_action_code += ["$t_scup_vars$ := $t_scup_vars$[-1];"];
+            }
+            scup_action_code += [args(scup_user_code)[1]];
+            for(t_scup_vars in scup_vars)
+            {
+                scup_action_code += ["$t_scup_vars$ := t_$t_scup_vars$[..-2];"];
+            }
+         }
+         return scup_action_code;
+    };
+     reduce_rule := procedure(scup_head, scup_body, rw scup_n, rw scup_symbols, rw scup_states, rw scup_symbols, rw scup_state, rw scup_new_states, rw scup_states, rw scup_current_states){  
+         scup_n       := #scup_body;
+         scup_symbols := scup_symbols[.. -(scup_n+1)];
+         scup_states  := scup_states[.. -(scup_n+1)]; 
+         scup_symbols := scup_symbols + [scup_head];
+         scup_state   := scup_states[-1];
+         scup_new_states := scup_mGototable[scup_state, scup_head];
+         scup_states  := scup_states + [ scup_new_states ];
+         scup_current_states := scup_mStatetable[scup_new_states];
+         
+     };
+
+     calculate_var_id := procedure(scup_tl, scup_index, scup_head, scup_current_states){
+        // the id of the Rule-Variable is calculated from the Statetable where the Variable-name is the same as the one from the Rule-head and the where additionally the ID is not empty.
+         // If there is more than one, the following are selected:
+         // the ones, where Alpha (the tokens before the (*) marker) is not empty and
+         // either: the tokens after the marker are not empty and there are still tokens to read and the first element from Beta is the next token to be read
+         // or: it is the last sign to be read and Beta is empty
+         // or: the following symbol is not in the the Followtokens of the rule andmBeta is not empty
+         // the conjunction of both sets is made afterwards.         
+         scup_var_id := [];
+         scup_action_code := [];
+         scup_var_id := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_current_states | 
+            (scup_mr.mAlpha != []) && ( args(scup_mr.mAlpha[-1])[1] == args(scup_head)[1]) 
+            && args(scup_mr.mAlpha[-1])[2] != ""};
+         if(#scup_var_id > 1)
+         {
+            scup_alt_ids := {scup_mr : scup_mr in scup_current_states | scup_mr.mAlpha != []};
+            scup_ne_beta := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | 
+             scup_mr.mBeta != [] &&(( #scup_tl>scup_index &&  
+                args(scup_mr.mBeta[1])[1] == scup_tl[scup_index][2] ))};
+            scup_e_beta := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | scup_mr.mBeta == [] &&
+            (#scup_tl == scup_index || scup_mr.mFollowSet * {scup_tl[scup_index][2]} != {})};
+            scup_alt_ids_new := scup_ne_beta + scup_e_beta;
+            scup_alt_ids := { args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_current_states | scup_mr.mAlpha != [] && ((scup_mr.mBeta != [] &&  (( #scup_tl>scup_index &&  args(scup_mr.mBeta[1])[1] == scup_tl[scup_index][2] ))) || ( #scup_tl == scup_index && scup_mr.mBeta ==[])  || (scup_mr.mBeta ==[] && scup_mr.mFollowSet * {scup_tl[scup_index][2]} != {})) };
+            print("scup_alt_ids_new == scup_alt_ids : $scup_alt_ids_new == scup_alt_ids$");
+            scup_var_id := scup_var_id * scup_alt_ids;                    
+
+         }
+         if(!scup_mSilentMode)
+        {
+            print("scup_current_states : $scup_current_states$");
+            print("scup_var_id : $scup_var_id$");
+        }
+         if(#scup_var_id > 0)
+         {
+            assert(#scup_var_id ==1, "only one variable id should be used for one reduction");
+            if(!scup_mSilentMode)
+            {
+                print("scup_var_id : $scup_var_id$");
+            }
+            scup_action_code := "$arb(scup_var_id)$ += [result];";
+         }
+         return scup_action_code;
+    };
+    parseSR := procedure(scup_tl) {
+        [scup_action_code, scup_index, scup_symbols, scup_states, scup_current_states] := init_vars();
+        for(scup_action in [1..#scup_action_code])
+        {
+            if(!scup_mSilentMode)
+            {
+                print("Executing command: $scup_action_code[scup_action]$");
+            }
+            execute(scup_action_code[scup_action]);
+        }
+        scup_action_code := [];
         while (true) {      
             scup_q := scup_states[-1];
-            if(!mSilentMode)
+            if(!scup_mSilentMode)
             {
                 print("scup_q :$scup_q$"); 
                 print("scup_tl : $scup_tl$");
             }
             [scup_t_value, scup_t] := scup_tl[scup_index];
             scup_token_id := "";
-            //tokens should have correct ID depending on current state
-            //First: Calculate scup_token_ids which can be used in current State, and following scup_states
-            //Second: Only try scup_states corresponding to scup_token_ids, where mBeta is not empty
-            //third: If there are multiple scup_token_ids the one should be used, where the FollowSet contains the following token
-            //Fourth: If there is no scup_token_id which fulfilles the stated rules, the one is taken where both the FollowSet is empty and the following tokens are empty
-            scup_action_tokens := { [args(scup_t_token)[2], mStatetable[shiftState]] : [scup_t_states, scup_t_token ] in domain(mActiontable), shiftState in mActiontable[scup_t_states, scup_t_token] | scup_t_states == scup_q && args(scup_t_token)[1] == scup_t && mStatetable[shiftState] != om};
-            if(!mSilentMode)
+            scup_token_id := calculate_token_id(scup_tl, scup_t, scup_q, scup_index);
+            if(scup_token_id != "")
             {
-                print("scup_action_tokens :$scup_action_tokens$");               
-            }
-            scup_action_tokens := {[scup_token_list, { args(x.mBeta[1])[1] : x in followtokens | x.mBeta != []}] : [scup_token_list, followtokens] in scup_action_tokens};
-            if(!mSilentMode)
-            {
-                print("scup_action_tokens :$scup_action_tokens$");               
-            }
-            scup_token_list := domain(scup_action_tokens);
-            if(!mSilentMode)
-            {
-                print("scup_token_list :$scup_token_list$");               
-            }
-            if(#scup_token_list>0)
-            {
-                if(#scup_token_list > 1)
-                {
-                    scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} != {}) ];
-                    if(#scup_token_list == 0)
+                    scup_action_code := "$scup_token_id$ += ['$scup_t_value$'];";
+                    if(!scup_mSilentMode)
                     {
-                        scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | (follow_tokens * {scup_tl[scup_index+1][2]} == {} && follow_tokens =={})];
+                        print("Executing command: $scup_action_code$");
                     }
-                } 
-                if(!mSilentMode)
-                {
-                    print("scup_token_list :$scup_token_list$");               
-                }
-                assert(#scup_token_list == 1, "Only one Possible Action for token in State");
-                scup_token_id := arb(scup_token_list);                
-                if(scup_token_id != "")
-                {
-                        // scup_action_code += ["$scup_token_id$ += ['$scup_t_value$'];"];
-                        scup_action_code := "$scup_token_id$ += ['$scup_t_value$'];";
-                        if(!mSilentMode)
-                        {
-                            print("Executing command: $scup_action_code$");
-                        }
-                        execute(scup_action_code);
-                }
+                    execute(scup_action_code);
             }
             scup_t := Token(scup_t , scup_token_id);             
             scup_t_rest := [ y : [x,y] in scup_tl[scup_index..]];
-            if(!mSilentMode)
+            if(!scup_mSilentMode)
             {
                 print("scup_states:  [ $join(scup_states, \", \")$ ]");
                 print("scup_symbols: $join(scup_symbols, \" \")$ | $join(scup_t_rest, \" \")$");
-                print("state:   { $join(mStatetable[scup_q], \"\")$ }");
+                print("state:   { $join(scup_mStatetable[scup_q], \"\")$ }");
                 print("scup_q,scup_t : $scup_q$,$scup_t$");
             }
-            scup_p := mActiontable[scup_q,scup_t];
-            if(!mSilentMode)
+            scup_p := scup_mActiontable[scup_q,scup_t];
+            if(!scup_mSilentMode)
             {
-                  print("scup_p := mActiontable[scup_q,scup_t]-----$scup_p$ := $mActiontable[scup_q,scup_t]$");
+                  print("scup_p := scup_mActiontable[scup_q,scup_t]-----$scup_p$ := $scup_mActiontable[scup_q,scup_t]$");
             }
             match (scup_p) {
             case om: 
-                if(!mSilentMode)
+                if(!scup_mSilentMode)
                 {
                      print("action($scup_q$, $scup_t$) undefined.");
                      print("Syntax error!\n");
                 }
                  return false;
             case Shift(scup_s):
-                if(!mSilentMode)
+                if(!scup_mSilentMode)
                 {
                      print("shifting state $scup_s$");
-                     print("state:   { $join(mStatetable[scup_s], \"\")$ }\n");
+                     print("state:   { $join(scup_mStatetable[scup_s], \"\")$ }\n");
                 }
                  scup_symbols := scup_symbols + [scup_t];
                  scup_states  := scup_states  + [scup_s];
                  scup_index   += 1;
             case Reduce(ruleName):
                  rule := scup_mrulesMap[ruleName];
-                 [head, body , scup_user_code] := args(rule);
-                 if(!mSilentMode)
-                {
-                    print("reducing with rule $ruleName$ : $head$ -> $join(body, \" \")$");
-                }
-                //When the scup_user_code is  not empty, it is appended to a temporary list of commands which will be executed later on
-                //As there might be multiple instances of the Rules which need to be reduced the variables are saved in a Stack-like structure
-                // e.g. t_expr := [2 , 3 , Plus(4,5)];
-                // the rule-id will be replaced with the last scup_index of the list
-                // expr := t_expr[-1] := Plus(4,5);
-                // afterwards the item will be removed from the list
-                if(scup_user_code == UserCode("") || scup_user_code == UserCode(@'') || args(scup_user_code)[1] == @'' || args(scup_user_code)[1] == "" || #args(scup_user_code)[1] == 0)
+                 [scup_head, scup_body , scup_user_code] := args(rule);
+                 if(!scup_mSilentMode)
                  {
-                    
-                    
+                    print("reducing with rule $ruleName$ : $scup_head$ -> $join(scup_body, \" \")$");
                  }
-                 else
+                 scup_action_code := evaluate_action_code(scup_body, scup_user_code);
+                 for(scup_action in [1..#scup_action_code])
                  {
-                    scup_vars := {args(variable)[2] : variable in body | args(variable)[2] != ""};
-                    for(t_scup_vars in scup_vars)
+                    if(!scup_mSilentMode)
                     {
-                        scup_action_code :="t_$t_scup_vars$ := $t_scup_vars$;";
-                        if(!mSilentMode)
-                        {
-                            print("Executing command: $scup_action_code$");
-                        }
-                        execute(scup_action_code);
-                        scup_action_code := "$t_scup_vars$ := $t_scup_vars$[-1];";
-                        if(!mSilentMode)
-                        {
-                            print("Executing command: $scup_action_code$");
-                        }
-                        execute(scup_action_code);
-                        // scup_action_code += ["t_$t_scup_vars$ := $t_scup_vars$;"];
-                        // scup_action_code += ["$t_scup_vars$ := $t_scup_vars$[-1];"];
+                        print("Executing command: $scup_action_code[scup_action]$");
                     }
-                    scup_action_code := args(scup_user_code)[1];
-                    if(!mSilentMode)
-                    {
+                    execute(scup_action_code[scup_action]);
+                 }
+                 scup_action_code := [];  
+                 reduce_rule(scup_head, scup_body, scup_n, scup_symbols, scup_states, scup_symbols, 
+                    scup_state, scup_new_states, scup_states, scup_current_states);
+                 scup_action_code := calculate_var_id(scup_tl, scup_index, scup_head, scup_current_states);
+                 if(isString(scup_action_code))
+                 {
+                     if(!scup_mSilentMode)
+                     {
                         print("Executing command: $scup_action_code$");
-                    }
+                     }
                     execute(scup_action_code);
-                    // scup_action_code := scup_action_code + [args(scup_user_code)[1]];
-
-                    for(t_scup_vars in scup_vars)
-                    {
-                        scup_action_code := "$t_scup_vars$ := t_$t_scup_vars$[..-2];";
-                        if(!mSilentMode)
-                        {
-                            print("Executing command: $scup_action_code$");
-                        }
-                        execute(scup_action_code);
-                        // scup_action_code += ["$t_scup_vars$ := t_$t_scup_vars$[..-2];"];
-                    }
                  }
-                 scup_n       := #body;
-                 scup_symbols := scup_symbols[.. -(scup_n+1)];
-                 scup_states  := scup_states[.. -(scup_n+1)]; 
-                 scup_symbols := scup_symbols + [head];
-                 state   := scup_states[-1];
-                 scup_new_states := mGototable[state, head];
-                 scup_states  := scup_states + [ scup_new_states ];
-                 scup_statestring := mStatetable[scup_new_states];
-                 scup_var_id := [];
-                 // the id of the Rule-Variable is calculated from the Statetable where the Variable-name is the same as the one from the Rule-head and the where additionally the ID is not empty.
-                 // If there is more than one, the following are selected:
-                 // the ones, where Alpha (the tokens before the (*) marker) is not empty and
-                 // either: the tokens after the marker are not empty and there are still tokens to read and the first element from Beta is the next token to be read
-                 // or: it is the last sign to be read and Beta is empty
-                 // or: the following symbol is not in the the Followtokens of the rule andmBeta is not empty
-                 // the conjunction of both sets is made afterwards.
-                 scup_var_id := {args(scup_mr.mAlpha[-1])[2] : scup_mr in mStatetable[scup_new_states]| (scup_mr.mAlpha != []) && ( args(scup_mr.mAlpha[-1])[1] == args(head)[1]) && args(scup_mr.mAlpha[-1])[2] != ""};
-                 if(#scup_var_id > 1)
-                 {
-                    scup_alt_ids := { args(scup_mr.mAlpha[-1])[2] : scup_mr in mStatetable[scup_new_states] | scup_mr.mAlpha != [] && ((scup_mr.mBeta != [] &&  ( ( #scup_tl>scup_index &&  args(scup_mr.mBeta[1])[1] == scup_tl[scup_index][2] )))  || ( #scup_tl == scup_index && scup_mr.mBeta ==[]) || (scup_mr.mBeta ==[] && scup_mr.mFollowSet * {scup_tl[scup_index][2]} != {})) };
-                    scup_var_id := scup_var_id * scup_alt_ids;                    
-
-                 }
-                 if(!mSilentMode)
-                {
-                    print("scup_statestring : $scup_statestring$");
-                    print("scup_var_id : $scup_var_id$");
-                }
-                 if(#scup_var_id > 0)
-                 {
-                    assert(#scup_var_id ==1, "only one variable id should be used for one reduction");
-                    if(!mSilentMode)
-                    {
-                        print("scup_var_id : $scup_var_id$");
-                    }
-                    scup_action_code := "$arb(scup_var_id)$ += [result];";
-                    if(!mSilentMode)
-                    {
-                        print("Executing command: $scup_action_code$");
-                    }
-                    execute(scup_action_code);
-                    // scup_action_code := scup_action_code + ["$arb(scup_var_id)$ += [result];"];
-                 }
-                 if(!mSilentMode)
+                 if(!scup_mSilentMode)
                  {  
-                    print("state:   { $join(mStatetable[mGototable[state, head]], \"\")$ }\n");
+                    print("state:   { $join(scup_mStatetable[scup_mGototable[scup_state, scup_head]], \"\")$ }\n");
                 }
             case Accept():
-                 if(!mSilentMode)
+                 if(!scup_mSilentMode)
                  { 
                     print("accepting\n");
                  }
-                 // writeFile("temp_scup_action_code.sscup_tlx", scup_action_code);
 
                  return result;
             } 
         }
-    };
-
-    executeActionCode := procedure(scup_action_code)
-    {
-        if(!mSilentMode)
-        {
-            print("Executing command: $scup_action_code$");
-        }
-        execute(scup_action_code);
     };
 }
 myParse := closure(testInput, ruleNames, rulesMap, statetable, actiontable, gototable, silent_mode) {
@@ -337,22 +347,8 @@ myParse := closure(testInput, ruleNames, rulesMap, statetable, actiontable, goto
         print("tokenlist: $scup_tl$\n");
     }
     result := parser.parseSR(scup_tl + [[@"$", @"$"]]);
-    // if (parser.parseSR(scup_tl + [[@"$", @"$"]])) {
-        // if(!silent_mode)
-        // {
-            // print("Parse successful!");
-        // }
-        // try {
-            // load("temp_scup_action_code.sscup_tlx");
-        // }
-        // catch(e)
-        // {
-            // print("Exception while executing action code : $e$");
-        // }
-        return result;
-    // } else {
-        // print("Parse failed!");
-    // }
+    return result;
+
 };
 
 
@@ -399,18 +395,6 @@ class markedRule(variable, alpha, beta, followSet, user_code) {
     };
     f_str := procedure() {
         rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$mFollowSet$,$mUser_Code$)";
-        // rule :=  "$mVariable$";
-        // rule += " ->" ;
-        // rule += list2str(mAlpha) + " (*)";
-        // rule +=  list2str(mBeta) + ": {";
-        // n := 1;
-        // for (t in mFollowSet) {
-            // rule += escapeDollar(t);
-            // if (n < #mFollowSet) {
-                // rule += ", ";
-            // }
-        // }
-        // rule += "}";
         return rule;
     };
 
@@ -447,19 +431,14 @@ class grammarRule(variable, gamma, user_code) {
     this.mUser_Code := user_code;
     f_str := procedure() {
         return "grammarRule($mVariable$, $mGamma$, $mUser_Code$)";
-        // return mVariable + " ->" + list2str(mGamma);
     };
 }
-
-main := closure() {
-  if (#params == 1)
-  {
-    silent_mode := false;
-    inputFile := params[1];
+test_parser := procedure(input_file, silent_mode)
+{
     try
     {
      [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
-      ast := myParse(inputFile, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+      result := myParse(input_file, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
     }
     catch(e)
     {
@@ -467,9 +446,29 @@ main := closure() {
     }
     if(!silent_mode)
     {
-      print("ast := $ast$;");
+      print("result := $result$;");
     }
-    return ast;
+    return result;
+};
+main := closure() {
+  if (#params == 1)
+  {
+    silent_mode := false;
+    input_file := params[1];
+    try
+    {
+     [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
+      result := myParse(input_file, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+    }
+    catch(e)
+    {
+      print("error while parsing : $e$");
+    }
+    if(!silent_mode)
+    {
+      print("result := $result$;");
+    }
+    return result;
       
     }
 };
@@ -3089,4 +3088,4 @@ actionTable["s99", Token("ZID", "id_2")] := Shift("s316");
 gotoTable := {[["s0", Var("assignment", "")], "s321"], [["s0", Var("definition", "")], "s1"], [["s0", Var("dfnStmntList", "")], "s350"], [["s0", Var("expr", "")], "s408"], [["s0", Var("fact", "")], "s446"], [["s0", Var("prod", "")], "s459"], [["s0", Var("program", "")], "s487"], [["s0", Var("statement", "")], "s2"], [["s1", Var("assignment", "")], "s321"], [["s1", Var("definition", "")], "s1"], [["s1", Var("dfnStmntList", "")], "s349"], [["s1", Var("expr", "")], "s408"], [["s1", Var("fact", "")], "s446"], [["s1", Var("prod", "")], "s459"], [["s1", Var("statement", "")], "s2"], [["s10", Var("expr", "")], "s369"], [["s10", Var("exprList", "")], "s301"], [["s10", Var("fact", "")], "s444"], [["s10", Var("prod", "")], "s457"], [["s100", Var("expr", "")], "s394"], [["s100", Var("fact", "")], "s442"], [["s100", Var("prod", "")], "s455"], [["s101", Var("expr", "")], "s395"], [["s101", Var("fact", "")], "s442"], [["s101", Var("prod", "")], "s455"], [["s102", Var("fact", "")], "s442"], [["s102", Var("prod", "")], "s420"], [["s103", Var("fact", "")], "s442"], [["s103", Var("prod", "")], "s431"], [["s104", Var("fact", "")], "s464"], [["s105", Var("fact", "")], "s473"], [["s106", Var("fact", "")], "s482"], [["s107", Var("expr", "")], "s396"], [["s107", Var("fact", "")], "s443"], [["s107", Var("prod", "")], "s456"], [["s108", Var("expr", "")], "s397"], [["s108", Var("fact", "")], "s443"], [["s108", Var("prod", "")], "s456"], [["s109", Var("expr", "")], "s398"], [["s109", Var("fact", "")], "s443"], [["s109", Var("prod", "")], "s456"], [["s11", Var("expr", "")], "s369"], [["s11", Var("exprList", "")], "s302"], [["s11", Var("fact", "")], "s444"], [["s11", Var("prod", "")], "s457"], [["s110", Var("expr", "")], "s399"], [["s110", Var("fact", "")], "s443"], [["s110", Var("prod", "")], "s456"], [["s111", Var("expr", "")], "s400"], [["s111", Var("fact", "")], "s443"], [["s111", Var("prod", "")], "s456"], [["s112", Var("expr", "")], "s401"], [["s112", Var("fact", "")], "s443"], [["s112", Var("prod", "")], "s456"], [["s113", Var("fact", "")], "s443"], [["s113", Var("prod", "")], "s421"], [["s114", Var("fact", "")], "s443"], [["s114", Var("prod", "")], "s432"], [["s115", Var("fact", "")], "s465"], [["s116", Var("fact", "")], "s474"], [["s117", Var("fact", "")], "s483"], [["s118", Var("expr", "")], "s371"], [["s118", Var("fact", "")], "s444"], [["s118", Var("nePrintExprList", "")], "s449"], [["s118", Var("printExpr", "")], "s447"], [["s118", Var("prod", "")], "s457"], [["s119", Var("expr", "")], "s371"], [["s119", Var("fact", "")], "s444"], [["s119", Var("nePrintExprList", "")], "s450"], [["s119", Var("printExpr", "")], "s447"], [["s119", Var("prod", "")], "s457"], [["s12", Var("paramList", "")], "s216"], [["s120", Var("expr", "")], "s370"], [["s120", Var("fact", "")], "s444"], [["s120", Var("neExprList", "")], "s425"], [["s120", Var("prod", "")], "s457"], [["s121", Var("expr", "")], "s370"], [["s121", Var("fact", "")], "s444"], [["s121", Var("neExprList", "")], "s426"], [["s121", Var("prod", "")], "s457"], [["s122", Var("fact", "")], "s444"], [["s122", Var("prod", "")], "s422"], [["s123", Var("fact", "")], "s444"], [["s123", Var("prod", "")], "s433"], [["s124", Var("fact", "")], "s466"], [["s125", Var("fact", "")], "s475"], [["s126", Var("fact", "")], "s484"], [["s127", Var("expr", "")], "s180"], [["s127", Var("fact", "")], "s445"], [["s127", Var("prod", "")], "s458"], [["s128", Var("expr", "")], "s181"], [["s128", Var("fact", "")], "s445"], [["s128", Var("prod", "")], "s458"], [["s129", Var("expr", "")], "s183"], [["s129", Var("fact", "")], "s445"], [["s129", Var("prod", "")], "s458"], [["s13", Var("expr", "")], "s371"], [["s13", Var("fact", "")], "s444"], [["s13", Var("printExpr", "")], "s448"], [["s13", Var("printExprList", "")], "s232"], [["s13", Var("prod", "")], "s457"], [["s130", Var("expr", "")], "s185"], [["s130", Var("fact", "")], "s445"], [["s130", Var("prod", "")], "s458"], [["s131", Var("expr", "")], "s186"], [["s131", Var("fact", "")], "s445"], [["s131", Var("prod", "")], "s458"], [["s132", Var("expr", "")], "s187"], [["s132", Var("fact", "")], "s445"], [["s132", Var("prod", "")], "s458"], [["s133", Var("expr", "")], "s188"], [["s133", Var("fact", "")], "s445"], [["s133", Var("prod", "")], "s458"], [["s134", Var("expr", "")], "s189"], [["s134", Var("fact", "")], "s445"], [["s134", Var("prod", "")], "s458"], [["s135", Var("expr", "")], "s190"], [["s135", Var("fact", "")], "s445"], [["s135", Var("prod", "")], "s458"], [["s136", Var("expr", "")], "s283"], [["s136", Var("fact", "")], "s445"], [["s136", Var("prod", "")], "s458"], [["s137", Var("expr", "")], "s402"], [["s137", Var("fact", "")], "s445"], [["s137", Var("prod", "")], "s458"], [["s138", Var("expr", "")], "s403"], [["s138", Var("fact", "")], "s445"], [["s138", Var("prod", "")], "s458"], [["s139", Var("expr", "")], "s404"], [["s139", Var("fact", "")], "s445"], [["s139", Var("prod", "")], "s458"], [["s14", Var("expr", "")], "s371"], [["s14", Var("fact", "")], "s444"], [["s14", Var("printExpr", "")], "s448"], [["s14", Var("printExprList", "")], "s233"], [["s14", Var("prod", "")], "s457"], [["s140", Var("expr", "")], "s405"], [["s140", Var("fact", "")], "s445"], [["s140", Var("prod", "")], "s458"], [["s141", Var("expr", "")], "s406"], [["s141", Var("fact", "")], "s445"], [["s141", Var("prod", "")], "s458"], [["s142", Var("expr", "")], "s407"], [["s142", Var("fact", "")], "s445"], [["s142", Var("prod", "")], "s458"], [["s143", Var("fact", "")], "s445"], [["s143", Var("prod", "")], "s423"], [["s144", Var("fact", "")], "s445"], [["s144", Var("prod", "")], "s434"], [["s145", Var("fact", "")], "s467"], [["s146", Var("fact", "")], "s476"], [["s147", Var("fact", "")], "s485"], [["s148", Var("expr", "")], "s244"], [["s148", Var("fact", "")], "s446"], [["s148", Var("prod", "")], "s459"], [["s149", Var("expr", "")], "s245"], [["s149", Var("fact", "")], "s446"], [["s149", Var("prod", "")], "s459"], [["s15", Var("assignment", "")], "s322"], [["s15", Var("expr", "")], "s409"], [["s15", Var("fact", "")], "s446"], [["s15", Var("prod", "")], "s459"], [["s15", Var("statement", "")], "s22"], [["s15", Var("stmntList", "")], "s210"], [["s150", Var("expr", "")], "s284"], [["s150", Var("fact", "")], "s446"], [["s150", Var("prod", "")], "s459"], [["s151", Var("expr", "")], "s410"], [["s151", Var("fact", "")], "s446"], [["s151", Var("prod", "")], "s459"], [["s152", Var("expr", "")], "s411"], [["s152", Var("fact", "")], "s446"], [["s152", Var("prod", "")], "s459"], [["s153", Var("expr", "")], "s412"], [["s153", Var("fact", "")], "s446"], [["s153", Var("prod", "")], "s459"], [["s154", Var("expr", "")], "s413"], [["s154", Var("fact", "")], "s446"], [["s154", Var("prod", "")], "s459"], [["s155", Var("expr", "")], "s414"], [["s155", Var("fact", "")], "s446"], [["s155", Var("prod", "")], "s459"], [["s156", Var("expr", "")], "s415"], [["s156", Var("fact", "")], "s446"], [["s156", Var("prod", "")], "s459"], [["s157", Var("fact", "")], "s446"], [["s157", Var("prod", "")], "s424"], [["s158", Var("fact", "")], "s446"], [["s158", Var("prod", "")], "s435"], [["s159", Var("fact", "")], "s468"], [["s16", Var("assignment", "")], "s322"], [["s16", Var("expr", "")], "s409"], [["s16", Var("fact", "")], "s446"], [["s16", Var("prod", "")], "s459"], [["s16", Var("statement", "")], "s22"], [["s16", Var("stmntList", "")], "s211"], [["s160", Var("fact", "")], "s477"], [["s161", Var("fact", "")], "s486"], [["s162", Var("neIDList", "")], "s281"], [["s163", Var("neIDList", "")], "s282"], [["s164", Var("assignment", "")], "s206"], [["s165", Var("assignment", "")], "s207"], [["s166", Var("assignment", "")], "s202"], [["s167", Var("assignment", "")], "s203"], [["s17", Var("assignment", "")], "s322"], [["s17", Var("expr", "")], "s409"], [["s17", Var("fact", "")], "s446"], [["s17", Var("prod", "")], "s459"], [["s17", Var("statement", "")], "s22"], [["s17", Var("stmntList", "")], "s218"], [["s18", Var("assignment", "")], "s322"], [["s18", Var("expr", "")], "s409"], [["s18", Var("fact", "")], "s446"], [["s18", Var("prod", "")], "s459"], [["s18", Var("statement", "")], "s22"], [["s18", Var("stmntList", "")], "s226"], [["s19", Var("assignment", "")], "s322"], [["s19", Var("expr", "")], "s409"], [["s19", Var("fact", "")], "s446"], [["s19", Var("prod", "")], "s459"], [["s19", Var("statement", "")], "s22"], [["s19", Var("stmntList", "")], "s227"], [["s2", Var("assignment", "")], "s321"], [["s2", Var("definition", "")], "s1"], [["s2", Var("dfnStmntList", "")], "s489"], [["s2", Var("expr", "")], "s408"], [["s2", Var("fact", "")], "s446"], [["s2", Var("prod", "")], "s459"], [["s2", Var("statement", "")], "s2"], [["s20", Var("assignment", "")], "s322"], [["s20", Var("expr", "")], "s409"], [["s20", Var("fact", "")], "s446"], [["s20", Var("prod", "")], "s459"], [["s20", Var("statement", "")], "s22"], [["s20", Var("stmntList", "")], "s254"], [["s21", Var("assignment", "")], "s322"], [["s21", Var("expr", "")], "s409"], [["s21", Var("fact", "")], "s446"], [["s21", Var("prod", "")], "s459"], [["s21", Var("statement", "")], "s22"], [["s21", Var("stmntList", "")], "s255"], [["s22", Var("assignment", "")], "s322"], [["s22", Var("expr", "")], "s409"], [["s22", Var("fact", "")], "s446"], [["s22", Var("prod", "")], "s459"], [["s22", Var("statement", "")], "s22"], [["s22", Var("stmntList", "")], "s488"], [["s23", Var("boolExpr", "")], "s172"], [["s23", Var("boolFactor", "")], "s325"], [["s23", Var("conjunction", "")], "s331"], [["s23", Var("disjunction", "")], "s355"], [["s23", Var("expr", "")], "s182"], [["s23", Var("fact", "")], "s440"], [["s23", Var("prod", "")], "s453"], [["s24", Var("boolExpr", "")], "s172"], [["s24", Var("boolFactor", "")], "s325"], [["s24", Var("conjunction", "")], "s331"], [["s24", Var("disjunction", "")], "s355"], [["s24", Var("expr", "")], "s184"], [["s24", Var("fact", "")], "s440"], [["s24", Var("prod", "")], "s453"], [["s25", Var("boolExpr", "")], "s173"], [["s25", Var("boolFactor", "")], "s325"], [["s25", Var("conjunction", "")], "s331"], [["s25", Var("disjunction", "")], "s355"], [["s25", Var("expr", "")], "s184"], [["s25", Var("fact", "")], "s440"], [["s25", Var("prod", "")], "s453"], [["s26", Var("boolExpr", "")], "s168"], [["s26", Var("boolFactor", "")], "s325"], [["s26", Var("conjunction", "")], "s329"], [["s26", Var("disjunction", "")], "s351"], [["s26", Var("expr", "")], "s384"], [["s26", Var("fact", "")], "s441"], [["s26", Var("prod", "")], "s454"], [["s27", Var("boolExpr", "")], "s170"], [["s27", Var("boolFactor", "")], "s325"], [["s27", Var("conjunction", "")], "s329"], [["s27", Var("disjunction", "")], "s353"], [["s27", Var("expr", "")], "s386"], [["s27", Var("fact", "")], "s441"], [["s27", Var("prod", "")], "s454"], [["s28", Var("boolExpr", "")], "s172"], [["s28", Var("boolFactor", "")], "s325"], [["s28", Var("conjunction", "")], "s331"], [["s28", Var("disjunction", "")], "s355"], [["s28", Var("expr", "")], "s388"], [["s28", Var("fact", "")], "s441"], [["s28", Var("prod", "")], "s454"], [["s29", Var("boolExpr", "")], "s173"], [["s29", Var("boolFactor", "")], "s325"], [["s29", Var("conjunction", "")], "s331"], [["s29", Var("disjunction", "")], "s355"], [["s29", Var("expr", "")], "s388"], [["s29", Var("fact", "")], "s441"], [["s29", Var("prod", "")], "s454"], [["s3", Var("expr", "")], "s369"], [["s3", Var("exprList", "")], "s294"], [["s3", Var("fact", "")], "s444"], [["s3", Var("prod", "")], "s457"], [["s30", Var("boolExpr", "")], "s174"], [["s30", Var("boolFactor", "")], "s325"], [["s30", Var("conjunction", "")], "s331"], [["s30", Var("disjunction", "")], "s355"], [["s30", Var("expr", "")], "s388"], [["s30", Var("fact", "")], "s441"], [["s30", Var("prod", "")], "s454"], [["s31", Var("boolExpr", "")], "s175"], [["s31", Var("boolFactor", "")], "s325"], [["s31", Var("conjunction", "")], "s331"], [["s31", Var("disjunction", "")], "s355"], [["s31", Var("expr", "")], "s388"], [["s31", Var("fact", "")], "s441"], [["s31", Var("prod", "")], "s454"], [["s32", Var("boolExpr", "")], "s222"], [["s32", Var("boolFactor", "")], "s325"], [["s32", Var("conjunction", "")], "s331"], [["s32", Var("disjunction", "")], "s355"], [["s32", Var("expr", "")], "s388"], [["s32", Var("fact", "")], "s441"], [["s32", Var("prod", "")], "s454"], [["s33", Var("boolExpr", "")], "s223"], [["s33", Var("boolFactor", "")], "s325"], [["s33", Var("conjunction", "")], "s331"], [["s33", Var("disjunction", "")], "s355"], [["s33", Var("expr", "")], "s388"], [["s33", Var("fact", "")], "s441"], [["s33", Var("prod", "")], "s454"], [["s34", Var("boolExpr", "")], "s250"], [["s34", Var("boolFactor", "")], "s325"], [["s34", Var("conjunction", "")], "s331"], [["s34", Var("disjunction", "")], "s355"], [["s34", Var("expr", "")], "s388"], [["s34", Var("fact", "")], "s441"], [["s34", Var("prod", "")], "s454"], [["s35", Var("boolExpr", "")], "s251"], [["s35", Var("boolFactor", "")], "s325"], [["s35", Var("conjunction", "")], "s331"], [["s35", Var("disjunction", "")], "s355"], [["s35", Var("expr", "")], "s388"], [["s35", Var("fact", "")], "s441"], [["s35", Var("prod", "")], "s454"], [["s36", Var("boolFactor", "")], "s325"], [["s36", Var("conjunction", "")], "s329"], [["s36", Var("disjunction", "")], "s357"], [["s37", Var("boolFactor", "")], "s325"], [["s37", Var("conjunction", "")], "s329"], [["s37", Var("disjunction", "")], "s358"], [["s38", Var("boolFactor", "")], "s325"], [["s38", Var("conjunction", "")], "s337"], [["s39", Var("boolFactor", "")], "s325"], [["s39", Var("conjunction", "")], "s338"], [["s4", Var("expr", "")], "s369"], [["s4", Var("exprList", "")], "s295"], [["s4", Var("fact", "")], "s444"], [["s4", Var("prod", "")], "s457"], [["s40", Var("boolFactor", "")], "s345"], [["s41", Var("boolExpr", "")], "s169"], [["s41", Var("boolFactor", "")], "s326"], [["s41", Var("conjunction", "")], "s330"], [["s41", Var("disjunction", "")], "s352"], [["s41", Var("expr", "")], "s385"], [["s41", Var("fact", "")], "s441"], [["s41", Var("prod", "")], "s454"], [["s42", Var("boolExpr", "")], "s171"], [["s42", Var("boolFactor", "")], "s326"], [["s42", Var("conjunction", "")], "s330"], [["s42", Var("disjunction", "")], "s354"], [["s42", Var("expr", "")], "s387"], [["s42", Var("fact", "")], "s441"], [["s42", Var("prod", "")], "s454"], [["s43", Var("boolExpr", "")], "s204"], [["s43", Var("boolFactor", "")], "s326"], [["s43", Var("conjunction", "")], "s332"], [["s43", Var("disjunction", "")], "s356"], [["s43", Var("expr", "")], "s389"], [["s43", Var("fact", "")], "s441"], [["s43", Var("prod", "")], "s454"], [["s44", Var("boolExpr", "")], "s205"], [["s44", Var("boolFactor", "")], "s326"], [["s44", Var("conjunction", "")], "s332"], [["s44", Var("disjunction", "")], "s356"], [["s44", Var("expr", "")], "s389"], [["s44", Var("fact", "")], "s441"], [["s44", Var("prod", "")], "s454"], [["s45", Var("boolFactor", "")], "s326"], [["s45", Var("conjunction", "")], "s330"], [["s45", Var("disjunction", "")], "s359"], [["s46", Var("boolFactor", "")], "s326"], [["s46", Var("conjunction", "")], "s330"], [["s46", Var("disjunction", "")], "s360"], [["s47", Var("boolFactor", "")], "s326"], [["s47", Var("conjunction", "")], "s339"], [["s48", Var("boolFactor", "")], "s326"], [["s48", Var("conjunction", "")], "s340"], [["s49", Var("boolFactor", "")], "s346"], [["s5", Var("expr", "")], "s369"], [["s5", Var("exprList", "")], "s296"], [["s5", Var("fact", "")], "s444"], [["s5", Var("prod", "")], "s457"], [["s50", Var("boolFactor", "")], "s327"], [["s50", Var("conjunction", "")], "s333"], [["s50", Var("disjunction", "")], "s361"], [["s51", Var("boolFactor", "")], "s327"], [["s51", Var("conjunction", "")], "s333"], [["s51", Var("disjunction", "")], "s362"], [["s52", Var("boolFactor", "")], "s327"], [["s52", Var("conjunction", "")], "s335"], [["s52", Var("disjunction", "")], "s365"], [["s53", Var("boolFactor", "")], "s327"], [["s53", Var("conjunction", "")], "s335"], [["s53", Var("disjunction", "")], "s366"], [["s54", Var("boolFactor", "")], "s327"], [["s54", Var("conjunction", "")], "s341"], [["s55", Var("boolFactor", "")], "s327"], [["s55", Var("conjunction", "")], "s342"], [["s56", Var("boolFactor", "")], "s347"], [["s57", Var("boolFactor", "")], "s328"], [["s57", Var("conjunction", "")], "s334"], [["s57", Var("disjunction", "")], "s363"], [["s58", Var("boolFactor", "")], "s328"], [["s58", Var("conjunction", "")], "s334"], [["s58", Var("disjunction", "")], "s364"], [["s59", Var("boolFactor", "")], "s328"], [["s59", Var("conjunction", "")], "s336"], [["s59", Var("disjunction", "")], "s367"], [["s6", Var("expr", "")], "s369"], [["s6", Var("exprList", "")], "s297"], [["s6", Var("fact", "")], "s444"], [["s6", Var("prod", "")], "s457"], [["s60", Var("boolFactor", "")], "s328"], [["s60", Var("conjunction", "")], "s336"], [["s60", Var("disjunction", "")], "s368"], [["s61", Var("boolFactor", "")], "s328"], [["s61", Var("conjunction", "")], "s343"], [["s62", Var("boolFactor", "")], "s328"], [["s62", Var("conjunction", "")], "s344"], [["s63", Var("boolFactor", "")], "s348"], [["s64", Var("expr", "")], "s372"], [["s64", Var("fact", "")], "s438"], [["s64", Var("prod", "")], "s451"], [["s65", Var("expr", "")], "s373"], [["s65", Var("fact", "")], "s438"], [["s65", Var("prod", "")], "s451"], [["s66", Var("expr", "")], "s374"], [["s66", Var("fact", "")], "s438"], [["s66", Var("prod", "")], "s451"], [["s67", Var("expr", "")], "s375"], [["s67", Var("fact", "")], "s438"], [["s67", Var("prod", "")], "s451"], [["s68", Var("expr", "")], "s376"], [["s68", Var("fact", "")], "s438"], [["s68", Var("prod", "")], "s451"], [["s69", Var("expr", "")], "s377"], [["s69", Var("fact", "")], "s438"], [["s69", Var("prod", "")], "s451"], [["s7", Var("expr", "")], "s369"], [["s7", Var("exprList", "")], "s298"], [["s7", Var("fact", "")], "s444"], [["s7", Var("prod", "")], "s457"], [["s70", Var("fact", "")], "s438"], [["s70", Var("prod", "")], "s416"], [["s71", Var("fact", "")], "s438"], [["s71", Var("prod", "")], "s427"], [["s72", Var("fact", "")], "s460"], [["s73", Var("fact", "")], "s469"], [["s74", Var("fact", "")], "s478"], [["s75", Var("expr", "")], "s378"], [["s75", Var("fact", "")], "s439"], [["s75", Var("prod", "")], "s452"], [["s76", Var("expr", "")], "s379"], [["s76", Var("fact", "")], "s439"], [["s76", Var("prod", "")], "s452"], [["s77", Var("expr", "")], "s380"], [["s77", Var("fact", "")], "s439"], [["s77", Var("prod", "")], "s452"], [["s78", Var("expr", "")], "s381"], [["s78", Var("fact", "")], "s439"], [["s78", Var("prod", "")], "s452"], [["s79", Var("expr", "")], "s382"], [["s79", Var("fact", "")], "s439"], [["s79", Var("prod", "")], "s452"], [["s8", Var("expr", "")], "s369"], [["s8", Var("exprList", "")], "s299"], [["s8", Var("fact", "")], "s444"], [["s8", Var("prod", "")], "s457"], [["s80", Var("expr", "")], "s383"], [["s80", Var("fact", "")], "s439"], [["s80", Var("prod", "")], "s452"], [["s81", Var("fact", "")], "s439"], [["s81", Var("prod", "")], "s417"], [["s82", Var("fact", "")], "s439"], [["s82", Var("prod", "")], "s428"], [["s83", Var("fact", "")], "s461"], [["s84", Var("fact", "")], "s470"], [["s85", Var("fact", "")], "s479"], [["s86", Var("fact", "")], "s440"], [["s86", Var("prod", "")], "s418"], [["s87", Var("fact", "")], "s440"], [["s87", Var("prod", "")], "s429"], [["s88", Var("fact", "")], "s462"], [["s89", Var("fact", "")], "s471"], [["s9", Var("expr", "")], "s369"], [["s9", Var("exprList", "")], "s300"], [["s9", Var("fact", "")], "s444"], [["s9", Var("prod", "")], "s457"], [["s90", Var("fact", "")], "s480"], [["s91", Var("fact", "")], "s441"], [["s91", Var("prod", "")], "s419"], [["s92", Var("fact", "")], "s441"], [["s92", Var("prod", "")], "s430"], [["s93", Var("fact", "")], "s463"], [["s94", Var("fact", "")], "s472"], [["s95", Var("fact", "")], "s481"], [["s96", Var("expr", "")], "s390"], [["s96", Var("fact", "")], "s442"], [["s96", Var("prod", "")], "s455"], [["s97", Var("expr", "")], "s391"], [["s97", Var("fact", "")], "s442"], [["s97", Var("prod", "")], "s455"], [["s98", Var("expr", "")], "s392"], [["s98", Var("fact", "")], "s442"], [["s98", Var("prod", "")], "s455"], [["s99", Var("expr", "")], "s393"], [["s99", Var("fact", "")], "s442"], [["s99", Var("prod", "")], "s455"]};
 return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
 };
- main();
+ result := main(); return result;

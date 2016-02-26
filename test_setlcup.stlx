@@ -30,9 +30,14 @@ else{
 	path := path_unix;
 }
 print("Testing math_expression_grammar..");
+generate_parser(path+arith_grammar, true);
+print("parser generated succefully for $arith_grammar$");
+load("examplesGrammar.stlx");
 for(input in math_input)
-{
-	ast := call_generate_ast(path+arith_grammar, path+input[1], true);
+{	 
+
+	ast := test_parser(path+input[1], true);
+	// ast := run("setlx examplesGrammar.stlx -p $path+input[1]$");
 	if(ast == input[2])
 	{
 		print("grammar: $arith_grammar$ input: $input[1]$ successfull: yes ");
@@ -45,9 +50,13 @@ for(input in math_input)
 	}
 }
 print("Testing interpreter_grammar..");
+generate_parser(path+interpreter_grammar, true);
+print("parser generated succefully for $interpreter_grammar$");
+load("examplesGrammar.stlx");
 for(input in interpreter_input)
 {
-	ast := call_generate_ast(path+interpreter_grammar, path+input[1], true);
+
+	ast := test_parser(path+input[1], true);
 	if(ast == input[2])
 	{
 		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: yes ");

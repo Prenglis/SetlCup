@@ -150,7 +150,8 @@ sc_dict_generate := procedure(file, silent_mode) {
 	return [sc_dict, parser_token_list];
 };
 generate_scan_string := procedure(sc_dict, silent_mode) {
-	scan_string := "scan(lines) { \n";
+	scan_string := "scan_string := procedure(lines) { \n scan_output := [];\n sc_dict := $sc_dict$;\n";
+	scan_string += "scan(lines) { \n";
 
 		for ( i in domain(sc_dict))
 	 	{
@@ -162,49 +163,30 @@ generate_scan_string := procedure(sc_dict, silent_mode) {
 	 		{
 	 			print("scan_string: \n $scan_string$ \n");
 	 		}
+	 	scan_string += "if(sc_dict[\"SKIP\"] != om)
+	{		
+		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != \"SKIP\"];
+
+	}return scan_output;};";
 	 	return scan_string;
 	 };
-test_scanner_generator_scan := procedure (scanner_file, test_file, silent_mode){
+
+generate_parser_token_list := procedure(scanner_file, silent_mode)
+{
 	try{
 		[sc_dict, parser_token_list] := sc_dict_generate(scanner_file, silent_mode);
 	}
 	catch(e){
 		print("error while generating scanner : $e$");
 	}
-
-	lines := join(readFile(test_file), "\n");
 	if(!silent_mode)
 	{
 		print("sc_dict : $sc_dict$");
 	}
-	scan_output := [];
 	scan_string := generate_scan_string(sc_dict, silent_mode);
-	[_ ,output_file_name] := matches(scanner_file, '([a-zA-Z_0-9][a-zA-Z_0-9]*).[a-zA-Z_0-9][a-zA-Z_0-9]*', true);
-	output_file_name := output_file_name + "Grammar.stlx";
+	output_file_name := "examplesGrammar.stlx";
 	writeFile(output_file_name, "");
-	appendFile(output_file_name, ["scan_string := procedure(lines) {scan_output := []; sc_dict := $sc_dict$; $scan_string$ if(sc_dict[\"SKIP\"] != om)
-	{		
-		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != \"SKIP\"];
-
-	}return scan_output;};"]);
-	appendFile(output_file_name, readFile("Parser.stlx"));
-
-	// for( lines in test_file)
-	// {
-		if(!silent_mode)
-		{
-			print("lines :" + lines + " \n");
-		}
-	 execute(trim(scan_string));
- 	// }
- 	if(!silent_mode)
-	{
- 			print(scan_output);
-	}
-	if(sc_dict["SKIP"] != om)
-	{		
-		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != "SKIP"];
-
-	}
- 	return [scan_output, parser_token_list];
+	appendFile(output_file_name, scan_string);
+	appendFile(output_file_name, readFile("_sr_parser_part.stlx"));
+	return parser_token_list;
 };

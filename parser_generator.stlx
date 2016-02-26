@@ -720,7 +720,7 @@ testFromTokenList := procedure(token_list, silent_mode)
      // def_string += "actionTable := $escapeDollarActionTable(actionTable, silent_mode)$;\n";
      def_string += "gotoTable := $gotoTable$;\n";
      def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
-     def_string += "};\n main();";
+     def_string += "};\n result := main(); return result;";
      appendFile("examplesGrammar.stlx", [def_string]);
     return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
  };

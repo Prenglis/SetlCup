@@ -8,22 +8,20 @@ main := closure() {
 	else 
 	{
 		ast := [];
-		if (#params == 2)
+		if (#params == 1)
 		{
 				[input_grammar, file_to_parse] := params;
-				ast := call_generate_ast(input_grammar, file_to_parse, true);
+				generate_parser(input_grammar, true);
 				
 		}
-		else if (#params == 3)
+		else if (#params == 2)
 		{
 			if("-d" in params)
 			{
 				[input_grammar, file_to_parse] := params[1..2];
-				ast := call_generate_ast(input_grammar, file_to_parse, false);
+				generate_parser(input_grammar, false);
 			}
 		}
-		return ast;
 	}
 };
-ast := main();
-return ast;
+main();
