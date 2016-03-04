@@ -668,7 +668,7 @@ stringifyActionTable := procedure(actionTable, silent_mode){
     }
     return stringActionTable;
 };
-write_parser_file := procedure(token_list, silent_mode)
+write_parser_file := procedure(token_list, output_file_name, silent_mode)
  {
     [rules, variables, start] := parseGrammar(token_list);
     gr := grammar(rules, variables, start, silent_mode);
@@ -681,7 +681,7 @@ write_parser_file := procedure(token_list, silent_mode)
      def_string += "gotoTable := $gotoTable$;\n";
      def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
      def_string += "};\n result := main(); return result;";
-     appendFile("examplesGrammar.stlx", [def_string]);
+     appendFile(output_file_name, [def_string]);
  };
 test := procedure(file) {
     [rules, variables, start] := readGrammar(file);

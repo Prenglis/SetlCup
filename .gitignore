@@ -16,3 +16,6 @@ test_output2.stlx
 test_output2.setlx
 tutorial.pdf
 test_setlx.stlx
+examplesGrammar.stlx
+interpreter_grammar_astGrammar.stlx
+math_expression_grammar_astGrammar.stlx

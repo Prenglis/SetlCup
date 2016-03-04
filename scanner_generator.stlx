@@ -149,7 +149,7 @@ generate_scan_string := procedure(sc_dict, silent_mode) {
 	 	return scan_string;
 	 };
 
-generate_parser_token_list := procedure(scanner_file, silent_mode){
+generate_parser_token_list := procedure(scanner_file, output_file_name, silent_mode){
 	try{
 		[sc_dict, parser_token_list] := sc_dict_generate(scanner_file, silent_mode);
 	}
@@ -160,7 +160,6 @@ generate_parser_token_list := procedure(scanner_file, silent_mode){
 		print("sc_dict : $sc_dict$");
 	}
 	scan_string := generate_scan_string(sc_dict, silent_mode);
-	output_file_name := "examplesGrammar.stlx";
 	writeFile(output_file_name, "");
 	appendFile(output_file_name, scan_string);
 	appendFile(output_file_name, readFile("_sr_parser_part.stlx"));

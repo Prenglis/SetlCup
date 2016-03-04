@@ -362,7 +362,10 @@ test_parser := procedure(input_file, silent_mode){
     return result;
 };
 main := closure() {
-  if (#params > 0){
+    if("-h" in params){
+        print("Please call via: _Grammar.stlx -p <file_to_parse> [-d]");
+   }
+  else if (#params < 3 && #params > 0){
     input_file := params[1];
     if(#params < 3){
       silent_mode := true;
@@ -373,5 +376,5 @@ main := closure() {
       return result;
       }
     }
-    print("Please call via: _Grammar.stlx -p <file_to_parse> [-d]");
+
   };
