@@ -37,9 +37,9 @@ generate_parser(input_grammar, silent_mode);
 e.g.
 ```
 load("setlcup_load.stlx");
-generate_parser('examples\math_expression_grammar_ast.g', false));
+generate_parser('examples\math_expression_grammar_ast.g', true);
 load("math_expression_grammar_astGrammar.stlx");
-result := test_parser('examples\math_expression_input.txt, true);
+result := test_parser('examples\math_expression_input.txt', true);
 ```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.

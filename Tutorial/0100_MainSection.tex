@@ -37,15 +37,16 @@ Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
 Ein Aufruf von SetlCup ist auch in SetlX selbst möglich. Dazu ist es notwendig die Funktionalität im eigenen Quellcode zu laden:
 \begin{Verbatim}
 load("setlcup_load.stlx");
-generate_parser('examples\math_expression_grammar_ast.g', false);
-load("examplesGrammar.stlx");
-result := test_parser('examples\math_expression_input.txt', false);
+generate_parser('examples\math_expression_grammar_ast.g', true);
+load("math_expression_grammar_astGrammar.stlx");
+result := test_parser('examples\math_expression_input.txt', true);
 \end{Verbatim}
 \section{Dateistruktur}
 Der Parser-Generator SetlCup ist in mehrere Dateien aufgeteilt.
 \paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Parserdefinition als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
 \paragraph{setlcup\_load.stlx} Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. Falls über Setlx mit SetlCup gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
-\paragraph{scanner\_generator.stlx} In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. Dieser wird daraufhin in einer Ausgabedatei abgelegt. Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehangen. Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
+\paragraph{scanner\_generator.stlx} In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. Dieser wird daraufhin in einer Ausgabedatei abgelegt. \\
+Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehangen. Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 \paragraph{parser\_generator.stlx} Der Parser Generator erstellt den kanonischen LR-Parser. Er erzeugt die notwendigen Action-, State- und Gototabellen. Diese werden zusammen mit den Regeln und dem vom User gewünschten Code auch in der o.g. Datei abgespeichert. 
 \paragraph{\_sr\_parser\_part.stlx} Der Shift-Reduce-Parser ist in dieser Datei umgesetzt. Er wird zusammen mit den benötigten Tabellen, sowie dem Scanner in eine neue Datei kopiert. 
 \paragraph{\_Grammar.stlx} In dieser Datei wird der erstelle Scanner und Parser abgelegt. Beim Aufruf wird die übergebene Datei geparsed. Dabei werden die o.g. Tabellen, sowie der vorher erstellte Scanner genutzt. Der Parser ist ein Shift-Reduce Parser. Beim Reducen wird der vom User angegebene Code ausgeführt. Der Wert der Variable "result" wird am Ende zurückgegeben.
