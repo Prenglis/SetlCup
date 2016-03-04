@@ -47,9 +47,9 @@ In the Folder Tutorial a tutorial explains the needed structure of files which c
 To parse a simple arithmetic expression grammar you can call:
 ```
 setlx setlcup.stlx -p examples\math_expression_grammar_ast.g
-setlx examplesGrammar.stlx -p examples\math_expression_input.txt
+setlx examplesGrammar.stlx -p examples\math_expression_input.txt -d > test_output.stlx
 ```
-This will return the following AST:
+This will return the debugging Log aswell as the following AST in the file 'test_output.stlx':
 ```
 ExprList([
 Minus(Plus(Integer(1), Times(Integer(2), Integer(3))), Integer(4)), 
