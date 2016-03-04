@@ -624,40 +624,21 @@ stringifyActionTable := procedure(actionTable, silent_mode){
         match(symbol)
         {
             case Token(token_name, token_id):
-                if(!silent_mode)
-                {
-                    print("token found : $Token(token_name, token_id)$");
-                    print('token_name == ''$'' || token_name == ''\$'' || token_name == "\$" || token_name[-1] == ''$'' && #token_name <=2');
-                    nPrint(token_name == '$');
-                    nPrint(token_name == '\$');
-                    nPrint(token_name == "\$");
-                    nPrint(token_name[-1] == '$' && #token_name <=2);
-
-                }
-                if(token_name == '$' || token_name == '\$' || token_name == "\$" || token_name == @"$" || token_name == @'$' || token_name[-1] == '$' && #token_name <=2)
-                {
-                    if(!silent_mode)
-                    {
-                        print("\$ found");
-                    }
+                if(token_name == '$' || token_name == '\$' || token_name == "\$" || token_name == @"$" 
+                    || token_name == @'$' || token_name[-1] == '$' && #token_name <=2){
                     token_name := "@\"\$\"";
                     stringActionTable += "actionTable[\"$state$\", Token($token_name$, '$token_id$')] := $action$;\n";
                 }
                 else{
-                        stringActionTable += "actionTable[\"$state$\", $Token(token_name, token_id)$] := $action$;\n";         
+                    stringActionTable += "actionTable[\"$state$\", $Token(token_name, token_id)$] := $action$;\n";         
                  
                 }
             case Var(var_name, var_id):
-                if(!silent_mode)
-                {
+                if(!silent_mode){
                     print("var found : $Var(var_name, var_id)$");
                 }
-                if(var_name == '$' || var_name == '\$' || var_name == "\$" || var_name == @"$" || var_name == @'$' || var_name[-1] == '$' && #var_name <=2)
-                {
-                    if(!silent_mode)
-                    {
-                        print("\$ found");
-                    }
+                if(var_name == '$' || var_name == '\$' || var_name == "\$" || var_name == @"$" 
+                    || var_name == @'$' || var_name[-1] == '$' && #var_name <=2){
                     var_name := "@\"\$\"";
                     stringActionTable += "actionTable[\"$state$\", Var($var_name$, '$var_id$')] := $action$;\n";
                 }
