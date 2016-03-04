@@ -33,6 +33,14 @@ Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
 	\end{Verbatim}
 			Dieser Aufruf testet die Funktionen des Parsergenerators mit den verschiedenen Beispielen.
 \end{enumerate}
+\subsection{Aufruf in SetlX}
+Ein Aufruf von SetlCup ist auch in SetlX selbst möglich. Dazu ist es notwendig die Funktionalität im eigenen Quellcode zu laden:
+\begin{Verbatim}
+load("setlcup_load.stlx");
+generate_parser('examples\math_expression_grammar_ast.g', false);
+load("examplesGrammar.stlx");
+result := test_parser('examples\math_expression_input.txt', false);
+\end{Verbatim}
 \section{Dateistruktur}
 Der Parser-Generator SetlCup ist in mehrere Dateien aufgeteilt.
 \paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Parserdefinition als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
