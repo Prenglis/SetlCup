@@ -365,16 +365,13 @@ main := closure() {
     if("-h" in params){
         print("Please call via: _Grammar.stlx -p <file_to_parse> [-d]");
    }
-  else if (#params < 3 && #params > 0){
+  else if (#params > 0){
     input_file := params[1];
-    if(#params < 3){
-      silent_mode := true;
-      if(#params == 2){
+    silent_mode := true;
+    if("-d" in params){
           silent_mode := false;
       }
       result := test_parser(input_file, silent_mode);
       return result;
       }
-    }
-
   };

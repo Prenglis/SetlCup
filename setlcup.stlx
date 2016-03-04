@@ -9,18 +9,15 @@ main := closure() {
 	if("-h" in params){
 		print("setlx setlcup.stlx -p <input_grammar> <-d>");
 	}
-	else {
-		if (#params == 1){
-				[input_grammar, file_to_parse] := params;
-				generate_parser(input_grammar, true);
-				
-		}
-		else if (#params == 2){
-			if("-d" in params){
-				[input_grammar, file_to_parse] := params[1..2];
-				generate_parser(input_grammar, false);
+	else{
+			input_grammar := params[1];
+			silent_mode := true;				
+			if (#params == 2){
+				if("-d" in params){
+					silent_mode := false;
 			}
 		}
+		generate_parser(input_grammar, silent_mode);
 	}
 };
 main();
