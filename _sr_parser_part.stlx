@@ -348,6 +348,7 @@ class grammarRule(variable, gamma, user_code) {
     };
 }
 test_parser := procedure(input_file, silent_mode){
+    result := "";
     try{
      [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
       result := myParse(input_file, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
@@ -361,20 +362,16 @@ test_parser := procedure(input_file, silent_mode){
     return result;
 };
 main := closure() {
-  if (#params == 1){
-    silent_mode := false;
+  if (#params > 0){
     input_file := params[1];
-    try{
-     [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
-      result := myParse(input_file, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+    if(#params < 3){
+      silent_mode := true;
+      if(#params == 2){
+          silent_mode := false;
+      }
+      result := test_parser(input_file, silent_mode);
+      return result;
+      }
     }
-    catch(e){
-      print("error while parsing : $e$");
-    }
-    if(!silent_mode){
-      print("result := $result$;");
-    }
-    return result;
-      
-    }
-};
+    print("Please call via: _Grammar.stlx -p <file_to_parse> [-d]");
+  };

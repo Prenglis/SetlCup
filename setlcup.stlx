@@ -7,10 +7,9 @@ load("setlcup_load.stlx");
 main := closure() {
 	assert(#params > 0, "Params need to be specified. Try -p -help to get help about params");
 	if("-h" in params){
-		print("setlx setlcup.stlx -p <input_grammar> <file_to_parse> <-d>");
+		print("setlx setlcup.stlx -p <input_grammar> <-d>");
 	}
 	else {
-		ast := [];
 		if (#params == 1){
 				[input_grammar, file_to_parse] := params;
 				generate_parser(input_grammar, true);

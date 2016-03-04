@@ -9,17 +9,22 @@ A LR-Parser-Generator for the programming language SetlX oriented on JavaCup
 Setlcup can be called in multiple ways:
 ### Command Line
 ```
-setlx setlcup.stlx -p <input_grammar> <file_to_parse>
+setlx setlcup.stlx -p <input_grammar>
 ```
-Returns the AST of the file_to_parse
+Creates the Parser in the file _Grammar.stlx
 ```
-setlx setlcup.stlx -p <input_grammar> <file_to_parse> -d
+setlx setlcup.stlx -p <input_grammar> -d
 ```
-Returns the AST of the file_to_parse and outputs information about the parsing process
+Creates the Parser in the file _Grammar.stlx and outputs information about the creation process
 ```
 setlx setlcup.stlx -h
 ```
 Shows information about how to call SetlCup correctly
+#### Testing
+```
+setlx test_setlcup.stlx
+```
+This programm test the parsergeneration with the given examples.
 ### In Setlx
 You need to load the program "setlcup_load.stlx"
 ```
@@ -27,19 +32,22 @@ load("setlcup_load.stlx");
 ```
 Afterwards Setlcup can be used via the method call
 ```
-call_generate_ast(input_grammar, file_to_parse, silent_mode);
+generate_parser(input_grammar, silent_mode);
 ```
 e.g.
 ```
 load("setlcup_load.stlx");
-print(call_generate_ast('examples\math_expression_grammar_ast.g', 'examples\math_expression_input.txt', false));
+generate_parser('examples\math_expression_grammar_ast.g', false));
+load("examplesGrammar.stlx");
+result := test_parser('examples\math_expression_input.txt, true);
 ```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.
 ##Example
 To parse a simple arithmetic expression grammar you can call:
 ```
-setlx setlcup.stlx -p examples\math_expression_grammar_ast.g examples\math_expression_input.txt -d
+setlx setlcup.stlx -p examples\math_expression_grammar_ast.g
+setlx examplesGrammar.stlx -p examples\math_expression_input.txt
 ```
 This will return the following AST:
 ```
