@@ -347,6 +347,29 @@ class grammarRule(variable, gamma, user_code) {
         return "grammarRule($mVariable$, $mGamma$, $mUser_Code$)";
     };
 }
+escapeDollar := procedure(t) {
+    if (t == '$') { 
+        return '\$'; 
+    }
+    return t; 
+};
+
+escapeDollar2 := procedure(t) {
+    match(t)
+    {
+        case Token(n, id):
+            return t;
+        default:
+            if(t == '$')
+            {
+                    return Token(@"$", "");
+            }
+            else
+            {
+                 return Token(t, ""); 
+            }
+    }
+};
 test_parser := procedure(input_file, silent_mode){
     result := "";
     try{
