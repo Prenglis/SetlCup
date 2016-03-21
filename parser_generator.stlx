@@ -523,7 +523,7 @@ class grammar(rules, variables, start, silent_mode) {
                     assert(#tRule == 1, "Only 1 Rule with same content");
                     tRule := arb(tRule);
                     ruleName := this.mRuleNames[tRule];
-                    action1  := this.mActionTable[t];
+                    action1  := this.mActionTable[stateName, t];
                     action2 := Reduce(ruleName);
                     if (action1 == om) {
                         var_name := mStart;
@@ -537,15 +537,15 @@ class grammar(rules, variables, start, silent_mode) {
                             print("actionTable[\"$stateName$\", $t$] := $action2$;");
                         }
                     } else if (action1 != action2) {
-                        this.mConflicts := true;
-                        if(!mSilentMode)
-                        {
+                          this.mConflicts := true;
+                          if(!mSilentMode)
+                          {
                             print("//");
-                            print("// conflict:");
-                            print("// action[\"$stateName$\", $t$] := $action1$;");                        
-                            print("// action[\"$stateName$\", $t$] := $action2$;");
-                            print("//");
-                        }
+                            print("conflict:");
+                            print("action[\"$stateName$\", $t$] := $action1$;");
+                            print("action[\"$stateName$\", $t$] := $action2$;");
+                            print("");
+                         }
                     }
                 }
             }
@@ -654,6 +654,7 @@ write_parser_file := procedure(token_list, output_file_name, silent_mode)
     [rules, variables, start] := parseGrammar(token_list);
     gr := grammar(rules, variables, start, silent_mode);
     [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := gr.checkLR();
+    assert(!gr.mConflicts, "SR-Conflict while producing grammar");
      def_string := "getDefs := procedure(){ \n";
      def_string += "ruleNames := $ruleNames$;\n";
      def_string += "rulesMap := $rulesMap$;\n";

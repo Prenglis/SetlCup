@@ -1,0 +1,13 @@
+load("math_simple_expression_astGrammar.stlx");
+end := false;
+while(!end){
+  arith_expr :=  read("Give an arithmetic Expression: (q for end)");
+  if(!("q" in arith_expr)){
+    test_parser(arith_expr, true);
+  }
+  else{
+    end := true;
+   }
+
+}
+

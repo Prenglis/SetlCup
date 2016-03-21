@@ -77,29 +77,30 @@ neIDList
 
 
 boolExpr 
-    ::= expr:lhs '==' expr:rhs                {: result := Equation(lhs,rhs); :}
+    ::= 
+        boolExpr:d '||' conjunction:c         {: result := Disjunction(d,c);    :}
+     |  conjunction:c                         {: result := c;                  :}
+     ;
+
+conjunction
+    ::= conjunction:c '&&' boolFactor:f {: result := Conjunction(c,f); :}
+     | boolFactor:f                     {: result := f; :}
+     ;
+boolFactor
+    ::=
+       '(' boolExpr:be_par ')' {:  result := be_par; :}
+     | '!' simpleboolExpr:e           {: result := Negation(e); :}
+     | simpleBoolExpr:sbe {: result := sbe; :}
+     ;
+simpleBoolExpr
+    ::= 
+        expr:lhs '==' expr:rhs {: result := Equation(lhs,rhs); :}
      |  expr:lhs '!=' expr:rhs                {: result := Inequation(lhs,rhs); :}
-     |  disjunction:lhs '==' disjunction:rhs  {: result := Equation(lhs,rhs); :}
-     |  disjunction:lhs '!=' disjunction:rhs  {: result := Inequation(lhs,rhs); :}
      |  expr:lhs '<=' expr:rhs                {: result := LessOrEqual(lhs,rhs); :}
      |  expr:lhs '>=' expr:rhs                {: result := GreaterOrEqual(lhs,rhs); :}
      |  expr:lhs '<' expr:rhs                 {: result := LessThan(lhs,rhs); :}
      |  expr:lhs '>' expr:rhs                 {: result := GreaterThan(lhs,rhs); :}
-     |  disjunction:d                         {: result := d; :}
      ;
-disjunction
-    ::= disjunction:d '||' conjunction:c {: result := Disjunction(d,c); :}
-     |  conjunction:c                    {: result := c; :}
-     ;
-conjunction
-    ::= conjunction:c '&&' boolFactor:f {:result := Conjunction(c,f); :}
-     | boolFactor:f                     {: result := f; :}
-     ;
-boolFactor
-    ::= '(' boolExpr:be_par ')' {:  result := be_par; :}
-     | '!' boolExpr:e           {: result := Negation(e); :}
-     ;
-
 
 expr 
     ::= expr:e '+'   prod:p {: result := Sum(e,p); :} 

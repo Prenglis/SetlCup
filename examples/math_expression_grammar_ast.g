@@ -24,7 +24,7 @@ expr
       ;
 prod 
     ::=  prod:p '*'  fact:f   {: result := Times(p , f); :}
-      |  prod:p DIVIDE fact:f {: result := Div(p , f); :} 
+      |  prod:p '/'  fact:f {: result := Div(p , f); :} 
       |  prod:p '%'    fact:f {: result := Mod(p , f); :} 
       |  fact:f               {: result := f;     :}
       ;

@@ -23,9 +23,7 @@ interpreter_input := [
 	["sum.sl", 
 	Program([Assignment(Assign("s", Integer(0))), Assignment(Assign("i", Integer(0))), While(LessOrEqual(Variable("i"), Product(Integer(6), Integer(6))), [Assignment(Assign("i", Sum(Variable("i"), Integer(1)))), If(LessThan(Integer(0), Variable("i")), [Print([Variable("s")])]), Assignment(Assign("s", Sum(Variable("s"), FunctionCall("sin", [Variable("i")]))))]), Print([PrintString("Summe sin(i) fuer i = 1..36 = "), Variable("s")]), Print([PrintString("")]), Exit()])],
 	["sum-for.sl", 
-	Program([Assignment(Assign("s", Integer(0))), For(Assign("i", Integer(1)), LessThan(Variable("i"), Integer(37)), Assign("i", Sum(Variable("i"), Integer(1))), [Assignment(Assign("s", Sum(Variable("s"), FunctionCall("exp", [FunctionCall("log", [Variable("i")])]))))]), Print([PrintString("Summe i fuer i = 1..36 ist gleich "), Variable("s")]), Print([PrintString("")]), Exit()])],
-	["test-neg.sl",
-	Program([Assignment(Assign("s", Integer(0))), Assignment(Assign("i", Integer(0))), While(Negation(Negation(LessOrEqual(Variable("i"), Integer(36)))), [Assignment(Assign("i", Sum(Variable("i"), Integer(1)))), Assignment(Assign("s", Sum(Variable("s"), Variable("i"))))]), Exit()])]
+	Program([Assignment(Assign("s", Integer(0))), For(Assign("i", Integer(1)), LessThan(Variable("i"), Integer(37)), Assign("i", Sum(Variable("i"), Integer(1))), [Assignment(Assign("s", Sum(Variable("s"), FunctionCall("exp", [FunctionCall("log", [Variable("i")])]))))]), Print([PrintString("Summe i fuer i = 1..36 ist gleich "), Variable("s")]), Print([PrintString("")]), Exit()])]
 	];
 if(matches(getOsID(), 'Windows.*'))
 {
