@@ -1,14 +1,8 @@
 
 scan_string := procedure(lines) {
 		scan_output := [];
-		sc_dict := {["'('", "\Q(\E"], ["')'", "\Q)\E"], ["'*'", "\Q*\E"], ["'+'", "\Q+\E"], ["INTEGER", "0|[1-9][0-9]*"], ["SKIP", "[ \t\v\r\s]|\n"]};
+		sc_dict := {["'*'", "\Q*\E"], ["'+'", "\Q+\E"], ["INTEGER", "0|[1-9][0-9]*"], ["SKIP", "[ \t\v\r\s]|\n"]};
 scan(lines) { 
-regex '\Q(\E' as [c]:
-	 		  c := join(split(c, '"'), ""); 
-	 		  scan_output := scan_output + [[c, "'('"]];
-regex '\Q)\E' as [c]:
-	 		  c := join(split(c, '"'), ""); 
-	 		  scan_output := scan_output + [[c, "')'"]];
 regex '\Q*\E' as [c]:
 	 		  c := join(split(c, '"'), ""); 
 	 		  scan_output := scan_output + [[c, "'*'"]];
@@ -413,8 +407,8 @@ test_parser_from_string := procedure(input_string, silent_mode){
     return result;
 };
 test_parser_from_file := procedure(input_file, silent_mode){
-    input_string := join(readFile(testInput), "\n");
-    return test_parser_from_string(testInput, silent_mode);
+    input_string := join(readFile(input_file), "\n");
+    return test_parser_from_string(input_string, silent_mode);
 };
 main := closure() {
     if("-h" in params){
@@ -431,67 +425,31 @@ main := closure() {
       }
   };
 getDefs := procedure(){ 
-ruleNames := {[Rule(Var("S", ""), [Var("expr", "")], UserCode("")), "r6"], [Rule(Var("expr", ""), [Var("expr", "e"), Token("'+'", ""), Var("prod", "p")], UserCode(" print(e+p); ")), "r0"], [Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p; ")), "r1"], [Rule(Var("fact", ""), [Token("'('", ""), Var("expr", "e"), Token("')'", "")], UserCode(" result := e; ")), "r4"], [Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := eval(n); ")), "r5"], [Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f; ")), "r3"], [Rule(Var("prod", ""), [Var("prod", "p"), Token("'*'", ""), Var("fact", "f")], UserCode(" result := p*f; ")), "r2"]};
-rulesMap := {["r0", Rule(Var("expr", ""), [Var("expr", "e"), Token("'+'", ""), Var("prod", "p")], UserCode(" print(e+p); "))], ["r1", Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p; "))], ["r2", Rule(Var("prod", ""), [Var("prod", "p"), Token("'*'", ""), Var("fact", "f")], UserCode(" result := p*f; "))], ["r3", Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f; "))], ["r4", Rule(Var("fact", ""), [Token("'('", ""), Var("expr", "e"), Token("')'", "")], UserCode(" result := e; "))], ["r5", Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := eval(n); "))], ["r6", Rule(Var("S", ""), [Var("expr", "")], UserCode(""))]};
-stateTable := {["s0", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"'*'", "'+'", "\$"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("S", ""),[],[Var("expr", "")],{"\$"},om), markedRule(Var("expr", ""),[],[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],{"'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("expr", ""),[],[Var("prod", "p")],{"'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s1", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"'*'", "'+'", "\$"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", "")],[Var("prod", "p")],{"'+'", "\$"},om)}], ["s10", {markedRule(Var("fact", ""),[Token("'('", ""), Var("expr", "e"), Token("')'", "")],[],{"')'", "'*'", "'+'"},om)}], ["s11", {markedRule(Var("fact", ""),[Token("INTEGER", "n")],[],{"'*'", "'+'", "\$"},om)}], ["s12", {markedRule(Var("fact", ""),[Token("INTEGER", "n")],[],{"')'", "'*'", "'+'"},om)}], ["s13", {markedRule(Var("S", ""),[Var("expr", "")],[],{"\$"},om), markedRule(Var("expr", ""),[Var("expr", "e")],[Token("'+'", ""), Var("prod", "p")],{"'+'", "\$"},om)}], ["s14", {markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],[],{"'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s15", {markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],[],{"')'", "'+'"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"')'", "'*'", "'+'"},om)}], ["s16", {markedRule(Var("prod", ""),[Var("fact", "f")],[],{"'*'", "'+'", "\$"},om)}], ["s17", {markedRule(Var("prod", ""),[Var("fact", "f")],[],{"')'", "'*'", "'+'"},om)}], ["s18", {markedRule(Var("expr", ""),[Var("prod", "p")],[],{"'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s19", {markedRule(Var("expr", ""),[Var("prod", "p")],[],{"')'", "'+'"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"')'", "'*'", "'+'"},om)}], ["s2", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"'*'", "'+'", "\$"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", "")],[Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s20", {markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],[],{"'*'", "'+'", "\$"},om)}], ["s21", {markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],[],{"')'", "'*'", "'+'"},om)}], ["s3", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[],[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],{"')'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[],[Var("prod", "p")],{"')'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[Token("'('", "")],[Var("expr", "e"), Token("')'", "")],{"'*'", "'+'", "\$"},om)}], ["s4", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[],[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],{"')'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[],[Var("prod", "p")],{"')'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[Token("'('", "")],[Var("expr", "e"), Token("')'", "")],{"')'", "'*'", "'+'"},om)}], ["s5", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"')'", "'*'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", "")],[Var("prod", "p")],{"')'", "'+'"},om)}], ["s6", {markedRule(Var("fact", ""),[],[Token("'('", ""), Var("expr", "e"), Token("')'", "")],{"')'", "'*'", "'+'"},om), markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"')'", "'*'", "'+'"},om), markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", "")],[Var("fact", "f")],{"')'", "'*'", "'+'"},om)}], ["s7", {markedRule(Var("fact", ""),[Token("'('", ""), Var("expr", "e")],[Token("')'", "")],{"'*'", "'+'", "\$"},om), markedRule(Var("expr", ""),[Var("expr", "e")],[Token("'+'", ""), Var("prod", "p")],{"')'", "'+'"},om)}], ["s8", {markedRule(Var("fact", ""),[Token("'('", ""), Var("expr", "e")],[Token("')'", "")],{"')'", "'*'", "'+'"},om), markedRule(Var("expr", ""),[Var("expr", "e")],[Token("'+'", ""), Var("prod", "p")],{"')'", "'+'"},om)}], ["s9", {markedRule(Var("fact", ""),[Token("'('", ""), Var("expr", "e"), Token("')'", "")],[],{"'*'", "'+'", "\$"},om)}]};
+ruleNames := {[Rule(Var("S", ""), [Var("expr", "")], UserCode("")), "r5"], [Rule(Var("expr", ""), [Var("expr", "e"), Token("'+'", ""), Var("prod", "p")], UserCode(" print(e+p); ")), "r0"], [Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p; ")), "r1"], [Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := eval(n); ")), "r4"], [Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f; ")), "r3"], [Rule(Var("prod", ""), [Var("prod", "p"), Token("'*'", ""), Var("fact", "f")], UserCode(" result := p*f; ")), "r2"]};
+rulesMap := {["r0", Rule(Var("expr", ""), [Var("expr", "e"), Token("'+'", ""), Var("prod", "p")], UserCode(" print(e+p); "))], ["r1", Rule(Var("expr", ""), [Var("prod", "p")], UserCode(" result := p; "))], ["r2", Rule(Var("prod", ""), [Var("prod", "p"), Token("'*'", ""), Var("fact", "f")], UserCode(" result := p*f; "))], ["r3", Rule(Var("prod", ""), [Var("fact", "f")], UserCode(" result := f; "))], ["r4", Rule(Var("fact", ""), [Token("INTEGER", "n")], UserCode(" result := eval(n); "))], ["r5", Rule(Var("S", ""), [Var("expr", "")], UserCode(""))]};
+stateTable := {["s0", {markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("S", ""),[],[Var("expr", "")],{"\$"},om), markedRule(Var("expr", ""),[],[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],{"'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("expr", ""),[],[Var("prod", "p")],{"'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s1", {markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[],[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om), markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", "")],[Var("prod", "p")],{"'+'", "\$"},om)}], ["s2", {markedRule(Var("fact", ""),[],[Token("INTEGER", "n")],{"'*'", "'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", "")],[Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s3", {markedRule(Var("fact", ""),[Token("INTEGER", "n")],[],{"'*'", "'+'", "\$"},om)}], ["s4", {markedRule(Var("S", ""),[Var("expr", "")],[],{"\$"},om), markedRule(Var("expr", ""),[Var("expr", "e")],[Token("'+'", ""), Var("prod", "p")],{"'+'", "\$"},om)}], ["s5", {markedRule(Var("expr", ""),[Var("expr", "e"), Token("'+'", ""), Var("prod", "p")],[],{"'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s6", {markedRule(Var("prod", ""),[Var("fact", "f")],[],{"'*'", "'+'", "\$"},om)}], ["s7", {markedRule(Var("expr", ""),[Var("prod", "p")],[],{"'+'", "\$"},om), markedRule(Var("prod", ""),[Var("prod", "p")],[Token("'*'", ""), Var("fact", "f")],{"'*'", "'+'", "\$"},om)}], ["s8", {markedRule(Var("prod", ""),[Var("prod", "p"), Token("'*'", ""), Var("fact", "f")],[],{"'*'", "'+'", "\$"},om)}]};
 actionTable := {};
-actionTable["s0", Token("'('", "")] := Shift("s3");
-actionTable["s0", Token("INTEGER", "n")] := Shift("s11");
-actionTable["s1", Token("'('", "")] := Shift("s3");
-actionTable["s1", Token("INTEGER", "n")] := Shift("s11");
-actionTable["s10", Token("')'", "")] := Reduce("r4");
-actionTable["s10", Token("'*'", "")] := Reduce("r4");
-actionTable["s10", Token("'+'", "")] := Reduce("r4");
-actionTable["s11", Token(@"$", '')] := Reduce("r5");
-actionTable["s11", Token("'*'", "")] := Reduce("r5");
-actionTable["s11", Token("'+'", "")] := Reduce("r5");
-actionTable["s12", Token("')'", "")] := Reduce("r5");
-actionTable["s12", Token("'*'", "")] := Reduce("r5");
-actionTable["s12", Token("'+'", "")] := Reduce("r5");
-actionTable["s13", Token(@"$", '')] := Accept();
-actionTable["s13", Token("'+'", "")] := Shift("s1");
-actionTable["s14", Token(@"$", '')] := Reduce("r0");
-actionTable["s14", Token("'*'", "")] := Shift("s2");
-actionTable["s14", Token("'+'", "")] := Reduce("r0");
-actionTable["s15", Token("')'", "")] := Reduce("r0");
-actionTable["s15", Token("'*'", "")] := Shift("s6");
-actionTable["s15", Token("'+'", "")] := Reduce("r0");
-actionTable["s16", Token(@"$", '')] := Reduce("r3");
-actionTable["s16", Token("'*'", "")] := Reduce("r3");
-actionTable["s16", Token("'+'", "")] := Reduce("r3");
-actionTable["s17", Token("')'", "")] := Reduce("r3");
-actionTable["s17", Token("'*'", "")] := Reduce("r3");
-actionTable["s17", Token("'+'", "")] := Reduce("r3");
-actionTable["s18", Token(@"$", '')] := Reduce("r1");
-actionTable["s18", Token("'*'", "")] := Shift("s2");
-actionTable["s18", Token("'+'", "")] := Reduce("r1");
-actionTable["s19", Token("')'", "")] := Reduce("r1");
-actionTable["s19", Token("'*'", "")] := Shift("s6");
-actionTable["s19", Token("'+'", "")] := Reduce("r1");
-actionTable["s2", Token("'('", "")] := Shift("s3");
-actionTable["s2", Token("INTEGER", "n")] := Shift("s11");
-actionTable["s20", Token(@"$", '')] := Reduce("r2");
-actionTable["s20", Token("'*'", "")] := Reduce("r2");
-actionTable["s20", Token("'+'", "")] := Reduce("r2");
-actionTable["s21", Token("')'", "")] := Reduce("r2");
-actionTable["s21", Token("'*'", "")] := Reduce("r2");
-actionTable["s21", Token("'+'", "")] := Reduce("r2");
-actionTable["s3", Token("'('", "")] := Shift("s4");
-actionTable["s3", Token("INTEGER", "n")] := Shift("s12");
-actionTable["s4", Token("'('", "")] := Shift("s4");
-actionTable["s4", Token("INTEGER", "n")] := Shift("s12");
-actionTable["s5", Token("'('", "")] := Shift("s4");
-actionTable["s5", Token("INTEGER", "n")] := Shift("s12");
-actionTable["s6", Token("'('", "")] := Shift("s4");
-actionTable["s6", Token("INTEGER", "n")] := Shift("s12");
-actionTable["s7", Token("')'", "")] := Shift("s9");
-actionTable["s7", Token("'+'", "")] := Shift("s5");
-actionTable["s8", Token("')'", "")] := Shift("s10");
-actionTable["s8", Token("'+'", "")] := Shift("s5");
-actionTable["s9", Token(@"$", '')] := Reduce("r4");
-actionTable["s9", Token("'*'", "")] := Reduce("r4");
-actionTable["s9", Token("'+'", "")] := Reduce("r4");
-gotoTable := {[["s0", Var("expr", "")], "s13"], [["s0", Var("fact", "")], "s16"], [["s0", Var("prod", "")], "s18"], [["s1", Var("fact", "")], "s16"], [["s1", Var("prod", "")], "s14"], [["s2", Var("fact", "")], "s20"], [["s3", Var("expr", "")], "s7"], [["s3", Var("fact", "")], "s17"], [["s3", Var("prod", "")], "s19"], [["s4", Var("expr", "")], "s8"], [["s4", Var("fact", "")], "s17"], [["s4", Var("prod", "")], "s19"], [["s5", Var("fact", "")], "s17"], [["s5", Var("prod", "")], "s15"], [["s6", Var("fact", "")], "s21"]};
+actionTable["s0", Token("INTEGER", "n")] := Shift("s3");
+actionTable["s1", Token("INTEGER", "n")] := Shift("s3");
+actionTable["s2", Token("INTEGER", "n")] := Shift("s3");
+actionTable["s3", Token(@"$", '')] := Reduce("r4");
+actionTable["s3", Token("'*'", "")] := Reduce("r4");
+actionTable["s3", Token("'+'", "")] := Reduce("r4");
+actionTable["s4", Token(@"$", '')] := Accept();
+actionTable["s4", Token("'+'", "")] := Shift("s1");
+actionTable["s5", Token(@"$", '')] := Reduce("r0");
+actionTable["s5", Token("'*'", "")] := Shift("s2");
+actionTable["s5", Token("'+'", "")] := Reduce("r0");
+actionTable["s6", Token(@"$", '')] := Reduce("r3");
+actionTable["s6", Token("'*'", "")] := Reduce("r3");
+actionTable["s6", Token("'+'", "")] := Reduce("r3");
+actionTable["s7", Token(@"$", '')] := Reduce("r1");
+actionTable["s7", Token("'*'", "")] := Shift("s2");
+actionTable["s7", Token("'+'", "")] := Reduce("r1");
+actionTable["s8", Token(@"$", '')] := Reduce("r2");
+actionTable["s8", Token("'*'", "")] := Reduce("r2");
+actionTable["s8", Token("'+'", "")] := Reduce("r2");
+gotoTable := {[["s0", Var("expr", "")], "s4"], [["s0", Var("fact", "")], "s6"], [["s0", Var("prod", "")], "s7"], [["s1", Var("fact", "")], "s6"], [["s1", Var("prod", "")], "s5"], [["s2", Var("fact", "")], "s8"]};
 return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];
 };
  result := main(); return result;

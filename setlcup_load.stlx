@@ -7,9 +7,10 @@ load("scanner_generator.stlx");
 load("parser_generator.stlx");
 generate_parser := procedure(input_grammar, silent_mode){
 	silent_mode := silent_mode;
-	[_, output_file_name] := matches(input_grammar, 
-		'[\\/]?(?:[^\\/]+[\\/])*([a-zA-Z_0-9][a-zA-Z_0-9]*)(?:\..*)?', true);
-	output_file_name += "Grammar.stlx";
+	[_, output_file_path ,output_file_name] := matches(input_grammar, 
+		'([\\/]?(?:[^\\/]+[\\/])*)([a-zA-Z_0-9][a-zA-Z_0-9\-]*)(?:\..*)?', true);
+//		'[\\/]?(?:[^\\/]+[\\/])*([a-zA-Z_0-9][a-zA-Z_0-9]*)(?:\..*)?', true);
+	output_file_name := output_file_path + output_file_name + "Grammar.stlx";
 	parser_token_list := generate_parser_token_list(input_grammar, output_file_name, silent_mode);
 	if(!silent_mode){
 			print("parser_token_list : $parser_token_list$");	

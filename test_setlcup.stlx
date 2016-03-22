@@ -37,7 +37,7 @@ print("Testing math_expression_grammar..");
 generate_parser(path+arith_grammar, true);
 print("parser generated succefully for $arith_grammar$");
 output_file_name := "math_expression_grammar_astGrammar.stlx";
-load(output_file_name);
+load(path+output_file_name);
 for(input in math_input){	 
 
 	ast := test_parser_from_file(path+input[1], true);
@@ -55,7 +55,7 @@ print("Testing interpreter_grammar..");
 generate_parser(path+interpreter_grammar, true);
 print("parser generated succefully for $interpreter_grammar$");
 output_file_name := "interpreter_grammar_astGrammar.stlx";
-load(output_file_name);
+load(path+output_file_name);
 for(input in interpreter_input){
 	ast := test_parser_from_file(path+input[1], true);
 	if(ast == input[2]){

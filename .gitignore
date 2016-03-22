@@ -19,3 +19,5 @@ test_setlx.stlx
 examplesGrammar.stlx
 interpreter_grammar_astGrammar.stlx
 math_expression_grammar_astGrammar.stlx
+examples/*Grammar.stlx
+*Grammar.stlx
