@@ -40,7 +40,7 @@ output_file_name := "math_expression_grammar_astGrammar.stlx";
 load(output_file_name);
 for(input in math_input){	 
 
-	ast := test_parser(path+input[1], true);
+	ast := test_parser_from_file(path+input[1], true);
 	// ast := run("setlx examplesGrammar.stlx -p $path+input[1]$");
 	if(ast == input[2]){
 		print("grammar: $arith_grammar$ input: $input[1]$ successfull: yes ");
@@ -57,7 +57,7 @@ print("parser generated succefully for $interpreter_grammar$");
 output_file_name := "interpreter_grammar_astGrammar.stlx";
 load(output_file_name);
 for(input in interpreter_input){
-	ast := test_parser(path+input[1], true);
+	ast := test_parser_from_file(path+input[1], true);
 	if(ast == input[2]){
 		print("grammar: $interpreter_grammar$ input: $input[1]$ successfull: yes ");
 	}

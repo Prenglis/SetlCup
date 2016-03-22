@@ -246,7 +246,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
 }
 myParse := closure(testInput, ruleNames, rulesMap, statetable, actiontable, gototable, silent_mode) {
     parser := srParser(actiontable, gototable, statetable, rulesMap, silent_mode);
-    scup_tl := scan_string(join(readFile(testInput), "\n"));
+    scup_tl := scan_string(testInput);
     if(!silent_mode){
         print("tokenlist: $scup_tl$\n");
     }
@@ -370,11 +370,11 @@ escapeDollar2 := procedure(t) {
             }
     }
 };
-test_parser := procedure(input_file, silent_mode){
+test_parser_from_string := procedure(input_string, silent_mode){
     result := "";
     try{
      [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
-      result := myParse(input_file, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
+      result := myParse(input_string, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
     }
     catch(e){
       print("error while parsing : $e$");
@@ -383,6 +383,10 @@ test_parser := procedure(input_file, silent_mode){
       print("result := $result$;");
     }
     return result;
+};
+test_parser_from_file := procedure(input_file, silent_mode){
+    input_string := join(readFile(input_file), "\n");
+    return test_parser_from_string(input_string, silent_mode);
 };
 main := closure() {
     if("-h" in params){
@@ -394,7 +398,7 @@ main := closure() {
     if("-d" in params){
           silent_mode := false;
       }
-      result := test_parser(input_file, silent_mode);
+      result := test_parser_from_file(input_file, silent_mode);
       return result;
       }
   };
