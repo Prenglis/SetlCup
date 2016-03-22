@@ -15,17 +15,17 @@ Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
 	\item \begin{Verbatim}
 	setlx setlcup.stlx -p parser_scanner_datei.stlx -d
 	\end{Verbatim}
-			Um die Art und Weise, wie der Parser generiert wird Nachzuvollziehen, kann mit der Option "`-d"' das Debugging eingeschaltet werden. Dabei wird empfohlen die Ausgabe in eine Datei umzuleiten.
+			Um die Art und Weise, wie der Parser generiert wird nachvollziehen zu können, kann mit der Option "-d" das Debugging eingeschaltet werden. Dabei wird empfohlen die Ausgabe in eine Datei umzuleiten.
 	\item \begin{Verbatim}
 	setlx parser_datei.stlx -p eingabe_datei.txt
 	\end{Verbatim}
-	Der erstellte Parser kann mit dem o.g. Befehl aufgerufen werden und probiert die Eingabedatei nach den angegebenen Regeln zu überprüfen.
+	Der erstellte Parser kann mit dem o.g. Befehl aufgerufen werden und versucht die Eingabedatei nach den angegebenen Regeln zu überprüfen.
 		\item \begin{Verbatim}
 	setlx parser_datei.stlx -p eingabe_datei.txt -d
 	\end{Verbatim}
-	Analog zur Parsererstellung wird durch die Option "`-d"' das Debugging eingeschaltet.
+	Analog zur Parsererstellung wird durch die Option "-d" das Debugging eingeschaltet.
 	\item \begin{Verbatim}
-	setlx setlcup.stlx -h
+	setlx setlcup.stlx -p -help
 	\end{Verbatim}
 			Dieser Aufruf zeigt die Hilfe an, wie SetlCup aufgerufen werden kann.
 	\item \begin{Verbatim}
@@ -43,14 +43,14 @@ result := test_parser('examples\math_expression_input.txt', true);
 \end{Verbatim}
 \section{Dateistruktur}
 Der Parser-Generator SetlCup ist in mehrere Dateien aufgeteilt.
-\paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Parserdefinition als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
+\paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Definition der Grammatik als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
 \paragraph{setlcup\_load.stlx} Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. Falls über Setlx mit SetlCup gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
 \paragraph{scanner\_generator.stlx} In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. Dieser wird daraufhin in einer Ausgabedatei abgelegt. \\
 Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehangen. Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 \paragraph{parser\_generator.stlx} Der Parser Generator erstellt den kanonischen LR-Parser. Er erzeugt die notwendigen Action-, State- und Gototabellen. Diese werden zusammen mit den Regeln und dem vom User gewünschten Code auch in der o.g. Datei abgespeichert. 
 \paragraph{\_sr\_parser\_part.stlx} Der Shift-Reduce-Parser ist in dieser Datei umgesetzt. Er wird zusammen mit den benötigten Tabellen, sowie dem Scanner in eine neue Datei kopiert. 
-\paragraph{\_Grammar.stlx} In dieser Datei wird der erstelle Scanner und Parser abgelegt. Beim Aufruf wird die übergebene Datei geparsed. Dabei werden die o.g. Tabellen, sowie der vorher erstellte Scanner genutzt. Der Parser ist ein Shift-Reduce Parser. Beim Reducen wird der vom User angegebene Code ausgeführt. Der Wert der Variable "result" wird am Ende zurückgegeben.
-\paragraph{test\_setlcup.stlx} Für einen Regressionstest kann mit dieser Datei überprüft werden ob alle Beispiele momentan geparsed werden können. Dabei wird zunächst für den arithmetischen Term der Parser erstellt. Dieser wird anschließend mit einer Eingabedatei aufgerufen und die Ergebnisse mit den vorher festgelegten verglichen. Das gleiche geschieht mit der Parserdefinition für eine einfache Programmiersprache.
+\paragraph{\_Grammar.stlx} In dieser Datei wird der erstellte Scanner und Parser abgelegt. Beim Aufruf wird die übergebene Datei geparsed. Dabei werden die o.g. Tabellen, sowie der vorher erstellte Scanner genutzt. Der Parser ist ein Shift-Reduce Parser. Beim Reducen wird der vom User angegebene Code ausgeführt. Der Wert der Variable "result" wird am Ende zurückgegeben.
+\paragraph{test\_setlcup.stlx} Für einen Regressionstest kann mit dieser Datei überprüft werden ob alle Beispiele momentan geparsed werden können. Dabei wird zunächst für die Grammatik zum arithmetischen Term der Parser erstellt. Dieser wird anschließend mit einer Eingabedatei aufgerufen und die Ergebnisse mit den vorher festgelegten verglichen. Das gleiche geschieht mit der Parserdefinition für eine einfache Programmiersprache.
 \section{Aufbau der Definitionen}
 
 Der Aufbau der Scanner- und Parserdefinitionen ist in drei Abschnitte zu unterteilen:
@@ -63,7 +63,7 @@ Der Aufbau der Scanner- und Parserdefinitionen ist in drei Abschnitte zu unterte
 Im obersten Bereich der Datei ist es möglich die Idee des Parsers zu beschreiben.
 Dieser Abschnitt endet mit dem Symbol "`\%\%\%"'. 
 \subsection{Scannerdefinition}
-Der Scanner ist verantwortlich um zu Überprüfen, ob die Eingabedatei aus den angegebenen Tokens besteht. Die Syntax\mRefFigure{fig:scanner_def} wird im Folgenden erklärt.
+Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Token zu zerlegen. Die Syntax\mRefFigure{fig:scanner_def} wird im Folgenden erklärt.
 \begin{figure}[!ht]
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -87,10 +87,10 @@ Der Scanner ist verantwortlich um zu Überprüfen, ob die Eingabedatei aus den a
 					Dabei ist folgendes bei der Syntax des regulären Ausdrucks zu beachten:
 					\begin{enumerate}
 						\item Die Rückgabe der Capture-Gruppen z.B. "`ab\textbf{(.*)}ab"'	werden nicht unterstützt. Jedoch sind Nicht-Captures möglich: "`ab(\textbf{?:}.*)ab"'
-						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetz werden. Siehe Zeile 4 - "`\{TOKENNAME\}"'.
+						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetzt werden. Siehe Zeile 4 - "`\{WHITESPACE\}"'.
 						\item Ansonsten sind die bereits in SetlX vorhandenen Regex-Ausdrücke benutzbar.
 					\end{enumerate}
-	\item Wie in SetlX (siehe Zeile 2 und 3) müssen auch in SetlCup vordefinierte Symbole wie "$*,+,?,|,\{,\},(,),\cdots$" escaped werden .
+	\item Wie in SetlX (siehe Zeile 2 und 3) müssen auch in SetlCup vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden .
 	\item In Zeile 4 wird "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "`SKIP"'-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ( "` \{TOKENNAME\}"') oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "`|"' separiert werden.
 \end{enumerate}
 
@@ -144,7 +144,7 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
 	% 	\item other rule\_heads e.g. "prod"
 	% \end{enumerate}
 	% The Tokens defined in the scanner, as well as the rule\_heads can have an id. This can be used in the action\_code.
-\paragraph{action\_code} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit "$\backslash\backslash$" oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in SetlX eine Sonderfunktion einnehmen. 
+\paragraph{action\_code} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit "$\backslash$" oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in SetlX eine Sonderfunktion einnehmen. 
 	% \item[|] The pipe separates the different bodies.
 \newpage
 \subsection{Beispiele}
@@ -226,7 +226,7 @@ Die Ausgabe des AST\mRefFigure{fig:arith_expr_tree} beschreibt die gezeigte Eing
 
 \subsubsection{Programmiersprachen Parser}
 Der Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} besteht aus den Tokens für Strings, Dezimalzahlen, Ganzzahlen usw.
-Die Anwwisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_statements} beschreiben den Aufbau der Eingabedatei. Sie besteht aus Definitionen und Anweisungen.
+Die Anweisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_statements} beschreiben den Aufbau der Eingabedatei. Sie besteht aus Definitionen und Anweisungen.
 Listen \mRefFigure{fig:example_interpreter_grammar_lists} sind zur Aneinanderreihung verschiedener Anweisungen, Definitionen, Ausdrücke etc. notwendig. 
 Die Ausdrücke sind für boolsche, sowie arithmetische Terme notwendig \mRefFigure{fig:example_interpreter_grammar_expression}.
 %\lstinputlisting[frame=single,numbers=left,basicstyle=\footnotesize ,breaklines=true]{interpreter_grammar_ast.g}
