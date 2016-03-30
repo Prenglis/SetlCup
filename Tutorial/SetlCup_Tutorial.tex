@@ -17,7 +17,7 @@
 %\usepackage[ansinew]{inputenc}
 %
 \usepackage{lmodern} %Type1-font for non-english texts and characters
-
+\usepackage[pdfborder={0 0 0}]{hyperref}
 
 %% Packages for Graphics & Figures %%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{graphicx} %%For loading graphic files
@@ -76,7 +76,14 @@
 %\input{options} %You need a file 'options.tex' for this
 %% ==> TeXnicCenter supplies some possible option files
 %% ==> with its templates (File | New from Template...).
-
+\usepackage[section]{placeins}
+\makeatletter
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter{%
+    \expandafter\@fb@secFB\subsection
+  }%
+}
+\makeatother
 \newcommand{\mRefFigure}[1]{(siehe Figur \ref{#1}, Seite \pageref{#1})}
 \newcommand{\mRefTable}[1]{(siehe Tabelle \ref{#1}, Seite \pageref{#1})}
 \newcommand{\mRefEqu}[1]{(siehe Gleichung \ref{#1}, Seite \pageref{#1})}
@@ -158,7 +165,7 @@
 %% <== End of hints
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\input{0100_MainSection.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% BIBLIOGRAPHY AND OTHER LISTS
@@ -171,6 +178,7 @@
 %% ==> You need to run BibTeX for this (Project | Properties... | Uses BibTeX)
 %\addcontentsline{toc}{chapter}{Bibliography} %'Bibliography' into toc
 %\nocite{*} %Even non-cited BibTeX-Entries will be shown.
+\newpage
 \bibliographystyle{alpha} %Style of Bibliography: plain / apalike / amsalpha / ...
 \bibliography{cs} %You need a file 'literature.bib' for this.
 
@@ -181,7 +189,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\appendix
 %% ==> Write your text here or include other files.
-\input{0100_MainSection.tex}
+
 %\input{FileName} %You need a file 'FileName.tex' for this.
 
 

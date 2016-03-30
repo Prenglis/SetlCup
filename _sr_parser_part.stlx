@@ -246,7 +246,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
 }
 myParse := closure(testInput, ruleNames, rulesMap, statetable, actiontable, gototable, silent_mode) {
     parser := srParser(actiontable, gototable, statetable, rulesMap, silent_mode);
-    scup_tl := scan_string(testInput);
+    scup_tl := scan_string(testInput, silent_mode);
     if(!silent_mode){
         print("tokenlist: $scup_tl$\n");
     }
@@ -372,13 +372,8 @@ escapeDollar2 := procedure(t) {
 };
 test_parser_from_string := procedure(input_string, silent_mode){
     result := "";
-    try{
-     [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
-      result := myParse(input_string, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
-    }
-    catch(e){
-      print("error while parsing : $e$");
-    }
+    [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := getDefs();
+    result := myParse(input_string, ruleNames, rulesMap, stateTable, actionTable, gotoTable, silent_mode);
     if(!silent_mode){
       print("result := $result$;");
     }

@@ -1,7 +1,8 @@
-load("math_simple_expression_astGrammar.stlx");
+load("math_simple_expressionGrammar.stlx");
 end := false;
+query := "Give an arithmetic Expression: (q for end)";
 while(!end){
-  arith_expr :=  read("Give an arithmetic Expression: (q for end)");
+  arith_expr :=  read(query);
   if(!("q" in arith_expr)){
     test_parser_from_string(arith_expr, true);
   }

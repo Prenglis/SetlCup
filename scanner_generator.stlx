@@ -126,7 +126,7 @@ sc_dict_generate := procedure(file, silent_mode) {
 	return [sc_dict, parser_token_list];
 };
 generate_scan_string := procedure(sc_dict, silent_mode) {
-	scan_string := "scan_string := procedure(lines) {
+	scan_string := "scan_string := procedure(lines, silent_mode) {
 		scan_output := [];
 		sc_dict := $sc_dict$;\n";
 	scan_string += "scan(lines) { \n";
