@@ -1,11 +1,13 @@
 \section{Funktionalität}
-SetlCup ist ein LR-Parser-Generator, welcher angelehnt an den bereits vorhandenen JavaCup ist.
-Dabei ist die Idee wie folgt:
-Der Benutzer von SetlCup erstellt durch eine gegebene Scanner- und Parserdefinition eine neue Setlx-Datei. Diese beinhaltet einen kanonischen LR-Parser, welcher auf den gegebenen Definitionen beruht. Anschließend kann eine Eingabedatei von dem generierten Parser überprüft werden. Dabei wird ggf. angegebener Code bei der Reduzierung der entsprechenden Regeln durchgeführt. 
-
+\subsection{Idee}
+Die Anwendung von formalen Sprachen in der Informatik sind unter anderem Scanner und Parser\cite{Aho86}\cite{stroetmann:formallanguages}. \textsc{SetlCup} ist ein Programmgenerator, d.h. er nimmt die Beschreibung einer Sprache als Eingabe und produziert ein \textsc{SetlX} Programm, welches als Scanner und Parser agiert. Genauer genommen ist \textsc{SetlCup} ein LR-Parser-Generator. Dieser ist angelehnt an \textsc{JavaCup}\cite{javacup:2016}.
+\textsc{SetlX} ist eine mengenbasierte Programmiersprache. Sie kann mit dem \textsc{SetlX}Interpreter genutzt werden. Dieser ist unter der folgenden Adresse verfügbar:
+\href{http://randoom.org/Software/SetlX}{{http://randoom.org/Software/SetlX}}
+\subsection{Benutzung}
+Der Benutzer von \textsc{SetlCup} erstellt durch eine gegebene Scanner- und Parserdefinition eine neue \textsc{SetlX}-Datei. Diese beinhaltet einen kanonischen LR-Parser, welcher auf den gegebenen Definitionen beruht. Anschließend kann eine Eingabedatei von dem generierten Parser überprüft werden. Dabei wird ggf. angegebener Code bei der Reduzierung der entsprechenden Regeln durchgeführt. 
 Zunächst wird erklärt, wie die Komponente aufgerufen werden kann.
 \section{Aufrufsmethoden}
-Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
+Es gibt mehrere Möglichkeiten \textsc{SetlCup} aufzurufen:
 \subsection{Aufruf über Kommandozeile}
 \begin{enumerate}
 	\item \begin{Verbatim}
@@ -27,14 +29,14 @@ Es gibt mehrere Möglichkeiten SetlCup aufzurufen:
 	\item \begin{Verbatim}
 	setlx setlcup.stlx -p -help
 	\end{Verbatim}
-			Dieser Aufruf zeigt die Hilfe an, wie SetlCup aufgerufen werden kann.
+			Dieser Aufruf zeigt die Hilfe an, wie \textsc{SetlCup} aufgerufen werden kann.
 	\item \begin{Verbatim}
 	setlx test_setlcup.stlx
 	\end{Verbatim}
 			Dieser Aufruf testet die Funktionen des Parsergenerators mit den verschiedenen Beispielen.
 \end{enumerate}
 \subsection{Aufruf in SetlX}
-Ein Aufruf von SetlCup ist auch in SetlX selbst möglich. Dazu ist es notwendig die Funktionalität im eigenen Quellcode zu laden:
+Ein Aufruf von \textsc{SetlCup} ist auch in \textsc{SetlX} selbst möglich. Dazu ist es notwendig die Funktionalität im eigenen Quellcode zu laden:
 \begin{Verbatim}
 load("setlcup_load.stlx");
 generate_parser('examples\math_expression_grammar_ast.g', true);
@@ -42,9 +44,9 @@ load("math_expression_grammar_astGrammar.stlx");
 result := test_parser('examples\math_expression_input.txt', true);
 \end{Verbatim}
 \section{Dateistruktur}
-Der Parser-Generator SetlCup ist in mehrere Dateien aufgeteilt.
-\paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit SetlCup arbeiten möchte. Sie nimmt die Definition der Grammatik als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
-\paragraph{setlcup\_load.stlx} Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. Falls über Setlx mit SetlCup gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
+Der Parser-Generator \textsc{SetlCup} ist in mehrere Dateien aufgeteilt.
+\paragraph{setlcup.stlx} Diese Datei wird aufgerufen, falls man über die Kommandozeile mit \textsc{SetlCup} arbeiten möchte. Sie nimmt die Definition der Grammatik als Parameter an und gibt sie an die jeweiligen Programme weiter, damit die Generierung des Parsers gestartet werden kann.
+\paragraph{setlcup\_load.stlx} Diese Datei lässt zunächst den Scanner und daraufhin den Parser generieren. Falls über \textsc{SetlX} mit \textsc{SetlCup} gearbeitet werden soll, ist es möglich diese Datei als Grundlage zu nutzen. Sie wird u.a. für den Test der Funktionalität benutzt (siehe "test\_setlcup");
 \paragraph{scanner\_generator.stlx} In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. Dieser wird daraufhin in einer Ausgabedatei abgelegt. \\
 Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehangen. Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 \paragraph{parser\_generator.stlx} Der Parser Generator erstellt den kanonischen LR-Parser. Er erzeugt die notwendigen Action-, State- und Gototabellen. Diese werden zusammen mit den Regeln und dem vom User gewünschten Code auch in der o.g. Datei abgespeichert. 
@@ -88,9 +90,9 @@ Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Token zu zerlegen
 					\begin{enumerate}
 						\item Die Rückgabe der Capture-Gruppen z.B. "`ab\textbf{(.*)}ab"'	werden nicht unterstützt. Jedoch sind Nicht-Captures möglich: "`ab(\textbf{?:}.*)ab"'
 						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetzt werden. Siehe Zeile 4 - "`\{WHITESPACE\}"'.
-						\item Ansonsten sind die bereits in SetlX vorhandenen Regex-Ausdrücke benutzbar.
+						\item Ansonsten sind die bereits in \textsc{SetlX} vorhandenen Regex-Ausdrücke benutzbar.
 					\end{enumerate}
-	\item Wie in SetlX (siehe Zeile 2 und 3) müssen auch in SetlCup vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden .
+	\item Wie in \textsc{SetlX} (siehe Zeile 2 und 3) müssen auch in \textsc{SetlCup} vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden .
 	\item In Zeile 4 wird "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "`SKIP"'-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ( "` \{TOKENNAME\}"') oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "`|"' separiert werden.
 \end{enumerate}
 
@@ -108,7 +110,7 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
 	grammar :=  definition_list;
   definition_list := rule_definition  definition_list
                     | ;
-	rule_definition := RULEHEAD '::=' body_list ';' ;
+	rule_definition := VARIABLE '::=' body_list ';' ;
 	body_list := body '|' neBody_list
 						| body
             | ;
@@ -121,30 +123,28 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus JavaCup und AN
   element := token;
   token := LITERAL id
          | TOKEN_NAME id
-         | RULE_HEAD id
+         | VARIABLE id
          ;
-  id := ':'ID_NAME
+  id := ':'VARIABLE
       |;
-  RULE_HEAD := [a-z][a-zA-Z_0-9]*;
+  VARIABLE := [a-z][a-zA-Z_0-9]*;
   TOKEN_NAME := [A-Z][A-Z_0-9]*;
   LITERAL := ''[^'']*'';
-  ID_NAME := [a-z][a-zA-Z_0-9]*;
   CODE := [.\n]*;
 \end{Verbatim}
 \section{Beispiel parser}
 \label{fig:example_grammer}
 \end{figure}
-\paragraph{RULE\_HEAD} beschreibt den Namen einer Regel z.B. "body". Somit können Regeln referenziert werden. 
+\paragraph{Variable} beschreibt den Namen einer Regel z.B. "body". Somit können Regeln referenziert werden.  Außerdem haben auch die IDs einer Variable den gleichen Aufbau. Dies ermöglicht es den Rückgabewert einer Regel bzw. eiens regulären Ausdrucks zu nutzen.
 \paragraph{TOKEN\_NAME} bezieht sich auf einen Token aus der Scanner Definition.
 \paragraph{LITERAL}  beschreibt wortwörtliche Ausdrücke, welche genutzt werden können. 
-\paragraph{ID\_NAME} ermöglicht es eine ID für den Rückgabewert einer Regel, bzw. eines Regex zu benutzen.
 	% \begin{enumerate}
 	% 	\item Token (defined in the scanner) e.g. "MINUS"
 	% 	\item Token in  ' ' e.g. '+' as a literal
 	% 	\item other rule\_heads e.g. "prod"
 	% \end{enumerate}
 	% The Tokens defined in the scanner, as well as the rule\_heads can have an id. This can be used in the action\_code.
-\paragraph{action\_code} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit "$\backslash$" oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in SetlX eine Sonderfunktion einnehmen. 
+\paragraph{action\_code} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "`result"' können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit "$\backslash$" oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in \textsc{SetlX} eine Sonderfunktion einnehmen. 
 	% \item[|] The pipe separates the different bodies.
 \newpage
 \subsection{Beispiele}
