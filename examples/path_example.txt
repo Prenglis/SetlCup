@@ -1,0 +1,1 @@
+hello_path := "/usr/bin/etc/GitHub/SetlCup/examples/sample_grammar-file_pure.gextension-txt";

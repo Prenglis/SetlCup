@@ -34,6 +34,7 @@ sc_dict_generate := procedure(file, silent_mode) {
 		regex '.*' as [ scan_section ] | state == "scan_section":
 			scan_section := trim(scan_section);
 			scan_section := replaceFirst(scan_section, "[\\s]*;\$", "");
+			scan_section := replace(scan_section, '"', '\\\"');
 			sc_dict[last_identifier] := scan_section;
 			state := "scanner_part";
 		regex '::=|\||;' as [o] | state == "parser_part":
@@ -132,7 +133,12 @@ generate_scan_string := procedure(sc_dict, silent_mode) {
 	scan_string += "scan(lines) { \n";
 
 		for ( i in domain(sc_dict)){
-	 		scan_string += "regex '$sc_dict[i]$' as [c]:
+	 		scan_string += "regex '$sc_dict[i]$' as c:
+	 		  if(#c > 1){
+	 		  	c := c[2..#c];
+	 		  }
+	 		  
+	 		  c := join(c, \"\");
 	 		  c := join(split(c, '\"'), \"\"); 
 	 		  scan_output := scan_output + [[c, \"$i$\"]];\n";
 	 	}

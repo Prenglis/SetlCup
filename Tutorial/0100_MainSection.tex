@@ -88,9 +88,9 @@ Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Token zu zerlegen
 					token\_name := regex ; \\
 					Dabei ist folgendes bei der Syntax des regulären Ausdrucks zu beachten:
 					\begin{enumerate}
-						\item Die Rückgabe der Capture-Gruppen z.B. "`ab\textbf{(.*)}ab"'	werden nicht unterstützt. Jedoch sind Nicht-Captures möglich: "`ab(\textbf{?:}.*)ab"'
+						\item Die Rückgabe von Capture-Gruppen\footnote{Gruppierungen in regulären Ausdrücken -  \url{https://de.wikipedia.org/wiki/Regulärer_Ausdruck\#Gruppierungen_und_R.C3.BCckw.C3.A4rtsreferenzen}} z.B. "`ab\textbf{(.*)}ab\textbf{(.*)}ab"'	wird konkateniert zurückgegeben (es werden alle einzelnen Unterergebnisse aneinander gehangen).
 						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetzt werden. Siehe Zeile 4 - "`\{WHITESPACE\}"'.
-						\item Ansonsten sind die bereits in \textsc{SetlX} vorhandenen Regex-Ausdrücke benutzbar.
+						\item Ansonsten sind die bereits in \textsc{SetlX} bzw. \textsc{Java} vorhandenen Regex-Ausdrücke benutzbar.
 					\end{enumerate}
 	\item Wie in \textsc{SetlX} (siehe Zeile 2 und 3) müssen auch in \textsc{SetlCup} vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden .
 	\item In Zeile 4 wird "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "`SKIP"'-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ( "` \{TOKENNAME\}"') oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "`|"' separiert werden.

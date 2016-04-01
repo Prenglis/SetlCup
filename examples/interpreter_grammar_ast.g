@@ -1,7 +1,7 @@
 Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
 %%%
 
-STRING      := \"(?:\\.|[^\"])*\" ;
+STRING      := "(?:\\.|[^"])*" ;
 WHITESPACE  := [ \t\v\r\s] ;
 INTEGER     := 0|[1-9][0-9]* ;
 DECIMAL     := 0\.[0-9]+|[1-9][0-9]*\.[0-9]+ ;
