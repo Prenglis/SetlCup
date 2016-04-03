@@ -1,46 +1,46 @@
 /*
-	In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. 
-	Dieser wird daraufhin in einer Ausgabedatei abgelegt. 
-	Auch der Parser aus der Datei "_sr_parser_part.stlx" wird der Datei angehangen. 
-	Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
+  In dieser Datei wird die Eingabe analysiert. Es wird der Scanner aus den angegebenen Tokens generiert. 
+  Dieser wird daraufhin in einer Ausgabedatei abgelegt. 
+  Auch der Parser aus der Datei "_sr_parser_part.stlx" wird der Datei angehangen. 
+  Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 */
 sc_dict_generate := procedure(file, silent_mode) {
-	file := join(readFile(file), "\n");
-	state := "declaration_part";
-	last_identifier := "";
-	parser_part_string := "";
-	sc_dict :=  {};
-	parser_token_list := [];
-	user_code := "";
-	if(!silent_mode){
-		print("grammar will now be scanned");
-	}
-	scan(file) using map{
-		regex '[^%%%]+%%%.*\n' | state == "declaration_part":
-				state := "scanner_part";
-				// skip intro
-		regex '[\n]*%%%.*' | state == "scanner_part":			
-				state := "parser_part";
-		regex '[ \t]*\n' | state == "scanner_part":
-			//skip new lines
-		regex '[A-Z]+' as [ identifier ] | state == "scanner_part":
-		 // save identifier
-			sc_dict[identifier] := "om";
-			last_identifier := identifier;
-		 	state := "ident_read";
-		regex '[\s]*:=[\s]*' | state == "ident_read":
-		// skip white spaces
-			state :=  "scan_section";
-		regex '.*' as [ scan_section ] | state == "scan_section":
-			scan_section := trim(scan_section);
-			scan_section := replaceFirst(scan_section, "[\\s]*;\$", "");
-			scan_section := replace(scan_section, '"', '\\\"');
-			sc_dict[last_identifier] := scan_section;
-			state := "scanner_part";
-		regex '::=|\||;' as [o] | state == "parser_part":
-			// skip parser part
-			parser_token_list += [ o        ];
-		regex '[a-z][a-zA-Z_0-9]*' as [ v ] | state == "parser_part": 
+  file := join(readFile(file), "\n");
+  state := "declaration_part";
+  last_identifier := "";
+  parser_part_string := "";
+  sc_dict :=  {};
+  parser_token_list := [];
+  user_code := "";
+  if(!silent_mode){
+    print("grammar will now be scanned");
+  }
+  scan(file) using map{
+    regex '[^%%%]+%%%.*\n' | state == "declaration_part":
+        state := "scanner_part";
+        // skip intro
+    regex '[\n]*%%%.*' | state == "scanner_part":     
+        state := "parser_part";
+    regex '[ \t]*\n' | state == "scanner_part":
+      //skip new lines
+    regex '[A-Z]+' as [ identifier ] | state == "scanner_part":
+     // save identifier
+      sc_dict[identifier] := "om";
+      last_identifier := identifier;
+      state := "ident_read";
+    regex '[\s]*:=[\s]*' | state == "ident_read":
+    // skip white spaces
+      state :=  "scan_section";
+    regex '.*' as [ scan_section ] | state == "scan_section":
+      scan_section := trim(scan_section);
+      scan_section := replaceFirst(scan_section, "[\\s]*;\$", "");
+      scan_section := replace(scan_section, '"', '\\\"');
+      sc_dict[last_identifier] := scan_section;
+      state := "scanner_part";
+    regex '::=|\||;' as [o] | state == "parser_part":
+      // skip parser part
+      parser_token_list += [ o        ];
+    regex '[a-z][a-zA-Z_0-9]*' as [ v ] | state == "parser_part": 
             var_id := ""; 
             parser_token_list += [ Var(v, var_id) ] ;
         regex '[a-z][a-zA-Z_0-9]*:[a-z][a-zA-Z_0-9]*' as [ v ] | state == "parser_part": 
@@ -62,112 +62,111 @@ sc_dict_generate := procedure(file, silent_mode) {
             user_code := "";
             state := "parser_part";
         regex '''[^'']*'''         as [ l ] | state == "parser_part":
-        	if(!silent_mode){
-        		print("l : $l$;");
-        	}
+          if(!silent_mode){
+            print("l : $l$;");
+          }
             parser_token_list += [ Token(l, "") ];
-     	 	if(!silent_mode){
-     	 		print("token_list was expanded");
-     	 	}
-        	sc_dict[l] := "\\Q$l[2..-2]$\\E";
+        if(!silent_mode){
+          print("token_list was expanded");
+        }
+          sc_dict[l] := "\\Q$l[2..-2]$\\E";
             if(!silent_mode){
-            	print("sc_dict[$l$] := $sc_dict[l]$");
+              print("sc_dict[$l$] := $sc_dict[l]$");
             }
         regex '''[^'']*'':[a-z][a-zA-Z_0-9]*'         as [ l ] | state == "parser_part":
-     	 	[_, token_name, token_id] := matches(l, '(''[^'']*''):([a-z][a-zA-Z_0-9]*)', true);
-     	 	if(!silent_mode){
-     	 		print("l with ':' : $l$; ");
-     	 	}
-     	 	parser_token_list += [ Token(token_name, token_id) ];
-     	 	if(!silent_mode){
-     	 		print("token_list was expanded");
-     	 	}
-     	 	sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
+        [_, token_name, token_id] := matches(l, '(''[^'']*''):([a-z][a-zA-Z_0-9]*)', true);
+        if(!silent_mode){
+          print("l with ':' : $l$; ");
+        }
+        parser_token_list += [ Token(token_name, token_id) ];
+        if(!silent_mode){
+          print("token_list was expanded");
+        }
+        sc_dict[token_name] := "\\Q$token_name[2..-2]$\\E";
             if(!silent_mode){
-            	print("sc_dict[$token_name$] := $sc_dict[token_name]$");
+              print("sc_dict[$token_name$] := $sc_dict[token_name]$");
             }
         regex '[ \t\v\n\r]+'               | state == "parser_part": 
             // skip
-		regex '.|\n' as [ c ]:
-			if(!silent_mode){
-				print("unrecognized character: $c$");
-				print("current_state: $state$");
-				print("line: ", map["line"]);
-				print("column: ", map["column"]);
-			}
-	}
-	if(sc_dict["SKIP"] != om){		
-		if(!silent_mode){
-			print("sc_dict[\"SKIP\"] : $sc_dict[\"SKIP\"]$");
-		}
-		old_skip := sc_dict["SKIP"];
-		new_skip := "";
-		dict_entry := "";
-		scan(old_skip){
-			regex '\{[A-Z]*\}' as [skip_token]:
-			skip_token := skip_token[2..-2];
-			if(sc_dict[skip_token] != om){
-				dict_entry := sc_dict[skip_token];
-				if(new_skip == ""){
-					new_skip := "$dict_entry$";
-				}
-				else{
-					new_skip  += "|$dict_entry$";
-				}
-				sc_dict[skip_token] := om;
-			}
+    regex '.|\n' as [ c ]:
+      if(!silent_mode){
+        print("unrecognized character: $c$");
+        print("current_state: $state$");
+        print("line: ", map["line"]);
+        print("column: ", map["column"]);
+      }
+  }
+  if(sc_dict["SKIP"] != om){    
+    if(!silent_mode){
+      print("sc_dict[\"SKIP\"] : $sc_dict[\"SKIP\"]$");
+    }
+    old_skip := sc_dict["SKIP"];
+    new_skip := "";
+    dict_entry := "";
+    scan(old_skip){
+      regex '\{[A-Z]*\}' as [skip_token]:
+      skip_token := skip_token[2..-2];
+      if(sc_dict[skip_token] != om){
+        dict_entry := sc_dict[skip_token];
+        if(new_skip == ""){
+          new_skip := "$dict_entry$";
+        }
+        else{
+          new_skip  += "|$dict_entry$";
+        }
+        sc_dict[skip_token] := om;
+      }
 
 
-			regex '.|\n' as [c]:
-				new_skip += c;
-		}
-		new_skip := replace(new_skip, ' \| ', '|');
-		sc_dict["SKIP"] := new_skip;
-	}		
-	return [sc_dict, parser_token_list];
+      regex '.|\n' as [c]:
+        new_skip += c;
+    }
+    new_skip := replace(new_skip, ' \| ', '|');
+    sc_dict["SKIP"] := new_skip;
+  }   
+  return [sc_dict, parser_token_list];
 };
 generate_scan_string := procedure(sc_dict, silent_mode) {
-	scan_string := "scan_string := procedure(lines, silent_mode) {
-		scan_output := [];
-		sc_dict := $sc_dict$;\n";
-	scan_string += "scan(lines) { \n";
+  scan_string := "scan_string := procedure(lines, silent_mode) {
+    scan_output := [];
+    sc_dict := $sc_dict$;\n";
+  scan_string += "scan(lines) { \n";
 
-		for ( i in domain(sc_dict)){
-	 		scan_string += "regex '$sc_dict[i]$' as c:
-	 		  if(#c > 1){
-	 		  	c := c[2..#c];
-	 		  }
-	 		  
-	 		  c := join(c, \"\");
-	 		  c := join(split(c, '\"'), \"\"); 
-	 		  scan_output := scan_output + [[c, \"$i$\"]];\n";
-	 	}
-	 	scan_string += "regex '.' as [ c ]: if(!silent_mode){
-	 		print(\"unrecognized character: \" + c);}";
-	 	scan_string += "}";
-	 	if(!silent_mode){
-	 			print("scan_string: \n $scan_string$ \n");
-	 		}
-	 	scan_string += "if(sc_dict[\"SKIP\"] != om){		
-		scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != \"SKIP\"];
+    for ( i in domain(sc_dict)){
+      scan_string += "regex '$sc_dict[i]$' as c:
+        if(#c > 1){
+          c := c[2..#c];
+        }        
+        c := join(c, \"\");
+        c := join(split(c, '\"'), \"\"); 
+        scan_output := scan_output + [[c, \"$i$\"]];\n";
+    }
+    scan_string += "regex '.' as [ c ]: if(!silent_mode){
+      print(\"unrecognized character: \" + c);}";
+    scan_string += "}";
+    if(!silent_mode){
+        print("scan_string: \n $scan_string$ \n");
+      }
+    scan_string += "if(sc_dict[\"SKIP\"] != om){    
+    scan_output := [scan_tokens : scan_tokens in scan_output | scan_tokens[2] != \"SKIP\"];
 
-	}return scan_output;};";
-	 	return scan_string;
-	 };
+  }return scan_output;};";
+    return scan_string;
+   };
 
 generate_parser_token_list := procedure(scanner_file, output_file_name, silent_mode){
-	try{
-		[sc_dict, parser_token_list] := sc_dict_generate(scanner_file, silent_mode);
-	}
-	catch(e){
-		print("error while generating scanner : $e$");
-	}
-	if(!silent_mode){
-		print("sc_dict : $sc_dict$");
-	}
-	scan_string := generate_scan_string(sc_dict, silent_mode);
-	writeFile(output_file_name, "");
-	appendFile(output_file_name, scan_string);
-	appendFile(output_file_name, readFile("_sr_parser_part.stlx"));
-	return parser_token_list;
+  try{
+    [sc_dict, parser_token_list] := sc_dict_generate(scanner_file, silent_mode);
+  }
+  catch(e){
+    print("error while generating scanner : $e$");
+  }
+  if(!silent_mode){
+    print("sc_dict : $sc_dict$");
+  }
+  scan_string := generate_scan_string(sc_dict, silent_mode);
+  writeFile(output_file_name, "");
+  appendFile(output_file_name, scan_string);
+  appendFile(output_file_name, readFile("_sr_parser_part.stlx"));
+  return parser_token_list;
 };

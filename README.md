@@ -9,15 +9,15 @@ A LR-Parser-Generator for the programming language SetlX oriented on JavaCup
 Setlcup can be called in multiple ways:
 ### Command Line
 ```
-setlx setlcup.stlx -p <input_grammar>
+setlx setlcup.stlx -p <input_file>
 ```
-Creates the Parser in the file _Grammar.stlx
+Creates the Parser in the file  input_file_Grammar.stlx (in the directory of the input-file)
 ```
-setlx setlcup.stlx -p <input_grammar> -d
+setlx setlcup.stlx -p <input_file> -d
 ```
-Creates the Parser in the file _Grammar.stlx and outputs information about the creation process
+Creates the Parser in the file input_file_Grammar.stlx (in the directory of the input-file) and outputs information about the creation process
 ```
-setlx setlcup.stlx -h
+setlx setlcup.stlx -p -h
 ```
 Shows information about how to call SetlCup correctly
 #### Testing
@@ -38,28 +38,22 @@ e.g.
 ```
 load("setlcup_load.stlx");
 generate_parser('examples\math_expression_grammar_ast.g', true);
-load("math_expression_grammar_astGrammar.stlx");
-result := test_parser('examples\math_expression_input.txt', true);
+load('examples\math_expression_grammar_astGrammar.stlx');
+result := test_parser_from_file('examples\math_expression_input.txt', true);
 ```
 ##Tutorial
 In the Folder Tutorial a tutorial explains the needed structure of files which can be used as input.
 ##Example
 To parse a simple arithmetic expression grammar you can call:
 ```
-setlx setlcup.stlx -p examples\math_expression_grammar_ast.g
-setlx math_expression_grammar_astGrammar.stlx -p examples\math_expression_input.txt -d > test_output.stlx
+setlx setlcup.stlx -p examples/math_simple_expression.g
+setlx math_simple_expressionGrammar.stlx -p simple_statement.txt
 ```
-This will return the debugging Log aswell as the following AST in the file 'test_output.stlx':
+This will return the output:
 ```
-ExprList([
-Minus(Plus(Integer(1), Times(Integer(2), Integer(3))), Integer(4)), 
-Plus(Plus(Plus(Integer(1), Integer(2)), Integer(3)), Integer(4)), 
-Plus(Integer(1), Mod(Times(Times(Integer(2), Integer(3)), Integer(5)), Integer(6)))
-])
+38
 ```
 It is derivated from the input file:
 ```
-1 + 2 * 3 - 4;
-1 + 2 + 3 + 4;
-1 + ( 2 * 3 ) * 5 % 6;
+4*5+3*6
 ```
