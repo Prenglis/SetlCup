@@ -5,13 +5,13 @@
   Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 */
 sc_dict_generate := procedure(file, silent_mode) {
-  file := join(readFile(file), "\n");
-  state := "declaration_part";
-  last_identifier := "";
+  file               := join(readFile(file), "\n");
+  state              := "declaration_part";
+  last_identifier    := "";
   parser_part_string := "";
-  sc_dict :=  {};
-  parser_token_list := [];
-  user_code := "";
+  sc_dict            :=  {};
+  parser_token_list  := [];
+  user_code          := "";
   if(!silent_mode){
     print("grammar will now be scanned");
   }
@@ -100,8 +100,8 @@ sc_dict_generate := procedure(file, silent_mode) {
     if(!silent_mode){
       print("sc_dict[\"SKIP\"] : $sc_dict[\"SKIP\"]$");
     }
-    old_skip := sc_dict["SKIP"];
-    new_skip := "";
+    old_skip   := sc_dict["SKIP"];
+    new_skip   := "";
     dict_entry := "";
     scan(old_skip){
       regex '\{[A-Z]*\}' as [skip_token]:
@@ -126,9 +126,9 @@ sc_dict_generate := procedure(file, silent_mode) {
 };
 generate_scan_string := procedure(sc_dict, silent_mode) {
   scan_string := "
-  scan_string := procedure(lines, silent_mode) {
+  scan_string   := procedure(lines, silent_mode) {
     scan_output := [];
-    sc_dict := $sc_dict$;\n";
+    sc_dict     := $sc_dict$;\n";
   scan_string += "scan(lines) { \n";
   for ( i in domain(sc_dict)){
     scan_string += "

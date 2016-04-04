@@ -8,16 +8,16 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
   scup_mActiontable := actiontable;
   scup_mGototable   := gototable;
   scup_mStatetable  := statetable;
-  scup_mrulesMap := rulesMap;
-  scup_mSilentMode := silent_mode;
-  init_vars := procedure(){
+  scup_mrulesMap    := rulesMap;
+  scup_mSilentMode  := silent_mode;
+  init_vars         := procedure(){
     scup_action_code := [];
     //init scup_vars
     scup_marked_rules := +/range(scup_mStatetable);
-    scup_rule_vars := {scup_mr.mAlpha : scup_mr in scup_marked_rules | scup_mr.mAlpha != []};
-    scup_rule_vars := +/scup_rule_vars;
-    scup_rule_vars := {args(scup_rule_var)[2] : scup_rule_var in scup_rule_vars | 
-                       args(scup_rule_var)[2] != ""};
+    scup_rule_vars    := {scup_mr.mAlpha : scup_mr in scup_marked_rules | scup_mr.mAlpha != []};
+    scup_rule_vars    := +/scup_rule_vars;
+    scup_rule_vars    := {args(scup_rule_var)[2] : scup_rule_var in scup_rule_vars | 
+                          args(scup_rule_var)[2] != ""};
     scup_action_code += ["result := [];"];
     for(scup_var_id in scup_rule_vars){
       scup_action_code += ["$scup_var_id$ := [];"];
@@ -111,13 +111,13 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
   reduce_rule := procedure(scup_head, scup_body, rw scup_n, rw scup_symbols, rw scup_states, 
                            rw scup_symbols, rw scup_state, rw scup_new_states, rw scup_states, 
                            rw scup_current_states){  
-    scup_n       := #scup_body;
-    scup_symbols := scup_symbols[.. -(scup_n+1)];
-    scup_states  := scup_states[.. -(scup_n+1)]; 
-    scup_symbols := scup_symbols + [scup_head];
-    scup_state   := scup_states[-1];
-    scup_new_states := scup_mGototable[scup_state, scup_head];
-    scup_states  := scup_states + [ scup_new_states ];
+    scup_n              := #scup_body;
+    scup_symbols        := scup_symbols[.. -(scup_n+1)];
+    scup_states         := scup_states[.. -(scup_n+1)]; 
+    scup_symbols        := scup_symbols + [scup_head];
+    scup_state          := scup_states[-1];
+    scup_new_states     := scup_mGototable[scup_state, scup_head];
+    scup_states         := scup_states + [ scup_new_states ];
     scup_current_states := scup_mStatetable[scup_new_states];
   };
   calculate_var_id := procedure(scup_tl, scup_index, scup_head, scup_current_states){

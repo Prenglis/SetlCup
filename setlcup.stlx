@@ -11,7 +11,7 @@ main := closure() {
   }
   else{
       input_grammar := params[1];
-      silent_mode := true;        
+      silent_mode   := true;        
       if (#params == 2){
         if("-d" in params){
           silent_mode := false;

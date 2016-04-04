@@ -19,7 +19,7 @@ readGrammarFromString := procedure(grammar_string, silent_mode){
 // This procedure takes a token list tl and tries to interpret this list
 parseGrammar := procedure(tl){
   [rule, rl] := parseRule(tl);
-  ruleList := [ rule ];
+  ruleList   := [ rule ];
   while (#rl >= 1){
     [rule, rl] := parseRule(rl);
     ruleList += [ rule ];
@@ -28,7 +28,7 @@ parseGrammar := procedure(tl){
 };
 
 collectSimpleRules := procedure(ruleList){
-  rules   := [];
+  rules     := [];
   variables :={};
   for ([v, bodyList] in ruleList){
   variables += { v };
@@ -41,14 +41,14 @@ collectSimpleRules := procedure(ruleList){
 };
 
 parseRule := procedure(tl){
-  [head, rl] := [tl[1], tl[2..]];
+  [head, rl]        := [tl[1], tl[2..]];
   assert(fct(tl[1]) == "Var", "parseRule($tl$)");
-  assert(rl[1] == "::=", "parseRule($tl$)");
-  [body, rl] := parseBody(rl[2..]);
-  bodyList := [ body ];
+  assert(rl[1]      == "::=", "parseRule($tl$)");
+  [body, rl]        := parseBody(rl[2..]);
+  bodyList          := [ body ];
   while (#rl >= 1 && rl[1] == "|"){
-  [body, rl] := parseBody(rl[2..]); 
-  bodyList += [ body ];
+    [body, rl] := parseBody(rl[2..]); 
+    bodyList += [ body ];
   }
   assert(rl[1] == ";", "parseRule($tl$), rl = $rl$");
   return [ [head, bodyList], rl[2..]];
@@ -60,22 +60,24 @@ parseBody := procedure(tl){
     [item, tl] := parseItem(tl);
     itemList += [ item ];
   }
-  match(itemList[-1])
-  {
+  match(itemList[-1]){
     case UserCode(u):
-
     default:
-    itemList += [ UserCode('') ];
+      itemList += [ UserCode('') ];
   }
   return [itemList, tl];
 };
 
 parseItem := procedure(tl){
   match (tl){
-    case [ Var(var_name, var_id) | rl] : return [ Var(var_name, var_id),   rl];
-    case [ Token(token_name, token_id) | rl] : return [ Token(token_name, token_id),   rl];
-    case [ UserCode(u) | rl]: return [UserCode(u), rl];
-    default : abort("parse error in parseItem($tl$)");
+    case [ Var(var_name, var_id) | rl] : 
+      return [ Var(var_name, var_id),   rl];
+    case [ Token(token_name, token_id) | rl] : 
+      return [ Token(token_name, token_id),   rl];
+    case [ UserCode(u) | rl]: 
+      return [UserCode(u), rl];
+    default : 
+      abort("parse error in parseItem($tl$)");
   }
 };
 
@@ -93,20 +95,20 @@ grammar2String := procedure(ruleList){
 bodyList2String := procedure(l){  
   match (l){
     case []: 
-       return "  ;\n\n";
+      return "  ;\n\n";
     case [bh| bl]: 
-       return "  | " + itemList2String(bh) + "\n" + bodyList2String(bl);
+      return "  | " + itemList2String(bh) + "\n" + bodyList2String(bl);
   }
 };
 
 itemList2String := procedure(l){
   match (l){
     case []: 
-       return "";
+      return "";
     case [x]: 
-       return item2String(x);
+      return item2String(x);
     case [h | t]: 
-       return item2String(h) + " " + itemList2String(t);
+      return item2String(h) + " " + itemList2String(t);
   }
 };
 
@@ -284,23 +286,23 @@ initializeMap := procedure(keys){
 
 /* This class represents a context-free grammar */
 class grammar(rules, variables, start, silent_mode){
-  this.mRules     := rules;
+  this.mRules       := rules;
   this.mVariables   := variables;
-  this.mStart     := start;
-  this.mRules     += { [Var("S",""), [mStart], UserCode('')] }; // augment grammar
+  this.mStart       := start;
+  this.mRules       += { [Var("S",""), [mStart], UserCode('')] }; // augment grammar
   this.mVariables   += { Var("S", "") };
-  this.mFirst     := initializeMap(mVariables);
-  this.mFollow    := initializeMap(mVariables);
-  this.mTokens    := {};
-  this.mStates    := {};
+  this.mFirst       := initializeMap(mVariables);
+  this.mFollow      := initializeMap(mVariables);
+  this.mTokens      := {};
+  this.mStates      := {};
   this.mStateNames  := {};
   this.mRuleNames   := {};
   this.mConflicts   := [];
-  this.mRulesMap := {};
-  this.mGotoTable := {};
-  this.mStateTable := {};
+  this.mRulesMap    := {};
+  this.mGotoTable   := {};
+  this.mStateTable  := {};
   this.mActionTable := {};
-  this.mSilentMode := silent_mode;
+  this.mSilentMode  := silent_mode;
 
   static {
   assignRuleNames := procedure(){
@@ -391,9 +393,9 @@ class grammar(rules, variables, start, silent_mode){
   };
   // combine those marked rules in the given set that have the same core
   combineRules := procedure(markedRules){
-    cores   := { coreRule(mr) : mr in markedRules };
-    combine := procedure(rules, cr){
-      return +/ { mr.mFollowSet : mr in rules | cr == coreRule(mr) };
+    cores      := { coreRule(mr) : mr in markedRules };
+    combine    := procedure(rules, cr){
+      return   +/ { mr.mFollowSet : mr in rules | cr == coreRule(mr) };
     };
     combinedRules := { markedRule.createRule(cr, combine(markedRules, cr)) : cr in cores };
     return combinedRules;
@@ -481,7 +483,7 @@ class grammar(rules, variables, start, silent_mode){
         newState  := goto(state, token);
         if (newState != {}){
           newName := mStateNames[newState];
-          t     := escapeDollar2(extractArg(token));
+          t       := escapeDollar2(extractArg(token));
           this.mActionTable[stateName, t] := Shift(newName);
           if(!mSilentMode){
             print("actionTable[\"$stateName$\", $t$] := $Shift(newName)$;");
@@ -495,10 +497,10 @@ class grammar(rules, variables, start, silent_mode){
           parserRuleString := mr.toParserRule();
           tRule := [x : x in domain(mRuleNames) | args(x)[1..2] == args(parserRuleString)[1..2]];
           assert(#tRule == 1, "Only 1 Rule with same content");
-          tRule := arb(tRule);
+          tRule    := arb(tRule);
           ruleName := this.mRuleNames[tRule];
           action1  := this.mActionTable[stateName, t];
-          action2 := Reduce(ruleName);
+          action2   := Reduce(ruleName);
           if (action1 == om){
             var_name := mStart;
             if(args(parserRuleString)[..2] == [Var("S", ""), [var_name]]){

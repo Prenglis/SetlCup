@@ -5,13 +5,13 @@
   Das gleiche geschieht mit der Parserdefinition für eine einfache Programmiersprache.
 */
 load("setlcup_load.stlx");
-path := "";
-boolean_is_windows := false;
-path_windows := "examples\\";
-path_unix := "examples/";
-arith_grammar := "math_expression_grammar_ast.g";
+path                := "";
+boolean_is_windows  := false;
+path_windows        := "examples\\";
+path_unix           := "examples/";
+arith_grammar       := "math_expression_grammar_ast.g";
 interpreter_grammar := "interpreter_grammar_ast.g";
-math_input := [
+math_input          := [
   ["math_expression_input.txt",
   ExprList([
            Minus(Plus(Integer(1), Times(Integer(2), Integer(3))), Integer(4)), 
@@ -68,7 +68,7 @@ interpreter_input := [
   ];
 if(matches(getOsID(), 'Windows.*')){
   boolean_is_windows := true;
-  path := path_windows;
+  path               := path_windows;
 }
 else{
   path := path_unix;
