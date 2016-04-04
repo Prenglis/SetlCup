@@ -25,6 +25,18 @@ Shows information about how to call SetlCup correctly
 setlx test_setlcup.stlx
 ```
 This programm test the parsergeneration with the given examples.
+It should return:
+```
+Testing math_expression_grammar..
+parser generated succefully for math_expression_grammar_ast.g
+grammar: math_expression_grammar_ast.g input: math_expression_input.txt successfull: yes
+Testing interpreter_grammar..
+parser generated succefully for interpreter_grammar_ast.g
+grammar: interpreter_grammar_ast.g input: factorial.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: solve.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: sum.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: sum-for.sl successfull: yes
+```
 ### In Setlx
 You need to load the program "setlcup_load.stlx"
 ```
