@@ -41,7 +41,21 @@ Es gibt mehrere Möglichkeiten \textsc{SetlCup} aufzurufen:
 	\item \begin{Verbatim}
   setlx test_setlcup.stlx
 	\end{Verbatim}
-			Dieser Aufruf testet die Funktionen des Parsergenerators mit verschiedenen Beispielen.
+			Dieser Aufruf testet die Funktionen des Parsergenerators mit verschiedenen Beispielen. Dabei sollte das folgende Ergebnis erzeugt werden:
+\begin{flushleft}
+\begin{Verbatim}
+Testing math_expression_grammar..
+parser generated succefully for math_expression_grammar_ast.g
+grammar: math_expression_grammar_ast.g input: math_expression_input.txt 
+successfull: yes
+Testing interpreter_grammar..
+parser generated succefully for interpreter_grammar_ast.g
+grammar: interpreter_grammar_ast.g input: factorial.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: solve.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: sum.sl successfull: yes
+grammar: interpreter_grammar_ast.g input: sum-for.sl successfull: yes
+\end{Verbatim}
+\end{flushleft}
 \end{enumerate}
 \subsection{Aufruf in SetlX}
 Ein Aufruf von \textsc{SetlCup} ist auch in \textsc{SetlX} selbst möglich. Dazu ist es notwendig die Funktionalität im eigenen Quellcode zu laden:
