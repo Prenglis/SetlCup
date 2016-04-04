@@ -12,7 +12,7 @@ generate_parser := procedure(input_grammar, silent_mode){
   output_file_name := output_file_path + output_file_name + "Grammar.stlx";
   parser_token_list := generate_parser_token_list(input_grammar, output_file_name, silent_mode);
   if(!silent_mode){
-      print("parser_token_list : $parser_token_list$"); 
+    print("parser_token_list : $parser_token_list$"); 
   }
   write_parser_file(parser_token_list, output_file_name, silent_mode);
 };

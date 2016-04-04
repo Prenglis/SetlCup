@@ -66,8 +66,7 @@ interpreter_input := [
           Print([PrintString("Summe i fuer i = 1..36 ist gleich "), Variable("s")]), 
           Print([PrintString("")]), Exit()])]
   ];
-if(matches(getOsID(), 'Windows.*'))
-{
+if(matches(getOsID(), 'Windows.*')){
   boolean_is_windows := true;
   path := path_windows;
 }
@@ -79,10 +78,8 @@ generate_parser(path+arith_grammar, true);
 print("parser generated succefully for $arith_grammar$");
 output_file_name := "math_expression_grammar_astGrammar.stlx";
 load(path+output_file_name);
-for(input in math_input){  
-
+for(input in math_input){
   ast := test_parser_from_file(path+input[1], true);
-  // ast := run("setlx examplesGrammar.stlx -p $path+input[1]$");
   if(ast == input[2]){
     print("grammar: $arith_grammar$ input: $input[1]$ successfull: yes ");
   }
