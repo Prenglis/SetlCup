@@ -514,11 +514,11 @@ class grammar(rules, variables, start, silent_mode){
           else if (action1 != action2){
             match([action1, action2]){
               case [Reduce(x), Reduce(y)]: 
-                conflict := ["RR: action[\"$stateName$\", $t$]", action1, action2];
+                conflict := ["RR: action[\"$stateName$\", $t$]", action1, action2, stateName];
               case [Shift(x), Reduce(y)]: 
-                conflict := ["SR: action[\"$stateName$\", $t$]", action1, action2];
+                conflict := ["SR: action[\"$stateName$\", $t$]", action1, action2, stateName];
               case [Reduce(x), Shift(y)]: 
-                conflict := ["SR: action[\"$stateName$\", $t$]", action1, action2];
+                conflict := ["SR: action[\"$stateName$\", $t$]", action1, action2, stateName];
               default : ["no conflict", action1, action2];
             }
             this.mConflicts[#this.mConflicts+1] := conflict;
@@ -636,8 +636,17 @@ write_parser_file := procedure(token_list, output_file_name, silent_mode){
   }
   catchUsr(e){
     print(e);
+    stateNames := {};
     for(conflict in gr.mConflicts){
+      stateNames += {conflict[4]};
       print("$conflict[1]$: $conflict[2]$ <> $conflict[3]$");
+    }
+    for(stateName in stateNames){
+      print("$stateName$ :");
+      rules := stateTable[stateName];       
+      for(rule in rules){
+        print("$stringifyMarkedRule(rule)$");
+      }
     }
   }
   def_string := "getDefs := procedure(){ \n";
@@ -649,6 +658,18 @@ write_parser_file := procedure(token_list, output_file_name, silent_mode){
   def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
   def_string += "};\n result := main(); return result;";
   appendFile(output_file_name, [def_string]);
+};
+stringifyMarkedRule := procedure(mr){
+  mAlphaString := "";
+  mBetaString := "";
+  for(vars in mr.mAlpha){
+    mAlphaString += args(vars)[1];
+  }
+  for(vars in mr.mBeta){
+    mBetaString += args(vars)[1];
+  }
+  return 
+  args(mr.mVariable)[1] + " -> " + mAlphaString + " (*) " + mBetaString + " :" +mr.mFollowSet;
 };
 test := procedure(file){
   [rules, variables, start] := readGrammar(file);
