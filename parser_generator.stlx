@@ -17,9 +17,9 @@ readGrammarFromString := procedure(grammar_string, silent_mode){
   return parseGrammar(tl);
 };
 // This procedure takes a token list tl and tries to interpret this list
-parseGrammar := procedure(tl){
-  [rule, rl] := parseRule(tl);
-  ruleList   := [ rule ];
+parseGrammar   := procedure(tl){
+  [rule, rl]   := parseRule(tl);
+  ruleList     := [ rule ];
   while (#rl >= 1){
     [rule, rl] := parseRule(rl);
     ruleList += [ rule ];
@@ -48,17 +48,17 @@ parseRule := procedure(tl){
   bodyList          := [ body ];
   while (#rl >= 1 && rl[1] == "|"){
     [body, rl] := parseBody(rl[2..]); 
-    bodyList += [ body ];
+    bodyList   += [ body ];
   }
   assert(rl[1] == ";", "parseRule($tl$), rl = $rl$");
   return [ [head, bodyList], rl[2..]];
 };
 
-parseBody := procedure(tl){
+parseBody  := procedure(tl){
   itemList := [];
   while (#tl >= 1 && !(tl[1] in [ "|", ";" ])){
     [item, tl] := parseItem(tl);
-    itemList += [ item ];
+    itemList   += [ item ];
   }
   match(itemList[-1]){
     case UserCode(u):
@@ -85,7 +85,8 @@ parseItem := procedure(tl){
 grammar2String := procedure(ruleList){
   result := "";
   for ([v, bl] in ruleList){
-    bh := bl[1]; br := bl[2..];
+    bh   := bl[1]; 
+    br   := bl[2..];
     result += v + ":\n    " + itemList2String(bh) + "\n";
     result += bodyList2String(br);
   }
@@ -228,21 +229,21 @@ class markedRule(variable, alpha, beta, followSet, user_code){
   toParserRule := procedure(){
     [rargs, user_code ] := extractArgList(mAlpha + mBeta);
     if(this.mUser_Code == om){
-      this.mUser_Code := UserCode('');
+      this.mUser_Code   := UserCode('');
     }
     return Rule(mVariable, rargs, this.mUser_Code);
   };
   escapeDollarFollowSet := procedure(followSet){
-    newSet := {};
+    newSet   := {};
     for (t in followSet){
-      t :=escapeDollar(t);
+      t      :=escapeDollar(t);
       newSet += {t};
     }
     return newSet;
   };
   f_str := procedure(){
     escapedFollowSet := escapeDollarFollowSet(mFollowSet);
-    rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$escapedFollowSet$,$mUser_Code$)";
+    rule             := "markedRule($mVariable$,$mAlpha$,$mBeta$,$escapedFollowSet$,$mUser_Code$)";
     return rule;
   };
 
@@ -275,7 +276,7 @@ class grammarRule(variable, gamma, user_code){
   this.mVariable  := variable;
   this.mGamma     := gamma;
   this.mUser_Code := user_code;
-  f_str := procedure(){
+  f_str           := procedure(){
     return "grammarRule($mVariable$, $mGamma$, $mUser_Code$)";
   };
 }
@@ -306,16 +307,16 @@ class grammar(rules, variables, start, silent_mode){
 
   static {
   assignRuleNames := procedure(){
-    counter := 0;
+    counter       := 0;
     if(!mSilentMode){
       print("rulesMap := {};");
     }
     for ([head, body, user_code] in mRules){
-      [rargs, _] := extractArgList(body);
-      execute("user_code := UserCode('$args(user_code)[1]$');");
-      rule       := Rule(head, rargs, user_code);
-      ruleName   := "r" + counter;
-      this.mRuleNames[rule] := ruleName;
+      [rargs, _]             := extractArgList(body);
+      execute("user_code     := UserCode('$args(user_code)[1]$');");
+      rule                   := Rule(head, rargs, user_code);
+      ruleName               := "r" + counter;
+      this.mRuleNames[rule]  := ruleName;
       if(!mSilentMode){
         print("$ruleName$ := $rule$;");
         print("rulesMap[\"$ruleName$\"] := $rule$;");
@@ -358,14 +359,14 @@ class grammar(rules, variables, start, silent_mode){
         return { token_name };
     }
   };
-  computeFirst := procedure(){
-    change := true;
+  computeFirst    := procedure(){
+    change        := true;
     while (change){
-      change := false;
+      change      := false;
       for ([a, body, _] in mRules){
         firstBody := firstList(body);
         if (!(firstBody <= mFirst[a])){ 
-          change := true;
+          change  := true;
           this.mFirst[a] += firstBody;
         }
       }
@@ -445,7 +446,7 @@ class grammar(rules, variables, start, silent_mode){
       print("stateTable := {};"); 
     }
     this.mStateTable := {};
-    counter := 0;
+    counter          := 0;
     for (state in mStates){
       this.mStateNames[state] := "s" + counter;
       if(!mSilentMode){   
@@ -462,9 +463,9 @@ class grammar(rules, variables, start, silent_mode){
   };
   state2String := procedure(state){
     result := '"{ ';
-    n := 1;
+    n      := 1;
     for (mr in state){
-      result += mr;
+      result   += mr;
       if (n < #state){
         result += ", ";
       }
@@ -493,16 +494,16 @@ class grammar(rules, variables, start, silent_mode){
       // compute reduce actions
       for (mr in state | mr.isComplete()){
         for (t in mr.mFollowSet){
-          t := escapeDollar2(t);
+          t                := escapeDollar2(t);
           parserRuleString := mr.toParserRule();
           tRule := [x : x in domain(mRuleNames) | args(x)[1..2] == args(parserRuleString)[1..2]];
           assert(#tRule == 1, "Only 1 Rule with same content");
-          tRule    := arb(tRule);
-          ruleName := this.mRuleNames[tRule];
-          action1  := this.mActionTable[stateName, t];
-          action2   := Reduce(ruleName);
+          tRule       := arb(tRule);
+          ruleName    := this.mRuleNames[tRule];
+          action1     := this.mActionTable[stateName, t];
+          action2     := Reduce(ruleName);
           if (action1 == om){
-            var_name := mStart;
+            var_name  := mStart;
             if(args(parserRuleString)[..2] == [Var("S", ""), [var_name]]){
               action2 := Accept();
             }
@@ -542,7 +543,7 @@ class grammar(rules, variables, start, silent_mode){
       print("gotoTable := {};");
     }
     for (state in mStates, var in mVariables){
-      newState := goto(state, var);
+      newState    := goto(state, var);
       if (newState != {}){
         stateName := mStateNames[state];
         newName   := mStateNames[newState];
@@ -554,7 +555,7 @@ class grammar(rules, variables, start, silent_mode){
     }
   };
   // auxilliary procedures
-  f_str := procedure(){
+  f_str    := procedure(){
     result := "grammar($mRules$, $mVariables$,$mStart$, $mSilentMode$)";
     return result;
   };
@@ -589,9 +590,9 @@ class grammar(rules, variables, start, silent_mode){
     }
   };
 stringifyActionTable := procedure(actionTable, silent_mode){
-  stringActionTable := "actionTable := {};\n";
+  stringActionTable  := "actionTable := {};\n";
   for([state, symbol] in domain(actionTable)){
-    action := actionTable[state, symbol];
+    action           := actionTable[state, symbol];
     if(!silent_mode){
       print("state, symbol, action := $[state, symbol, action]$");
     }
@@ -625,9 +626,9 @@ stringifyActionTable := procedure(actionTable, silent_mode){
   }
   return stringActionTable;
 };
-write_parser_file := procedure(token_list, output_file_name, silent_mode){
+write_parser_file           := procedure(token_list, output_file_name, silent_mode){
   [rules, variables, start] := parseGrammar(token_list);
-  gr := grammar(rules, variables, start, silent_mode);
+  gr                        := grammar(rules, variables, start, silent_mode);
   [ruleNames, rulesMap, stateTable, actionTable, gotoTable] := gr.checkLR();
   try{
     if(#gr.mConflicts>0){
@@ -649,12 +650,12 @@ write_parser_file := procedure(token_list, output_file_name, silent_mode){
       }
     }
   }
-  def_string := "getDefs := procedure(){ \n";
-  def_string += "ruleNames := $ruleNames$;\n";
-  def_string += "rulesMap := $rulesMap$;\n";
-  def_string += "stateTable := $stateTable$;\n";
+  def_string := "getDefs     := procedure(){ \n";
+  def_string += "ruleNames   := $ruleNames$;\n";
+  def_string += "rulesMap    := $rulesMap$;\n";
+  def_string += "stateTable  := $stateTable$;\n";
   def_string += stringifyActionTable(actionTable, silent_mode);
-  def_string += "gotoTable := $gotoTable$;\n";
+  def_string += "gotoTable   := $gotoTable$;\n";
   def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
   def_string += "};\n result := main(); return result;";
   appendFile(output_file_name, [def_string]);

@@ -5,13 +5,13 @@
   Außerdem wird beim Reduzieren der Action-Code durchgeführt
 */
 class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
-  scup_mActiontable := actiontable;
-  scup_mGototable   := gototable;
-  scup_mStatetable  := statetable;
-  scup_mrulesMap    := rulesMap;
-  scup_mSilentMode  := silent_mode;
-  init_vars         := procedure(){
-    scup_action_code := [];
+  scup_mActiontable   := actiontable;
+  scup_mGototable     := gototable;
+  scup_mStatetable    := statetable;
+  scup_mrulesMap      := rulesMap;
+  scup_mSilentMode    := silent_mode;
+  init_vars           := procedure(){
+    scup_action_code  := [];
     //init scup_vars
     scup_marked_rules := +/range(scup_mStatetable);
     scup_rule_vars    := {scup_mr.mAlpha : scup_mr in scup_marked_rules | scup_mr.mAlpha != []};
@@ -45,7 +45,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
     //Second: Only try scup_states corresponding to scup_token_ids, where mBeta is not empty
     //third: If there are multiple scup_token_ids the one should be used, where the FollowSet contains the following token
     //Fourth: If there is no scup_token_id which fulfilles the stated rules, the one is taken where both the FollowSet is empty and the following tokens are empty
-    scup_token_id := "";
+    scup_token_id      := "";
     scup_action_tokens := { [args(scup_t_token)[2], scup_mStatetable[shiftState]] : 
         [scup_t_states, scup_t_token ] in domain(scup_mActiontable), 
         shiftState in scup_mActiontable[scup_t_states, scup_t_token] | 
@@ -67,7 +67,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
     }
     if(#scup_token_list>0){
       if(#scup_token_list > 1){
-        scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | 
+        scup_token_list   := [identifier : [identifier, follow_tokens] in scup_action_tokens | 
                           (follow_tokens * {scup_tl[scup_index+1][2]} != {}) ];
         if(#scup_token_list == 0){
           scup_token_list := [identifier : [identifier, follow_tokens] in scup_action_tokens | 
@@ -128,21 +128,21 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
     // or: it is the last sign to be read and Beta is empty
     // or: the following symbol is not in the the Followtokens of the rule andmBeta is not empty
     // the conjunction of both sets is made afterwards.
-    scup_var_id := [];
+    scup_var_id      := [];
     scup_action_code := [];
-    scup_var_id := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_current_states | 
+    scup_var_id      := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_current_states | 
        (scup_mr.mAlpha != []) && ( args(scup_mr.mAlpha[-1])[1] == args(scup_head)[1]) 
        && args(scup_mr.mAlpha[-1])[2] != ""};
     if(#scup_var_id > 1){
-      scup_alt_ids := {scup_mr : scup_mr in scup_current_states | scup_mr.mAlpha != []};
-      scup_ne_beta := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | 
+      scup_alt_ids   := {scup_mr : scup_mr in scup_current_states | scup_mr.mAlpha != []};
+      scup_ne_beta   := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | 
                       scup_mr.mBeta != [] &&(( #scup_tl>scup_index && 
                       args(scup_mr.mBeta[1])[1] == scup_tl[scup_index][2] ))};
-      scup_e_beta := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | 
+      scup_e_beta    := {args(scup_mr.mAlpha[-1])[2] : scup_mr in scup_alt_ids | 
                       scup_mr.mBeta == [] && (#scup_tl == scup_index || 
                       scup_mr.mFollowSet * {scup_tl[scup_index][2]} != {})};
-      scup_alt_ids := scup_ne_beta + scup_e_beta;
-      scup_var_id := scup_var_id * scup_alt_ids;        
+      scup_alt_ids   := scup_ne_beta + scup_e_beta;
+      scup_var_id    := scup_var_id * scup_alt_ids;        
     }
     if(!scup_mSilentMode){
       print("scup_current_states : $scup_current_states$");
@@ -173,16 +173,16 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
         print("scup_tl : $scup_tl$");
       }
       [scup_t_value, scup_t] := scup_tl[scup_index];
-      scup_token_id := "";
-      scup_token_id := calculate_token_id(scup_tl, scup_t, scup_q, scup_index);
+      scup_token_id          := "";
+      scup_token_id          := calculate_token_id(scup_tl, scup_t, scup_q, scup_index);
       if(scup_token_id != ""){
-        scup_action_code := "$scup_token_id$ += ['$scup_t_value$'];";
+        scup_action_code     := "$scup_token_id$ += ['$scup_t_value$'];";
         if(!scup_mSilentMode){
           print("Executing command: $scup_action_code$");
         }
         execute(scup_action_code);
       }
-      scup_t := Token(scup_t , scup_token_id);             
+      scup_t      := Token(scup_t , scup_token_id);             
       scup_t_rest := [ y : [x,y] in scup_tl[scup_index..]];
       if(!scup_mSilentMode){
         print("scup_states:  [ $join(scup_states, \", \")$ ]");
@@ -190,7 +190,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
         print("state:   { $join(scup_mStatetable[scup_q], \"\")$ }");
         print("scup_q,scup_t : $scup_q$,$scup_t$");
       }
-      scup_p := scup_mActiontable[scup_q,scup_t];
+      scup_p              := scup_mActiontable[scup_q,scup_t];
       if(!scup_mSilentMode){
         scup_actionString := "$scup_p$ := $scup_mActiontable[scup_q,scup_t]$";
         print("scup_p := scup_mActiontable[scup_q,scup_t]-----$scup_actionString$");
@@ -211,7 +211,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
           scup_states  := scup_states  + [scup_s];
           scup_index   += 1;
         case Reduce(ruleName):
-          rule := scup_mrulesMap[ruleName];
+          rule                                    := scup_mrulesMap[ruleName];
           [scup_head, scup_body , scup_user_code] := args(rule);
           if(!scup_mSilentMode){
             print("reducing with rule $ruleName$ : $scup_head$ -> $join(scup_body, \" \")$");
@@ -308,7 +308,7 @@ class markedRule(variable, alpha, beta, followSet, user_code){
   };
   f_str := procedure(){
     escapedFollowSet := escapeDollarFollowSet(mFollowSet);
-    rule := "markedRule($mVariable$,$mAlpha$,$mBeta$,$escapedFollowSet$,$mUser_Code$)";
+    rule             := "markedRule($mVariable$,$mAlpha$,$mBeta$,$escapedFollowSet$,$mUser_Code$)";
     return rule;
   };
 
@@ -342,7 +342,7 @@ class grammarRule(variable, gamma, user_code){
   this.mVariable  := variable;
   this.mGamma     := gamma;
   this.mUser_Code := user_code;
-  f_str := procedure(){
+  f_str           := procedure(){
     return "grammarRule($mVariable$, $mGamma$, $mUser_Code$)";
   };
 }
@@ -377,7 +377,7 @@ test_parser_from_string := procedure(input_string, silent_mode){
   return result;
 };
 test_parser_from_file := procedure(input_file, silent_mode){
-  input_string := join(readFile(input_file), "\n");
+  input_string        := join(readFile(input_file), "\n");
   return test_parser_from_string(input_string, silent_mode);
 };
 main := closure(){
@@ -390,7 +390,7 @@ main := closure(){
     if("-d" in params){
       silent_mode := false;
     }
-    result := test_parser_from_file(input_file, silent_mode);
+    result        := test_parser_from_file(input_file, silent_mode);
     return result;
   }
 };

@@ -9,9 +9,9 @@ SKIP          := {WHITESPACE} | \n ;
 
 %%%
 expr 
-    ::= expr:e '+'  expr:e    {: result := Plus(e , p); :} 
-      | expr:e '*'  expr:e   {: result := Times(p , f); :}
-      |  INTEGER:n            {: result := Integer(eval(n)); :} 
+    ::= expr:e '+'  expr:e     {: result := Plus(e , p);      :} 
+      | expr:e '*'  expr:e     {: result := Times(p , f);     :}
+      |  INTEGER:n             {: result := Integer(eval(n)); :} 
       ;
 
 

@@ -8,15 +8,15 @@ SKIP          := {WHITESPACE} | \n ;
 %%%
 
 expr 
-    ::= expr:e '+'  prod:p     {: print(e+p); :}
-      |  prod:p               {: result := p; :}
+    ::= expr:e '+'  prod:p     {: print(e+p);           :}
+      |  prod:p                {: result := p;          :}
       ;
 prod 
-    ::=  prod:p '*'  fact:f   {: result := p*f; :}
-      | fact:f {: result := f; :}
+    ::=  prod:p '*'  fact:f    {: result := p*f;        :}
+      | fact:f                 {: result := f;          :}
       ;
 fact 
-    ::=  INTEGER:n         {: result := eval(n); :}     
+    ::=  INTEGER:n             {: result := eval(n);    :}     
       ;
 
 
