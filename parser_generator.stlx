@@ -261,7 +261,7 @@ class coreRule(mr){
   this.mAlpha     := mr.mAlpha;
   this.mBeta      := mr.mBeta;
   this.mUser_Code := mr.mUser_Code;
-  static {
+  static{
     equals := procedure(that){
       return  this.mVariable  == that.mVariable &&
               this.mAlpha     == that.mAlpha    &&
@@ -305,7 +305,7 @@ class grammar(rules, variables, start, silent_mode){
   this.mActionTable := {};
   this.mSilentMode  := silent_mode;
 
-  static {
+  static{
   assignRuleNames := procedure(){
     counter       := 0;
     if(!mSilentMode){
@@ -405,19 +405,14 @@ class grammar(rules, variables, start, silent_mode){
     result := {};
     for (mr in markedRules){
       tempSymbol := mr.symbolAfterDot();
-      if(tempSymbol != om)
-      {
-        if(fct(tempSymbol) == "Var" || fct(tempSymbol) == "TOKEN")
-        {
-          if(args(tempSymbol)[1] == args(x)[1])
-          {
+      if(tempSymbol != om){
+        if(fct(tempSymbol) == "Var" || fct(tempSymbol) == "TOKEN"){
+          if(args(tempSymbol)[1] == args(x)[1]){
             result += { mr.moveDot() };
           }
         }
-        else
-        {
-          if(tempSymbol == x)
-          {
+        else{
+          if(tempSymbol == x){
             result += { mr.moveDot() };
           }
         }

@@ -4,7 +4,7 @@
   Auch der Parser aus der Datei "_sr_parser_part.stlx" wird der Datei angehangen. 
   Zusätzlich wird die Grammatikdefinition analysiert und  in einer Token-Liste zurückgegeben.
 */
-sc_dict_generate     := procedure(file, silent_mode) {
+sc_dict_generate     := procedure(file, silent_mode){
   file               := join(readFile(file), "\n");
   state              := "declaration_part";
   last_identifier    := "";
@@ -124,12 +124,12 @@ sc_dict_generate     := procedure(file, silent_mode) {
   }   
   return [sc_dict, parser_token_list];
 };
-generate_scan_string := procedure(sc_dict, silent_mode) {
+generate_scan_string := procedure(sc_dict, silent_mode){
   scan_string   := "
-  scan_string   := procedure(lines, silent_mode) {
+  scan_string   := procedure(lines, silent_mode){
     scan_output := [];
     sc_dict     := $sc_dict$;\n";
-  scan_string += "scan(lines) { \n";
+  scan_string += "scan(lines){ \n";
   for ( i in domain(sc_dict)){
     scan_string += "
     regex '$sc_dict[i]$' as c:

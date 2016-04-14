@@ -326,7 +326,7 @@ class coreRule(mr){
   this.mAlpha     := mr.mAlpha;
   this.mBeta      := mr.mBeta;
   this.mUser_Code := mr.mUser_Code;
-  static {
+  static{
     equals := procedure(that){
       return  this.mVariable  == that.mVariable &&
               this.mAlpha     == that.mAlpha    &&
@@ -385,8 +385,8 @@ main := closure(){
     print("Please call via: _Grammar.stlx -p <file_to_parse> [-d]");
   }
   else if (#params > 0){
-    input_file  := params[1];
-    silent_mode := true;
+    input_file    := params[1];
+    silent_mode   := true;
     if("-d" in params){
       silent_mode := false;
     }

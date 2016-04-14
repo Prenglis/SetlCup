@@ -4,7 +4,7 @@ Sie nimmt die Parserdefinition als Parameter an und gibt sie an die jeweiligen P
 damit die Generierung des Parsers gestartet werden kann.
 */
 load("setlcup_load.stlx");
-main := closure() {
+main := closure(){
   assert(#params > 0, "Params need to be specified. Try -p -help to get help about params");
   if("-h" in params || "-help" in params){
     print("setlx setlcup.stlx -p <input_grammar> <-d>");
