@@ -28,14 +28,8 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
     scup_startState := {startState : startState in domain(scup_mStatetable) | 
       exists(firstState in scup_mStatetable[startState]| 
       firstState.mVariable == Var("S", "") && firstState.mAlpha == [])};
-    if(!scup_mSilentMode){
-      print("#scup_startState : $#scup_startState$");
-    }
     assert(#scup_startState == 1, "multiple scup_states contain S -> (*)");
     scup_startState := arb(scup_startState);
-    if(!scup_mSilentMode){
-      print("scup_startState : $scup_startState$");
-    }
     scup_states  := [scup_startState];
     return [scup_action_code, scup_index, scup_symbols, scup_states, {}];
   };
@@ -51,20 +45,10 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
         shiftState in scup_mActiontable[scup_t_states, scup_t_token] | 
         scup_t_states == scup_q && args(scup_t_token)[1] == scup_t && 
         scup_mStatetable[shiftState] != om};
-    if(!scup_mSilentMode){
-        print("scup_t : $scup_t$");
-        print("scup_action_tokens :$scup_action_tokens$");       
-    }
     scup_action_tokens := {[scup_token_list, 
         { args(x.mBeta[1])[1] : x in followtokens | x.mBeta != []}] : 
     [scup_token_list, followtokens] in scup_action_tokens};
-    if(!scup_mSilentMode){
-        print("scup_action_tokens :$scup_action_tokens$");       
-    }
     scup_token_list := domain(scup_action_tokens);
-    if(!scup_mSilentMode){
-        print("scup_token_list :$scup_token_list$");       
-    }
     if(#scup_token_list>0){
       if(#scup_token_list > 1){
         scup_token_list   := [identifier : [identifier, follow_tokens] in scup_action_tokens | 
@@ -74,9 +58,6 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
                         (follow_tokens * {scup_tl[scup_index+1][2]} == {} && follow_tokens =={})];
         }
       } 
-      if(!scup_mSilentMode){
-        print("scup_token_list :$scup_token_list$");               
-      }
       assert(#scup_token_list == 1, "Only one Possible Action for token in State");
       scup_token_id := arb(scup_token_list);     
     }
@@ -144,15 +125,8 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
       scup_alt_ids   := scup_ne_beta + scup_e_beta;
       scup_var_id    := scup_var_id * scup_alt_ids;        
     }
-    if(!scup_mSilentMode){
-      print("scup_current_states : $scup_current_states$");
-      print("scup_var_id : $scup_var_id$");
-    }
     if(#scup_var_id > 0){
       assert(#scup_var_id ==1, "only one variable id should be used for one reduction");
-      if(!scup_mSilentMode){
-        print("scup_var_id : $scup_var_id$");
-      }
       scup_action_code := "$arb(scup_var_id)$ += [result];";
     }
     return scup_action_code;
@@ -160,26 +134,16 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
   parseSR := procedure(scup_tl){
     [scup_action_code, scup_index, scup_symbols, scup_states, scup_current_states] := init_vars();
     for(scup_action in [1..#scup_action_code]){
-      if(!scup_mSilentMode){
-        print("Executing command: $scup_action_code[scup_action]$");
-      }
       execute(scup_action_code[scup_action]);
     }
     scup_action_code := [];
     while (true){      
       scup_q := scup_states[-1];
-      if(!scup_mSilentMode){
-        print("scup_q :$scup_q$"); 
-        print("scup_tl : $scup_tl$");
-      }
       [scup_t_value, scup_t] := scup_tl[scup_index];
       scup_token_id          := "";
       scup_token_id          := calculate_token_id(scup_tl, scup_t, scup_q, scup_index);
       if(scup_token_id != ""){
         scup_action_code     := "$scup_token_id$ += ['$scup_t_value$'];";
-        if(!scup_mSilentMode){
-          print("Executing command: $scup_action_code$");
-        }
         execute(scup_action_code);
       }
       scup_t      := Token(scup_t , scup_token_id);             
@@ -187,14 +151,9 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
       if(!scup_mSilentMode){
         print("scup_states:  [ $join(scup_states, \", \")$ ]");
         print("scup_symbols: $join(scup_symbols, \" \")$ | $join(scup_t_rest, \" \")$");
-        print("state:   { $join(scup_mStatetable[scup_q], \"\")$ }");
-        print("scup_q,scup_t : $scup_q$,$scup_t$");
+        print("state:    $trim(stringifyState(scup_mStatetable[scup_q], false))$");
       }
       scup_p              := scup_mActiontable[scup_q,scup_t];
-      if(!scup_mSilentMode){
-        scup_actionString := "$scup_p$ := $scup_mActiontable[scup_q,scup_t]$";
-        print("scup_p := scup_mActiontable[scup_q,scup_t]-----$scup_actionString$");
-      }
       match (scup_p){
         case om: 
           if(!scup_mSilentMode){
@@ -205,7 +164,7 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
         case Shift(scup_s):
           if(!scup_mSilentMode){
             print("shifting state $scup_s$");
-            print("state:   { $join(scup_mStatetable[scup_s], \"\")$ }\n");
+            print("state:   $stringifyState(scup_mStatetable[scup_s], false)$\n");
           }
           scup_symbols := scup_symbols + [scup_t];
           scup_states  := scup_states  + [scup_s];
@@ -218,9 +177,6 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
           }
           scup_action_code := evaluate_action_code(scup_body, scup_user_code);
           for(scup_action in [1..#scup_action_code]){
-            if(!scup_mSilentMode){
-              print("Executing command: $scup_action_code[scup_action]$");
-            }
             execute(scup_action_code[scup_action]);
           }
           scup_action_code := [];  
@@ -228,14 +184,11 @@ class srParser(actiontable, gototable, statetable, rulesMap, silent_mode){
                      scup_state, scup_new_states, scup_states, scup_current_states);
           scup_action_code := calculate_var_id(scup_tl, scup_index, scup_head, scup_current_states);
           if(isString(scup_action_code)){
-            if(!scup_mSilentMode){
-              print("Executing command: $scup_action_code$");
-            }
             execute(scup_action_code);
           }
           if(!scup_mSilentMode){  
-            scup_stateString := join(scup_mStatetable[scup_mGototable[scup_state, scup_head]], "");
-            print("state:{ $scup_stateString$ }\n");
+            scup_stateString := stringifyState(scup_mStatetable[scup_mGototable[scup_state, scup_head]], false);
+            print("state: $scup_stateString$\n");
           }
         case Accept():
           if(!scup_mSilentMode){ 
@@ -251,7 +204,12 @@ myParse   := closure(testInput, ruleNames, rulesMap, statetable,
   parser  := srParser(actiontable, gototable, statetable, rulesMap, silent_mode);
   scup_tl := scan_string(testInput, silent_mode);
   if(!silent_mode){
-    print("tokenlist: $scup_tl$\n");
+    scup_tokelist_string := "tokenlist:[\n";
+    for(scup_tokenlist_token in scup_tl){
+      scup_tokelist_string +="  "+ scup_tokenlist_token+ ",\n";
+    }
+    scup_tokelist_string := scup_tokelist_string[..-3] + "]";
+    print(scup_tokelist_string);
   }
   result := parser.parseSR(scup_tl + [[@"$", @"$"]]);
   return result;
@@ -365,6 +323,38 @@ escapeDollar2 := procedure(t){
         return Token(t, ""); 
       }
   }
+};
+stringifyState      := procedure(state, newlinemode){
+  if(newlinemode){
+    newline := "\n";
+  }
+  else{
+    newline := "";
+  }
+  stringified_state := "{"+ newline;
+  for(mr in state){
+    stringified_state += "  " +stringifyMarkedRule(mr) + ","+ newline;
+  }
+  if(newlinemode){
+    stringified_state := stringified_state[..-3];
+  }
+  else{
+    stringified_state := stringified_state[..-2];
+  }
+  return stringified_state + "}";
+};
+
+stringifyMarkedRule := procedure(mr){
+  mAlphaString := "";
+  mBetaString := "";
+  for(vars in mr.mAlpha){
+    mAlphaString += args(vars)[1];
+  }
+  for(vars in mr.mBeta){
+    mBetaString += args(vars)[1];
+  }
+  return 
+  args(mr.mVariable)[1] + " -> " + mAlphaString + " (*) " + mBetaString + " :" +mr.mFollowSet;
 };
 test_parser_from_string := procedure(input_string, silent_mode){
   result := "";

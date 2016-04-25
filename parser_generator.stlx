@@ -445,7 +445,7 @@ class grammar(rules, variables, start, silent_mode){
     for (state in mStates){
       this.mStateNames[state] := "s" + counter;
       if(!mSilentMode){   
-        print("stateTable[\"s$counter$\"] := $state$;");
+        print("stateTable[\"s$counter$\"] := $stringifyState(state, true)$;");
       }
       this.mStateTable["s$counter$"] := state;
       
@@ -588,9 +588,6 @@ stringifyActionTable := procedure(actionTable, silent_mode){
   stringActionTable  := "actionTable := {};\n";
   for([state, symbol] in domain(actionTable)){
     action           := actionTable[state, symbol];
-    if(!silent_mode){
-      print("state, symbol, action := $[state, symbol, action]$");
-    }
     match(symbol){
       case Token(token_name, token_id):
         if(token_name == '$' || token_name == '\$' || token_name == "\$" || token_name == @"$" 
@@ -604,9 +601,6 @@ stringifyActionTable := procedure(actionTable, silent_mode){
             "actionTable[\"$state$\", $Token(token_name, token_id)$] := $action$;\n";         
         }
       case Var(var_name, var_id):
-        if(!silent_mode){
-          print("var found : $Var(var_name, var_id)$");
-        }
         if(var_name == '$' || var_name == '\$' || var_name == "\$" || var_name == @"$" 
           || var_name == @'$' || var_name[-1] == '$' && #var_name <=2){
           var_name := "@\"\$\"";
@@ -654,6 +648,25 @@ write_parser_file           := procedure(token_list, output_file_name, silent_mo
   def_string += "return [ruleNames, rulesMap, stateTable, actionTable, gotoTable];\n";
   def_string += "};\n result := main(); return result;";
   appendFile(output_file_name, [def_string]);
+};
+stringifyState      := procedure(state, newlinemode){
+  if(newlinemode){
+    newline := "\n";
+  }
+  else{
+    newline := "";
+  }
+  stringified_state := "{"+ newline;
+  for(mr in state){
+    stringified_state += "  " +stringifyMarkedRule(mr) + ","+ newline;
+  }
+  if(newlinemode){
+    stringified_state := stringified_state[..-3];
+  }
+  else{
+    stringified_state := stringified_state[..-2];
+  }
+  return stringified_state + "}";
 };
 stringifyMarkedRule := procedure(mr){
   mAlphaString := "";

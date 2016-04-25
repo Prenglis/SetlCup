@@ -1,14 +1,11 @@
 load("math_simple_expressionGrammar.stlx");
-end := false;
 query := "Give an arithmetic Expression: (q for end)";
-while(!end){
-  arith_expr :=  read(query);
-  if(!("q" in arith_expr)){
-    test_parser_from_string(arith_expr, true);
-  }
-  else{
-    end := true;
-   }
-
+  while(true){
+    arith_expr :=  read(query);
+    if(!("q" in arith_expr)){
+      test_parser_from_string(arith_expr, true);
+    }
+    else{
+      break;
+    }
 }
-

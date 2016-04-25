@@ -1,4 +1,4 @@
-Diese Grammatik beschreibt einen simplen  arithmetischen Ausdruck.
+//Diese Grammatik beschreibt einen simplen  arithmetischen Ausdruck.
 %%%
 
 INTEGER       := 0|[1-9][0-9]* ;
@@ -6,9 +6,11 @@ WHITESPACE    := [ \t\v\r\s] ;
 SKIP          := {WHITESPACE} | \n ;
 
 %%%
-
+term 
+    ::= expr:e                {: print(e);             :}
+      ;
 expr 
-    ::= expr:e '+'  prod:p     {: print(e+p);           :}
+    ::= expr:e '+'  prod:p     {: result := e+p;        :}
       |  prod:p                {: result := p;          :}
       ;
 prod 

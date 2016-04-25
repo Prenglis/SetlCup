@@ -1,4 +1,4 @@
-Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
+//Diese Grammatik beschreibt den Aufbau eines Parsers für eine einfache Programmiersprache.
 %%%
 
 STRING      := "(?:\\.|[^"])*" ;

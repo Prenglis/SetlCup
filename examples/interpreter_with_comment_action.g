@@ -1,4 +1,29 @@
-//Diese Grammatik beschreibt den Aufbau eines Parsers für eine simple Programmiersprache.
+//Diese Grammatik beschreibt den Aufbau eines Parsers fuer eine simple Programmiersprache.
+parseElement := closure(element, rw values){
+  match(element){
+    case Program(d):
+      parseElement(d, values);
+    case [h|t]:
+      parseElement(h, values);
+      parseElement(t, values);
+    case Assignment(id, e_1):
+      values["$id$"] := parseElement(e_1,values);
+    case PrintExpr(e_2):
+      print(parseElement(e_2, values));
+    case Sum(e,p):
+      return parseElement(e, values) + parseElement(p, values);
+    case Difference(e,p):
+      return parseElement(e, values) - parseElement(p, values);
+    case Product(p,f):
+      return parseElement(p, values) * parseElement(f, values);
+    case Quotient(p,f):
+      return parseElement(p, values) / parseElement(f, values);
+    case Integer(n):
+      return n;
+    case Variable(id_1):
+      return values[id_1];
+  }
+};
 %%%
 
 WHITESPACE  := [ \t\v\r\s] ;
@@ -6,6 +31,9 @@ INTEGER     := 0|[1-9][0-9]* ;
 ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
 SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 %%%
+  file
+    ::= program:p                          {: parseElement(p, {});           :}
+    ;
   program 
     ::= stmntList:d                        {: result := Program(d);          :}
     ;
@@ -26,7 +54,7 @@ expr
       ;
 prod 
     ::= prod:p '*'  fact:f                 {: result := Product(p,f);        :}
-      |  prod:p '\' fact:f                 {: result := Quotient(p,f);       :} 
+      |  prod:p '/' fact:f                 {: result := Quotient(p,f);       :} 
       |  fact:f                            {: result := f;                   :}
       ;
 fact 

@@ -5,10 +5,10 @@ Programmgeneratoren, welche z.B. Parser generieren existieren bereits für Sprac
 In der Vorlesung "Formal Languages and their Applications"\cite{stroetmann:formallanguages} werden momentan verschiedene Tools genutzt um Parser zu generieren. Dazu gehören u.a. \textsc{JavaCup} zum Erstellen von LALR-Parsern, sowie \textsc{ANTLR4}\cite{parr:2012} für die Erstellung eines Top-Down-Parsers mit Nutzung von EBNF-Grammatiken. Diese Programme ermöglichen es  beim Parsen eines Programmes Aktionen durchzuführen. Diese Aktionen werden in der Programmiersprache \textsc{Java} definiert.
 Ziel dieser Studienarbeit ist es eine Alternative zur Nutzung von \textsc{Java}(in der Parser-Generierung) zu ermöglichen. Dies soll geschehen, indem ein Parser-Generator in der Programmiersprache \textsc{SetlX} geschrieben wird. \textsc{SetlX} ist eine mengenbasierte Programmiersprache. Sie kann mit dem \textsc{SetlX}-Interpreter genutzt werden. Dieser ist unter der folgenden Adresse verfügbar:\\
 \href{http://randoom.org/Software/SetlX}{{http://randoom.org/Software/SetlX}}\\
-Diese Programmiersprache wird in den Vorlesungen der theoretischen Informatik 1 und 2(Logik\cite{stroetmann:logic}, Algorithms\cite{stroetmann:algorithms}) bereits ausgiebig genutzt. Eine Ergänzung für die Vorlesung über die formalen Sprachen kann somit den Studenten helfen die Konzepte des Parsens zu verstehen, ohne in eine andere Programmiersprache "umzudenken". Da der Parser-Generator sehr stark an \textsc{JavaCup} orientiert ist, entstand der Name \textsc{SetlCup}. Ein großer Unterschied ist jedoch, dass \textsc{SetlCup} ein \textbf{LR}-Parser-Generator ist.
+Diese Programmiersprache wird in den Vorlesungen der theoretischen Informatik 1 und 2(Logik\cite{stroetmann:logic}, Algorithms\cite{stroetmann:algorithms}) bereits ausgiebig genutzt. Eine Ergänzung für die Vorlesung über die formalen Sprachen kann somit den Studenten helfen die Konzepte des Parsens zu verstehen, ohne in eine andere Programmiersprache "umzudenken". Da der Parser-Generator sehr stark an \textsc{JavaCup} orientiert ist, entstand der Name \textsc{SetlCup}. Ein großer Unterschied ist jedoch, dass \textsc{SetlCup} ein \textbf{LR}-Parser-Generator ist. Ein \textbf{LALR}-Parser-Generator kann weniger Grammatiken verarbeiten als ein \textbf{LR}-Parser. Zwar hat der \textbf{LALR}-Parser den Vorteil, dass die Parse-Tabellen kleiner sind als bei \textbf{LR}-Parsern, jedoch fällt dies bei den Heute verfügbaren Rechnern aufgrund der Größe moderner Hauptspeicher kaum noch ins Gewicht.
 \section{Funktionalität}
 \subsection{Benutzung}
-Der Benutzer von \textsc{SetlCup} erstellt durch eine gegebene Scanner- und Parserdefinition eine neue \textsc{SetlX}-Datei. Diese beinhaltet einen kanonischen LR-Parser, welcher auf den gegebenen Definitionen beruht. Anschließend kann eine Eingabedatei von dem generierten Parser überprüft werden. Dabei wird ggf. angegebener Code bei der Reduzierung der entsprechenden Regeln durchgeführt. 
+Der Benutzer erstellt eine Grammatik, die mit Aktionen attributiert ist.  Daraus erstellt \textsc{SetlCup} dann eine \textsc{SetlX}-Datei, die Parser und Scanner erhält. Diese beinhaltet einen kanonischen LR-Parser, welcher auf den gegebenen Definitionen beruht. Anschließend kann eine Eingabedatei von dem generierten Parser überprüft werden. Dabei wird ggf. angegebener Code bei der Reduzierung der entsprechenden Regeln durchgeführt. 
 Zunächst wird erklärt, wie die Komponente aufgerufen werden kann.
 \section{Aufrufsmethoden}
 Es gibt mehrere Möglichkeiten \textsc{SetlCup} aufzurufen:
@@ -77,15 +77,17 @@ Auch der Parser aus der Datei "\_sr\_parser\_part.stlx" wird der Datei angehange
 \paragraph{test\_setlcup.stlx} Für einen Regressionstest kann mit dieser Datei überprüft werden ob alle Beispiele momentan geparsed werden können. Dabei wird für mehrere Grammatiken der Parser erstellt. Diese werden anschließend mit einer Eingabedatei aufgerufen und die Ergebnisse mit den vorher festgelegten verglichen.
 \section{Aufbau der Definitionen}
 
-Der Aufbau der Scanner- und Parserdefinitionen ist in drei Abschnitte zu unterteilen:
+Der Aufbau der Scanner- und Parserdefinitionen ist in drei, durch "\%\%\%" getrennte, Abschnitte zu unterteilen:
 \begin{enumerate}
 	\item Kommentare
 	\item Scannerdefinition
 	\item Parserdefinition
 \end{enumerate}
 \subsection{Kommentare}
-Im obersten Bereich der Datei ist es möglich die Idee des Parsers zu beschreiben.
-Dieser Abschnitt endet mit dem Symbol "`\%\%\%"'. 
+Die Kommentar-sektion wird 1:1 in den späteren Parser reinkopiert.
+Das heißt, dass Kommentare über die Grammatik mit "//" auskommentiert werden müssen.
+Jedoch bietet dies zusätzlich die Möglichkeit Funktionsdefinitionen abzuspeichern, welche im Action-Code genutzt werden können. Ein Beispiel folgt im Abschnitt \ref{subsec:programming_language_parser}. 
+Dieser Abschnitt endet mit dem Symbol "\%\%\%". 
 \subsection{Scannerdefinition}
 Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Tokens zu zerlegen. Die Syntax\mRefFigure{fig:scanner_def} wird im Folgenden erklärt.
 \begin{figure}[!ht]
@@ -98,7 +100,7 @@ Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Tokens zu zerlege
                   xrightmargin  = 0.8cm,
                 ]
 	INTEGER       := 0|[1-9][0-9]*     ;
-	ASTERISK      := \*                ;
+	ASTERIKS      := \*                ;
 	WHITESPACE    := [ \t\v\r\s]       ;
 	SKIP          := {WHITESPACE} | \n ;
 \end{Verbatim}
@@ -114,8 +116,8 @@ Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Tokens zu zerlege
 						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetzt werden. Siehe Zeile 4 - "\{WHITESPACE\}".
 						\item Ansonsten sind die bereits in \textsc{SetlX} bzw. \textsc{Java} vorhandenen Regex-Ausdrücke benutzbar.
 					\end{enumerate}
-	\item Wie in \textsc{SetlX} (siehe Zeile 2 und 3) müssen auch in \textsc{SetlCup} vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden .
-	\item In Zeile 4 wird "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "SKIP"-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ("\{TOKENNAME\}") oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "|" separiert werden.
+	\item Wie in \textsc{SetlX} (siehe Zeile 2 und 3) müssen auch in \textsc{SetlCup} vordefinierte Symbole wie $"*","+","?","|","\{","\}","(",")",".","[","]","\backslash"$ escaped werden, wenn diese wörtlich gematcht werden sollen.
+	\item In Zeile 4 wird das "SKIP"-Token genutzt. In manchen Fällen werden gewisse Tokens nicht benötigt. Diese können mithilfe des "SKIP"-Tokens ignoriert werden. Dabei ist die Eingabe mit der o.g. Ersetzstrategie ("\{TOKENNAME\}") oder die Nutzung eines regulären Ausdrucks möglich. Verschiedene Tokens müssen mit der Pipe "|" separiert werden.
 \end{enumerate}
 
 \subsection{Parserdefinition}
@@ -129,29 +131,34 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus \textsc{JavaCu
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-  grammar         :=  definition_list;
-  definition_list :=  rule_definition  definition_list
-	              | ;
-  rule_definition :=  VARIABLE '::=' body_list ';' ;
-  body_list       :=  body '|' neBody_list
-	              | body
-	              | ;
-  neBody_List     :=  body body_list;
-  body            :=  element_list action_code;
-  action_code     :=  '{:' CODE ':}'
-	              | ;
-  element_list    :=  element element_list
-	              | ;
-  element         :=  token;
-  token           :=  LITERAL id
-	              | TOKEN_NAME id
-	              | VARIABLE id ;
-  id              :=  ':'VARIABLE
-	              |;
-  VARIABLE        :=  [a-z][a-zA-Z_0-9]*;
-  TOKEN_NAME      :=  [A-Z][A-Z_0-9]*;
-  LITERAL         :=  ''[^'']*'';
-  CODE            :=  [.\n]*;
+  grammar         ::=  definition_list;
+  definition_list ::=  rule_definition  definition_list
+	                | 
+                  ;
+  rule_definition ::=  VARIABLE '::=' body_list ';' ;
+  body_list       ::=  body '|' neBody_list
+	                | body
+	                | 
+                  ;
+  neBody_List     ::=  body body_list;
+  body            ::=  element_list action_code;
+  action_code     ::=  '{:' CODE ':}'
+	                | 
+                  ;
+  element_list    ::=  element element_list
+	                | 
+                  ;
+  element         ::=  token;
+  token           ::=  LITERAL id
+	                | TOKEN_NAME id
+	                | VARIABLE id ;
+  id              ::=  ':'VARIABLE
+	                |
+                  ;
+  VARIABLE        ::=  [a-z][a-zA-Z_0-9]*;
+  TOKEN_NAME      ::=  [A-Z][A-Z_0-9]*;
+  LITERAL         ::=  ''[^'']*'';
+  CODE            ::=  [.\n]*;
 \end{Verbatim}
 \caption{Grammatik zum Aufbau der Parserdefinition}
 \label{fig:parser_grammar}
@@ -159,10 +166,10 @@ Die Definition der Grammatik für den Parser benutzt Konzepte aus \textsc{JavaCu
 \paragraph{VARIABLE} beschreibt den Namen einer Regel z.B. "body". Somit können Regeln referenziert werden.  Außerdem haben auch die IDs einer Variable den gleichen Aufbau. Dies ermöglicht es den Rückgabewert einer Regel bzw. eines regulären Ausdrucks zu nutzen.
 \paragraph{TOKEN\_NAME} bezieht sich auf einen Token aus der Scanner Definition.
 \paragraph{LITERAL}  beschreibt wortwörtliche Ausdrücke, welche genutzt werden können (z.B. '+', '.', '*', 'print').
-\paragraph{CODE} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "result" können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Wenn sie doch notwendig sind, wird empfohlen sie zu escapen mit $\backslash"$ oder den Literalstring z.B. 'a+b = 15' zu nutzen. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in \textsc{SetlX} eine Sonderfunktion einnehmen. 
+\paragraph{CODE} ist ein optionaler Teil einer Regel. Er kann am Ende einer Regel hinzugefügt werden. Der CODE innerhalb der Klammern  wird beim Reduzieren der Regel ausgeführt. Durch die Nutzung der Variable "result" können Ergebnisse zwischen den Regeln transferiert werden. Die IDs der Elemente der jeweiligen Regel können im Code benutzt werden. Der Code selber darf keine Anführungszeichen enthalten. Eine Alternative bietet der Literalstring z.B. 'a+b = 15'. Außerdem sollte \textbf{generell} auf die Nutzung von Dollarzeichen verzichtet werden. Diese führen zu Komplikationen bei der Serialisierung des Parsers, da sie in \textsc{SetlX} eine Sonderfunktion einnehmen. 
 \newpage
 \section{Beispiele}
-Das erste Beispiel beschreibt eine einfache arithmetische Grammatik.
+Das erste Beispiel beschreibt eine eine Grammatik für einfache arithmetische Ausdrücke.
 Das zweite Beispiel beschreibt eine simple Programmiersprache.
 \subsection{Arithmetische Ausdrücke}
 Der arithmetische Parser \mRefFigure{fig:example_arithmetic_grammer} kann mit der oben beschriebenen Syntax definiert werden.
@@ -180,16 +187,19 @@ Der arithmetische Parser \mRefFigure{fig:example_arithmetic_grammer} kann mit de
   WHITESPACE    := [ \t\v\r\s] ;
   SKIP          := {WHITESPACE} | \n ;
   %%%
+  term 
+   ::=  expr:e               {: print(e);          :}
+      ;
   expr 
-   ::=  expr:e '+'  prod:p   {: result := print(e+p);  :} 
-     |  prod:p               {: result := p;     :}
+   ::=  expr:e '+'  prod:p   {: result := e+p;     :}
+     |  prod:p               {: result := p;       :}
      ;
   prod 
-   ::=  prod:p '*'  fact:f   {: result := p*f; :}
-     |  fact:f               {: result := f;     :}
+   ::=  prod:p '*'  fact:f   {: result := p*f;     :}
+     |  fact:f               {: result := f;       :}
      ;
   fact 
-   ::= INTEGER:n             {: result := eval(n); :} 
+   ::=  INTEGER:n            {: result := eval(n); :} 
      ;
 \end{Verbatim}
 \caption{Parserdefinition für einen simplen arithmetischen Ausdruck}
@@ -211,16 +221,15 @@ Mit einem Treiber Programm\mRefFigure{fig:simple_arith_driver} können eingegebe
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-  load("math_simple_expression_astGrammar.stlx");
-  end := false;
+  load("math_simple_expressionGrammar.stlx");
   query := "Give an arithmetic Expression: (q for end)";
-  while(!end){
+  while(true){
     arith_expr :=  read(query);
     if(!("q" in arith_expr)){
       test_parser_from_string(arith_expr, true);
     }
     else{
-      end := true;
+      break;
      }
   }
 \end{Verbatim}
@@ -233,13 +242,14 @@ setlx math_simple_expression_driver.stlx
 \end{Verbatim}
 Beispielausgabe:
 \begin{Verbatim}
-Give an arithmetic Expression: (q for end)4*5+3*6
-38
-Give an arithmetic Expression: (q for end)3+6*4*5
-123
+Give an arithmetic Expression: (q for end)2 + 3 * 4 * 5 * 6 * 7 + 8
+2530
+Give an arithmetic Expression: (q for end)7 * 8 + 3 * 4 + 5 + 6 + 9 * 2
+97
 \end{Verbatim}
 \subsection{Programmiersprachen Parser}
-Eine Erweiterung der arithmethischen Ausdrücken um Ausgabe-, sowie Zuweisungsfunktionen spiegelt diese simple Programmiersprache wieder.
+Eine Erweiterung der arithmethischen Ausdrücken um Ausgabe-, sowie Zuweisungsfunktionen spiegelt diese simple Programmiersprache wieder. Mit dieser simplen Programmiersprache ist es möglich einer Variablen einen Term zuzuweisen ("Assignemnt"). Auch eine Variable selbst kann Teil des Terms sein. Außerdem können Terme mit dem "print"-Befehl ausgegeben werden.
+Der Parser gibt für ein Programm, welches aus den o.g. Elementen besteht, den AST\footnote{AST - abstract syntax tree, siehe \url{https://de.wikipedia.org/wiki/Abstrakter_Syntaxbaum}} zurück.
 Der Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} besteht aus den Tokens für Dezimalzahlen, Variablen, Kommentaren und Leerzeichen o.ä.
 \begin{figure}[!htb]
 \begin{Verbatim}[ frame         = lines, 
@@ -255,7 +265,7 @@ Der Scanner \mRefFigure{fig:example_interpreter_grammar_scanner} besteht aus den
   ZID         := [a-zA-Z_][a-zA-Z0-9_]* ;
   SKIP        := {WHITESPACE}|\n|//[^\n]* ;
 \end{Verbatim}
-\caption{Scannerdefinition für Programmiersprache}
+\caption{Scannerdefinition für eine sehr einfache Programmiersprache}
 \label{fig:example_interpreter_grammar_scanner}
 \end{figure}
 Die Anweisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_statements} beschreiben den Aufbau der Eingabedatei. Sie besteht aus Zuweisungen oder Ausgaben. Diese können wieder aus arithmetischen Ausdrücken bestehen.
@@ -287,7 +297,7 @@ Die Anweisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_sta
       ;
   prod 
     ::= prod:p '*'  fact:f       {: result := Product(p,f); :}
-      | prod:p '\' fact:f        {: result := Quotient(p,f); :} 
+      | prod:p '/' fact:f        {: result := Quotient(p,f); :} 
       | fact:f                   {: result := f; :}
       ;
   fact 
@@ -296,7 +306,7 @@ Die Anweisungen und Definitionen \mRefFigure{fig:example_interpreter_grammar_sta
       |  ZID:id_1                {: result := Variable(id_1); :}
       ;
 \end{Verbatim}
-\caption{Grammatik für Progammiersprachenparser}
+\caption{Grammatik für eine sehr einfache Programmiersprache}
 \label{fig:example_interpreter_grammar_statements}
 \end{figure}
 Ein Beispiel Programm \mRefFigure{fig:example_interpreter_input} wird durch den Syntaxbaum \mRefFigure{fig:interpreter_tree} abgebildet.
@@ -313,10 +323,10 @@ Die Ausgabe des Programms könnte dabei für die Erstellung eines Interpreters g
                 ]
   a := 5;
   b := 7;
-  c := b*a +a\b*(7+6);
-  print(c\2);
+  c := b*a +a/b*(7+6);
+  print(c/2);
 \end{Verbatim}
-\caption{Example interpreter input}
+\caption{Beispiel-Eingabe}
 \label{fig:example_interpreter_input}
 \end{figure}
 
@@ -325,5 +335,84 @@ Die Ausgabe des Programms könnte dabei für die Erstellung eines Interpreters g
 		\includegraphics{simple_interpreter_tree.pdf}
 	\caption{Interpreter AST}
 	\label{fig:interpreter_tree}
+\end{figure}
+\subsection{Nutzung von Definitionen im Kommentarbereich}
+\label{subsec:programming_language_parser}
+Eine Ergänzung ist durch die Nutzung der Kommentarsektion\mRefFigure{fig:example_interpreter_comment} möglich.
+Zu finden unter: 
+\begin{Verbatim}
+ examples/interpreter_with_comment_action.g
+\end{Verbatim}
+Dabei muss die Grammatik\mRefFigure{fig:example_interpreter_grammar_statements} ein wenig verändert werden\mRefFigure{fig:interpreter_grammar_extra}.
+Wenn für diese angepasste Definition ein Parser erzeugt wird, kann dieser die Beispieleingabe\mRefFigure{fig:example_interpreter_input} interpretieren.
+\begin{Verbatim}
+ setlx setlcup.stlx -p examples/interpreter_with_comment_action.g
+ cd examples
+ setlx interpreter_with_comment_actionGrammar.stlx -p simple_interpreter_statements.txt
+\end{Verbatim}
+Dabei wird der korrekte Rückgabewert geliefert:
+\begin{Verbatim}
+ 155/7
+\end{Verbatim}
+
+\begin{figure}[!htb]
+
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+  parseElement := closure(element, rw values){
+    match(element){
+      case Program(d):
+        parseElement(d, values);
+      case [h|t]:
+        parseElement(h, values);
+        parseElement(t, values);
+      case Assignment(id, e_1):
+        values["$id$"] := parseElement(e_1,values);
+      case PrintExpr(e_2):
+        print(parseElement(e_2, values));
+      case Sum(e,p):
+        return parseElement(e, values) + parseElement(p, values);
+      case Difference(e,p):
+        return parseElement(e, values) - parseElement(p, values);
+      case Product(p,f):
+        return parseElement(p, values) * parseElement(f, values);
+      case Quotient(p,f):
+        return parseElement(p, values) / parseElement(f, values);
+      case Integer(n):
+        return n;
+      case Variable(id_1):
+        return values[id_1];
+    }
+  };
+\end{Verbatim}
+\caption{Beispiel-Kommentar}
+\label{fig:example_interpreter_comment}
+\end{figure}
+
+\begin{figure}[!htb]
+
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+  file
+    ::= program:p          {: parseElement(p, {});  :}
+    ;
+  program 
+    ::= stmntList:d        {: result := Program(d); :}
+    ;
+\end{Verbatim}
+\caption{Abgeänderte Grammatikzeilen für Interpreter}
+\label{fig:interpreter_grammar_extra}
 \end{figure}
 

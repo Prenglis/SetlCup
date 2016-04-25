@@ -1,4 +1,4 @@
-Diese Grammatik beschreibt eine einfache arithmetische Grammatik.
+//Diese Grammatik beschreibt eine einfache arithmetische Grammatik.
 %%%
 
 INTEGER       := 0|[1-9][0-9]* ;
