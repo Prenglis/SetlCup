@@ -116,7 +116,8 @@ generate_scan_string := procedure(sc_dict, silent_mode){
     scan_string += "
     regex '$sc_dict[i]$' as c:
       if(#c > 1){
-        c := c[2..#c];
+        //c := c[2..#c];
+        c := c[1];
       }        
       c           := join(c, \"\");
       c           := join(split(c, '\"'), \"\"); 

@@ -112,14 +112,11 @@ Die Aufgabe des Scanners ist es, die Eingabe in eine Liste von Tokens zu zerlege
 					token\_name := regex ; \\
 					Dabei ist folgendes bei der Syntax des regulären Ausdrucks zu beachten:
 					\begin{enumerate}
-						\item Die Rückgabe von Capture-Gruppen\footnote{Gruppierungen in regulären Ausdrücken -  \url{https://de.wikipedia.org/wiki/Regulärer_Ausdruck\#Gruppierungen_und_R.C3.BCckw.C3.A4rtsreferenzen}} z.B. "`ab\textbf{(.*)}ab\textbf{(.*)}ab\textbf{(.*)}"'	wird konkateniert zurückgegeben (es werden alle einzelnen Unterergebnisse aneinander gehangen). Ein Beispiel zeigt die Rückgabe des o.g. regulären Ausdrucks:
+						\item Die Rückgabe von Capture-Gruppen\footnote{Gruppierungen in regulären Ausdrücken -  \url{https://de.wikipedia.org/wiki/Regulärer_Ausdruck\#Gruppierungen_und_R.C3.BCckw.C3.A4rtsreferenzen}} z.B. "`ab\textbf{(.*)}ab\textbf{(.*)}ab\textbf{(.*)}"'	ist der jeweilige ganze gescannte String. Ein Beispiel zeigt die Rückgabe des o.g. regulären Ausdrucks:
 						\begin{Verbatim}
-  => test_regex := 'ab(.*)ab(.*)ab(.*)';
+  test_regex := 'ab(.*)ab(.*)ab(.*)';
   input := 'abBeiabSpielabText';
-  output := matches(input, test_regex, true);
-  ~< Result: ["abBeiabSpielabText", "Bei", "Spiel", "Text"] >~ 
-  => scup_output := join(output[2..#output], "");
-  ~< Result: "BeiSpielText" >~
+  output => "abBeiabSpielabText";
 						\end{Verbatim}						
 						\item Die Nutzung der geschweiften Klammer wurde überlagert, sodass die regulären Ausdrücke der großgeschriebene Wörter innerhalb der Klammern im Nachhinein ersetzt werden. Siehe Zeile 4 - "`\{WHITESPACE\}"'.
 						\item Ansonsten sind die bereits in \textsc{SetlX} bzw. \textsc{Java} vorhandenen Regex-Ausdrücke benutzbar.
