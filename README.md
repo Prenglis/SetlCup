@@ -1,7 +1,7 @@
 # SetlCup
-##Idea
+## Idea
 A LR-Parser-Generator for the programming language SetlX oriented on JavaCup
-##Requirements
+## Requirements
  - Java 1.7+ (Version 51+)
  - Setlx 2.4+
  
